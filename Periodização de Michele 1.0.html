@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infográfico: Periodização HIIT de 8 Semanas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #111827; /* Fundo escuro para destacar os elementos */
+        }
+        .main-title {
+            color: #EF4444; /* Vermelho vibrante para o título principal */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .card {
+            background-color: #1F2937; /* Cinza escuro para os cards */
+            border-left: 4px solid #EF4444;
+        }
+        .icon {
+            color: #EF4444;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-black main-title mb-2">SUA JORNADA HIIT DE 8 SEMANAS</h1>
+            <p class="text-lg md:text-xl text-gray-300">Visualize sua evolução e conquiste seu melhor condicionamento físico.</p>
+        </header>
+
+        <section id="understanding" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Entendendo Seu Treino</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🔥</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Estímulo</h3>
+                    <p class="text-gray-400">Esforço máximo! Sua respiração fica ofegante e a fala difícil. (RPE 8-9)</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">💧</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Recuperação Ativa</h3>
+                    <p class="text-gray-400">Diminua o ritmo para recuperar o fôlego, mas não pare completamente. (RPE 4-5)</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🌡️</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Aquecimento</h3>
+                    <p class="text-gray-400">5 minutos de atividade leve para preparar o corpo para o esforço.</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🧘</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Desaquecimento</h3>
+                    <p class="text-gray-400">5 minutos de atividade suave para normalizar a frequência cardíaca.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="progression" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">A Progressão da Sua Jornada</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-4 text-center text-white">Evolução da Duração Total do Treino</h3>
+                    <div class="chart-container">
+                        <canvas id="durationChart"></canvas>
+                    </div>
+                     <p class="text-center text-gray-400 mt-4">Seu treino evolui de 15 para 25 minutos, construindo sua resistência aeróbica de forma gradual e consistente.</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-4 text-center text-white">Intensidade: Estímulo vs. Recuperação</h3>
+                    <div class="chart-container">
+                        <canvas id="intensityChart"></canvas>
+                    </div>
+                     <p class="text-center text-gray-400 mt-4">Observe como o tempo de estímulo aumenta e a recuperação se torna mais desafiadora ao longo das semanas.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="weekly-breakdown" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Estrutura Semanal do HIIT</h2>
+            <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">Cada semana tem uma estrutura de estímulo e recuperação específica. Alterne os treinos entre <span class="font-bold text-red-500">Esteira</span> e <span class="font-bold text-red-500">Escada</span>, 4 vezes por semana.</p>
+            
+            <div class="space-y-8">
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-white mb-4">Semanas 1-2: Fase de Adaptação</h3>
+                    <div class="flex items-center justify-center space-x-2 md:space-x-4 text-center">
+                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Aquecimento</span><br>5 min</div>
+                        <div class="text-red-500 font-bold text-2xl">→</div>
+                        <div class="p-3 bg-red-700 rounded-lg"><span class="font-bold">S1: 4x</span> (20s/70s)<br><span class="font-bold">S2: 5x</span> (20s/60s)</div>
+                        <div class="text-red-500 font-bold text-2xl">→</div>
+                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Desaquecimento</span><br>5 min</div>
+                    </div>
+                </div>
+
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-white mb-4">Semanas 3-4: Aumento de Duração</h3>
+                    <div class="flex items-center justify-center space-x-2 md:space-x-4 text-center">
+                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Aquecimento</span><br>5 min</div>
+                        <div class="text-red-500 font-bold text-2xl">→</div>
+                        <div class="p-3 bg-red-700 rounded-lg"><span class="font-bold">S3: 6x</span> (30s/60s)<br><span class="font-bold">S4: 7x</span> (30s/50s)</div>
+                        <div class="text-red-500 font-bold text-2xl">→</div>
+                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Desaquecimento</span><br>5 min</div>
+                    </div>
+                </div>
+
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-white mb-4">Semanas 5-6: Intensificação</h3>
+                    <div class="flex items-center justify-center space-x-2 md:space-x-4 text-center">
+                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Aquecimento</span><br>5 min</div>
+                        <div class="text-red-500 font-bold text-2xl">→</div>
+                        <div class="p-3 bg-red-700 rounded-lg"><span class="font-bold">S5: 8x</span> (30s/60s)<br><span class="font-bold">S6: 7x</span> (40s/50s)</div>
+                        <div class="text-red-500 font-bold text-2xl">→</div>
+                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Desaquecimento</span><br>5 min</div>
+                    </div>
+                </div>
+                
+                 <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-white mb-4">Semanas 7-8: Performance Máxima</h3>
+                    <div class="flex items-center justify-center space-x-2 md:space-x-4 text-center">
+                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Aquecimento</span><br>5 min</div>
+                        <div class="text-red-500 font-bold text-2xl">→</div>
+                        <div class="p-3 bg-red-700 rounded-lg"><span class="font-bold">S7: 6x</span> (45s/45s)<br><span class="font-bold">S8: 5x</span> (60s/60s)</div>
+                        <div class="text-red-500 font-bold text-2xl">→</div>
+                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Desaquecimento</span><br>5 min</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reminders" class="mb-16">
+             <h2 class="text-3xl font-bold text-center mb-8 text-white">Orientações Essenciais</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                 <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">❤️</span> Saúde Mental</h3>
+                    <p class="text-gray-400">O exercício é seu aliado. Respeite seus limites nos dias difíceis e anote como se sente após cada treino.</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🦵</span> Cuidado com os Joelhos</h3>
+                    <p class="text-gray-400">Monitore qualquer dor. Se necessário, reduza a intensidade. A musculação é fundamental para proteger suas articulações.</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🔄</span> Flexibilidade</h3>
+                    <p class="text-gray-400">Este plano é um guia. Sinta-se à vontade para repetir uma semana se a progressão parecer muito rápida. Consistência é a chave.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 pt-8 border-t border-gray-700">
+            <p class="text-gray-400">Este infográfico foi gerado para guiar sua jornada de condicionamento. Mantenha o foco e aproveite os resultados!</p>
+            <p class="text-xs text-gray-600 mt-2"></p>
+        </footer>
+
+    </div>
+
+    <script>
+        const wrapLabel = (label, maxWidth) => {
+            if (typeof label !== 'string' || label.length <= maxWidth) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + ' ' + word).trim().length > maxWidth && currentLine.length > 0) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            });
+            lines.push(currentLine);
+            return lines;
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            return Array.isArray(label) ? label.join(' ') : label;
+        };
+        
+        const commonChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#D1D5DB'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#9CA3AF' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                x: {
+                    ticks: { color: '#9CA3AF' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        };
+
+        const durationData = {
+            labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Semana 6', 'Semana 7', 'Semana 8'],
+            datasets: [{
+                label: 'Duração Total (min)',
+                data: [15, 15, 20, 20, 25, 25, 25, 25],
+                borderColor: '#EF4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        };
+
+        new Chart(document.getElementById('durationChart'), {
+            type: 'line',
+            data: durationData,
+            options: {
+                 ...commonChartOptions,
+                 scales: {
+                     y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Minutos', color: '#9CA3AF' } },
+                     x: { ...commonChartOptions.scales.x }
+                 }
+            }
+        });
+        
+        const intensityData = {
+            labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'],
+            datasets: [
+                {
+                    label: 'Estímulo (s)',
+                    data: [20, 20, 30, 30, 30, 40, 45, 60],
+                    backgroundColor: '#EF4444',
+                    borderColor: '#F87171',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Recuperação (s)',
+                    data: [70, 60, 60, 50, 60, 50, 45, 60],
+                    backgroundColor: '#6B7280',
+                    borderColor: '#9CA3AF',
+                    borderWidth: 1
+                }
+            ]
+        };
+
+        new Chart(document.getElementById('intensityChart'), {
+            type: 'bar',
+            data: intensityData,
+            options: {
+                 ...commonChartOptions,
+                 scales: {
+                     y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Segundos', color: '#9CA3AF' } },
+                     x: { ...commonChartOptions.scales.x }
+                 }
+            }
+        });
+
+    </script>
+</body>
+</html>
