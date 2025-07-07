@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infográfico: Preparação TAF - 2100m em 12min</title>
+    <!-- Carrega Tailwind CSS para estilização rápida e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carrega Chart.js para gráficos (usado como placeholder aqui) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Carrega a fonte Roboto do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos globais para o corpo do documento */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #000000; /* Fundo preto conforme o branding */
+        }
+        /* Estilo para o título principal */
+        .main-title {
+            color: #EF4444; /* Vermelho vibrante para destaque */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Sombra para profundidade */
+        }
+        /* Estilo para os cartões de conteúdo */
+        .card {
+            background-color: #1F2937; /* Cinza escuro para os cartões */
+            border-left: 4px solid #EF4444; /* Borda esquerda vermelha para branding */
+        }
+        /* Estilo para os ícones dentro dos cartões */
+        .icon {
+            color: #EF4444; /* Ícones em vermelho */
+        }
+        /* Estilos para o container dos gráficos, garantindo responsividade */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Largura máxima para centralização */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Altura padrão */
+            max-height: 400px;
+        }
+        /* Ajuste de altura para gráficos em telas maiores */
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        /* Estilo para o botão de geração de dica */
+        .gemini-button {
+            background-color: #EF4444; /* Vermelho do branding */
+            color: white;
+            padding: 12px 24px;
+            border-radius: 9999px; /* Bordas arredondadas */
+            font-weight: 700; /* Negrito */
+            transition: background-color 0.3s ease; /* Transição suave */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
+        }
+        .gemini-button:hover {
+            background-color: #DC2626; /* Tom mais escuro no hover */
+        }
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #EF4444;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- Container principal do infográfico, centralizado e com padding responsivo -->
+    <div class="container mx-auto p-4 md:p-8">
+
+        <!-- Cabeçalho do infográfico -->
+        <header class="mb-12">
+            <div class="w-full">
+                <!-- Logotipo do utilizador -->
+                <div class="mb-12 text-center">
+                    <img id="userLogo" src="https://i.imgur.com/rLLYQ3Z.png" alt="Sua Logo" class="inline-block rounded-lg shadow-md" style="max-width: 150px; height: auto;">
+                    <p class="text-xl font-bold text-white mt-2">Consultoria Esportiva Premium</p>
+                </div>
+                <!-- Informações do aluno e objetivo -->
+                <div class="text-left mb-10">
+                    <p class="text-md md:text-lg text-gray-400">Aluno: Nicholas De Souza Lopes</p>
+                    <p class="text-md md:text-lg text-gray-400">Objetivo: Superar 2100m em 12min (TAF - 10 NOV 2025)</p>
+                </div>
+            </div>
+            <!-- Título principal do infográfico -->
+            <div class="text-center mt-8">
+                <h1 class="text-4xl md:text-6xl font-black main-title mb-2">SUA JORNADA PARA O TAF: RESISTÊNCIA E VELOCIDADE</h1>
+            </div>
+        </header>
+
+        <!-- Secção "Entendendo Seu Treino de Endurance" -->
+        <section id="understanding" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Entendendo Seu Treino de Endurance</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Cartão: Corrida Contínua -->
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🏃</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Corrida Contínua (CC)</h3>
+                    <p class="text-gray-400">Ritmo leve e confortável (RPE 4-6). Foco na base aeróbica.</p>
+                </div>
+                <!-- Cartão: Treino de Tempo -->
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">⏱️</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Treino de Tempo (TT)</h3>
+                    <p class="text-gray-400">Ritmo moderado a forte (RPE 7-8). Sustentável, desafiador.</p>
+                </div>
+                <!-- Cartão: Treino Intervalado -->
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">⚡</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Treino Intervalado (TI)</h3>
+                    <p class="text-gray-400">Tiros de alta intensidade (RPE 9-10) com recuperação ativa.</p>
+                </div>
+                <!-- Cartão: Treino Ritmo TAF -->
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🎯</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Treino Ritmo TAF (TR-TAF)</h3>
+                    <p class="text-gray-400">Simulações de trechos no ritmo alvo de 3:25 min/km.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Secção "A Progressão da Sua Jornada" com placeholders para gráficos -->
+        <section id="progression" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">A Progressão da Sua Jornada (18 Semanas)</h2>
+            <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">Sua preparação está dividida em 4 fases estratégicas para garantir a melhor performance no TAF.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Placeholder para o gráfico de Evolução do Volume Semanal -->
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-4 text-center text-white">Evolução do Volume Semanal</h3>
+                    <div class="chart-container">
+                        <!-- Canvas para o gráfico de volume. Você pode adicionar os dados e a lógica Chart.js aqui. -->
+                        <canvas id="volumeChart"></canvas>
+                    </div>
+                    <p class="text-gray-400 text-center mt-4">
+                        O gráfico representará o aumento gradual do volume total de corrida ao longo das semanas, com uma diminuição na fase de taper.
+                    </p>
+                </div>
+                <!-- Placeholder para o gráfico de Intensidade: Variedade para a Performance -->
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-4 text-center text-white">Intensidade: Variedade para a Performance</h3>
+                    <div class="chart-container">
+                        <!-- Canvas para o gráfico de intensidade. Você pode adicionar os dados e a lógica Chart.js aqui. -->
+                        <canvas id="intensityMixChart"></canvas>
+                    </div>
+                    <p class="text-gray-400 text-center mt-4">
+                        O gráfico mostrará a proporção de treinos leves, moderados e fortes em cada fase, ou a evolução da intensidade média.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Secção "Estrutura das Fases de Treinamento" -->
+        <section id="weekly-breakdown" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Estrutura das Fases de Treinamento</h2>
+            
+            <div class="space-y-8">
+                <!-- Cartão da Fase 1: Construção da Base -->
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <div class="icon text-4xl mb-3">🏗️</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Fase 1: Construção da Base (Semanas 1-6)</h3>
+                    <p class="text-gray-400 mb-4">Foco: Construir resistência fundamental para o endurance.</p>
+                    <ul class="list-disc list-inside text-gray-400 space-y-1">
+                        <li>Segunda: Corrida Contínua (CC) - 30 a 45 min leve (progressivo nas semanas).</li>
+                        <li>Quarta: Corrida Contínua (CC) - 30 a 40 min leve (progressivo nas semanas).</li>
+                        <li>Sexta: Corrida Contínua (CC) - 25 a 35 min leve (progressivo nas semanas).</li>
+                        <li>Sábado e Domingo: Descanso Total.</li>
+                    </ul>
+                </div>
+
+                <!-- Cartão da Fase 2: Intensificação e Ritmo Específico -->
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <div class="icon text-4xl mb-3">📈</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Fase 2: Intensificação e Ritmo Específico (Semanas 7-12)</h3>
+                    <p class="text-gray-400 mb-4">Foco: Aumentar a intensidade e trabalhar o ritmo do TAF.</p>
+                    <ul class="list-disc list-inside text-gray-400 space-y-1">
+                        <li>Segunda: Treino de Tempo (TT) - 20 a 30 min moderado (progressivo nas semanas).</li>
+                        <li>Quarta: Treino Intervalado (TI) - 6-10 x (400-500m forte / 200-250m trote leve).</li>
+                        <li>Sexta: Corrida Contínua (CC) - 35 a 45 min leve (progressivo nas semanas).</li>
+                        <li>Sábado e Domingo: Descanso Total.</li>
+                    </ul>
+                </div>
+
+                <!-- Cartão da Fase 3: Polimento e Simulação -->
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <div class="icon text-4xl mb-3">🚀</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Fase 3: Polimento e Simulação (Semanas 13-17)</h3>
+                    <p class="text-gray-400 mb-4">Foco: Refinar o ritmo do TAF, aumentar a especificidade e preparar para o pico de performance.</p>
+                    <ul class="list-disc list-inside text-gray-400 space-y-1">
+                        <li>Segunda: Treino de Tempo (TT) - 25 a 15 min moderado a forte (decrescente nas semanas).</li>
+                        <li>Quarta: Treino Intervalado (TI) - 6-8 x (600m) ou 5-6 x (800m) ou 4-5 x (400m) forte.</li>
+                        <li>Sexta: Simulação TAF - Teste de 12 min (visando >2100m) nas S13-14; depois 10 min (S15-16); depois 6-8 min (S17).</li>
+                        <li>Sábado e Domingo: Descanso Total.</li>
+                    </ul>
+                </div>
+
+                <!-- Cartão da Fase 4: Semana do TAF - Taper -->
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <div class="icon text-4xl mb-3">🏆</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Fase 4: Semana do TAF - Taper (Semana 18 - 04/11 a 10/11)</h3>
+                    <p class="text-gray-400 mb-4">Foco: Recuperação total e ativação para o dia da prova.</p>
+                    <ul class="list-disc list-inside text-gray-400 space-y-1">
+                        <li>Segunda (04/11): Corrida Leve - 20-25 min muito leve.</li>
+                        <li>Terça (05/11): Descanso Total.</li>
+                        <li>Quarta (06/11): Ativação - Aquecimento + 3-4 tiros de 100m progressivos.</li>
+                        <li>Quinta (07/11): Descanso Total.</li>
+                        <li>Sexta (08/11): Descanso Total.</li>
+                        <li>Sábado (09/11): Descanso Total.</li>
+                        <li>Domingo (10/11): TAF!</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Secção "Orientações Essenciais" -->
+        <section id="reminders" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Orientações Essenciais para Nicholas</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Cartão: Escute Seu Corpo -->
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">👂</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Escute Seu Corpo</h3>
+                    <p class="text-gray-400">A dor no tornozelo deve ser monitorada. Se persistir ou piorar, me avise para que a gente verifique qual a melhor decisão a ser tomada. O treino deve ser ajustado conforme sua recuperação.</p>
+                </div>
+                <!-- Cartão: Hidratação e Nutrição -->
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">💧</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Hidratação e Nutrição</h3>
+                    <p class="text-gray-400">Mantenha-se bem hidratado e tenha uma dieta balanceada para energia e recuperação.</p>
+                </div>
+                <!-- Cartão: Priorize o Sono -->
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🛌</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Priorize o Sono</h3>
+                    <p class="text-gray-400">7-9 horas de sono por noite são cruciais para a recuperação muscular e hormonal.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rodapé do infográfico -->
+        <footer class="text-center mt-12 pt-8 border-t border-gray-700">
+            <p class="text-gray-400">Com foco e dedicação, o sucesso no TAF é garantido!</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Este script é um placeholder para a lógica do Chart.js.
+        // Para implementar os gráficos de "Evolução do Volume Semanal" e "Intensidade: Variedade para a Performance",
+        // você precisaria dos dados semanais de volume (minutos/km) e da proporção de treinos por intensidade (leve, moderado, forte).
+        // Abaixo, um exemplo de como você poderia inicializar um gráfico de linha para o volume, se tivesse os dados.
+
+        // Exemplo de dados para o gráfico de volume (apenas ilustrativo, você precisaria de dados reais para 18 semanas)
+        const volumeDataExample = {
+            labels: Array.from({length: 18}, (_, i) => `Semana ${i + 1}`), // Rótulos para 18 semanas
+            datasets: [{
+                label: 'Volume de Corrida (min)',
+                // Estes dados são apenas um exemplo e precisariam ser calculados com base no plano detalhado
+                data: [
+                    90, 105, 120, 135, 135, 135, // Fase 1 (3 treinos/semana)
+                    140, 150, 160, 170, 180, 190, // Fase 2
+                    180, 170, 160, 100, 50, 20 // Fase 3 e Taper
+                ],
+                borderColor: '#EF4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        };
+
+        // Opções comuns para os gráficos (cores de texto, grades, etc.)
+        const commonChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#D1D5DB' // Cor do texto da legenda
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: (tooltipItems) => {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            return Array.isArray(label) ? label.join(' ') : label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#9CA3AF' }, // Cor do texto dos ticks do eixo Y
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' } // Cor das linhas de grade
+                },
+                x: {
+                    ticks: { color: '#9CA3AF' }, // Cor do texto dos ticks do eixo X
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' } // Cor das linhas de grade
+                }
+            }
+        };
+
+        // Inicializa o gráfico de volume, se o elemento canvas existir
+        const volumeChartCtx = document.getElementById('volumeChart');
+        if (volumeChartCtx) {
+            new Chart(volumeChartCtx, {
+                type: 'line',
+                data: volumeDataExample,
+                options: {
+                    ...commonChartOptions,
+                    scales: {
+                        y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Minutos', color: '#9CA3AF' } },
+                        x: { ...commonChartOptions.scales.x }
+                    }
+                }
+            });
+        }
+
+        // Exemplo de dados para o gráfico de intensidade (fictício, para ilustrar)
+        const intensityDataExample = {
+            labels: ['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4'],
+            datasets: [
+                {
+                    label: 'Treino Leve (%)',
+                    data: [70, 40, 30, 50], // Proporção fictícia de treinos leves por fase
+                    backgroundColor: 'rgba(107, 114, 128, 0.7)', // Cinza para leve
+                    borderColor: 'rgba(107, 114, 128, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Treino Moderado (%)',
+                    data: [20, 30, 30, 20], // Proporção fictícia de treinos moderados
+                    backgroundColor: 'rgba(239, 68, 68, 0.7)', // Vermelho para moderado
+                    borderColor: 'rgba(239, 68, 68, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Treino Forte (%)',
+                    data: [10, 30, 40, 30], // Proporção fictícia de treinos fortes
+                    backgroundColor: 'rgba(255, 159, 64, 0.7)', // Laranja para forte
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                }
+            ]
+        };
+
+        // Inicializa o gráfico de intensidade, se o elemento canvas existir
+        const intensityMixChartCtx = document.getElementById('intensityMixChart');
+        if (intensityMixChartCtx) {
+            new Chart(intensityMixChartCtx, {
+                type: 'bar', // Gráfico de barras
+                data: intensityDataExample,
+                options: {
+                    ...commonChartOptions,
+                    scales: {
+                        x: {
+                            stacked: true, // Barras empilhadas
+                            ticks: { color: '#9CA3AF' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: {
+                            stacked: true, // Barras empilhadas
+                            ticks: { color: '#9CA3AF', callback: function(value) { return value + '%'; } }, // Adiciona % nos ticks
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            title: { display: true, text: 'Porcentagem (%)', color: '#9CA3AF' }
+                        }
+                    },
+                    plugins: {
+                        ...commonChartOptions.plugins,
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
