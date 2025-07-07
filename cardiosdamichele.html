@@ -12,14 +12,14 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #111827; /* Fundo escuro para destacar os elementos */
+            background-color: #000000;
         }
         .main-title {
-            color: #EF4444; /* Vermelho vibrante para o título principal */
+            color: #EF4444;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         .card {
-            background-color: #1F2937; /* Cinza escuro para os cards */
+            background-color: #1F2937;
             border-left: 4px solid #EF4444;
         }
         .icon {
@@ -45,9 +45,21 @@
 
     <div class="container mx-auto p-4 md:p-8">
 
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-6xl font-black main-title mb-2">SUA JORNADA HIIT DE 8 SEMANAS</h1>
-            <p class="text-lg md:text-xl text-gray-300">Visualize sua evolução e conquiste seu melhor condicionamento físico.</p>
+        <header class="mb-12">
+            <div class="w-full">
+                <div class="mb-12 text-center">
+                    <img id="userLogo" src="https://i.imgur.com/rLLYQ3Z.png" alt="Sua Logo" class="inline-block rounded-lg shadow-md" style="max-width: 150px; height: auto;">
+                    <p class="text-xl font-bold text-white mt-2">Consultoria Esportiva Premium</p>
+                </div>
+                <div class="text-left mb-10">
+                    <p class="text-md md:text-lg text-gray-400">Aluna: Michele Malfacini Lima</p>
+                    <p class="text-md md:text-lg text-gray-400">Objetivo: Melhoria da capacidade cardiovascular</p>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <h1 class="text-4xl md:text-6xl font-black main-title mb-2">SUA JORNADA HIIT DE 8 SEMANAS</h1>
+                <p class="text-lg md:text-xl text-gray-300">Visualize sua evolução e conquiste seu melhor condicionamento físico.</p>
+            </div>
         </header>
 
         <section id="understanding" class="mb-16">
@@ -101,65 +113,45 @@
             <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">Cada semana tem uma estrutura de estímulo e recuperação específica. Alterne os treinos entre <span class="font-bold text-red-500">Esteira</span> e <span class="font-bold text-red-500">Escada</span>, 4 vezes por semana.</p>
             
             <div class="space-y-8">
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="text-2xl font-bold text-white mb-4">Semanas 1-2: Fase de Adaptação</h3>
-                    <div class="flex items-center justify-center space-x-2 md:space-x-4 text-center">
-                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Aquecimento</span><br>5 min</div>
-                        <div class="text-red-500 font-bold text-2xl">→</div>
-                        <div class="p-3 bg-red-700 rounded-lg"><span class="font-bold">S1: 4x</span> (20s/70s)<br><span class="font-bold">S2: 5x</span> (20s/60s)</div>
-                        <div class="text-red-500 font-bold text-2xl">→</div>
-                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Desaquecimento</span><br>5 min</div>
-                    </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🔥</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Semanas 1-2: Fase de Adaptação</h3>
+                    <p class="text-gray-400">4x (20s Estímulo / 70s Rec.) na S1; 5x (20s Estímulo / 60s Rec.) na S2.</p>
                 </div>
-
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="text-2xl font-bold text-white mb-4">Semanas 3-4: Aumento de Duração</h3>
-                    <div class="flex items-center justify-center space-x-2 md:space-x-4 text-center">
-                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Aquecimento</span><br>5 min</div>
-                        <div class="text-red-500 font-bold text-2xl">→</div>
-                        <div class="p-3 bg-red-700 rounded-lg"><span class="font-bold">S3: 6x</span> (30s/60s)<br><span class="font-bold">S4: 7x</span> (30s/50s)</div>
-                        <div class="text-red-500 font-bold text-2xl">→</div>
-                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Desaquecimento</span><br>5 min</div>
-                    </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">📈</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Semanas 3-4: Aumento de Duração</h3>
+                    <p class="text-gray-400">6x (30s Estímulo / 60s Rec.) na S3; 7x (30s Estímulo / 50s Rec.) na S4.</p>
                 </div>
-
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="text-2xl font-bold text-white mb-4">Semanas 5-6: Intensificação</h3>
-                    <div class="flex items-center justify-center space-x-2 md:space-x-4 text-center">
-                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Aquecimento</span><br>5 min</div>
-                        <div class="text-red-500 font-bold text-2xl">→</div>
-                        <div class="p-3 bg-red-700 rounded-lg"><span class="font-bold">S5: 8x</span> (30s/60s)<br><span class="font-bold">S6: 7x</span> (40s/50s)</div>
-                        <div class="text-red-500 font-bold text-2xl">→</div>
-                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Desaquecimento</span><br>5 min</div>
-                    </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">💪</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Semanas 5-6: Intensificação</h3>
+                    <p class="text-gray-400">8x (30s Estímulo / 60s Rec.) na S5; 7x (40s Estímulo / 50s Rec.) na S6.</p>
                 </div>
-                
-                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="text-2xl font-bold text-white mb-4">Semanas 7-8: Performance Máxima</h3>
-                    <div class="flex items-center justify-center space-x-2 md:space-x-4 text-center">
-                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Aquecimento</span><br>5 min</div>
-                        <div class="text-red-500 font-bold text-2xl">→</div>
-                        <div class="p-3 bg-red-700 rounded-lg"><span class="font-bold">S7: 6x</span> (45s/45s)<br><span class="font-bold">S8: 5x</span> (60s/60s)</div>
-                        <div class="text-red-500 font-bold text-2xl">→</div>
-                        <div class="p-3 bg-gray-700 rounded-lg"><span class="font-bold">Desaquecimento</span><br>5 min</div>
-                    </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🚀</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Semanas 7-8: Performance Máxima</h3>
+                    <p class="text-gray-400">6x (45s Estímulo / 45s Rec.) na S7; 5x (60s Estímulo / 60s Rec.) na S8.</p>
                 </div>
             </div>
         </section>
 
         <section id="reminders" class="mb-16">
-             <h2 class="text-3xl font-bold text-center mb-8 text-white">Orientações Essenciais</h2>
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Orientações Essenciais</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">❤️</span> Saúde Mental</h3>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">❤️</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Saúde Mental</h3>
                     <p class="text-gray-400">O exercício é seu aliado. Respeite seus limites nos dias difíceis e anote como se sente após cada treino.</p>
                 </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🦵</span> Cuidado com os Joelhos</h3>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🦵</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Cuidado com os Joelhos</h3>
                     <p class="text-gray-400">Monitore qualquer dor. Se necessário, reduza a intensidade. A musculação é fundamental para proteger suas articulações.</p>
                 </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🔄</span> Flexibilidade</h3>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🔄</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Flexibilidade</h3>
                     <p class="text-gray-400">Este plano é um guia. Sinta-se à vontade para repetir uma semana se a progressão parecer muito rápida. Consistência é a chave.</p>
                 </div>
             </div>
@@ -167,7 +159,6 @@
 
         <footer class="text-center mt-12 pt-8 border-t border-gray-700">
             <p class="text-gray-400">Este infográfico foi gerado para guiar sua jornada de condicionamento. Mantenha o foco e aproveite os resultados!</p>
-            <p class="text-xs text-gray-600 mt-2"></p>
         </footer>
 
     </div>
