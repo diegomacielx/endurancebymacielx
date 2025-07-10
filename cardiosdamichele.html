@@ -39,11 +39,149 @@
                 height: 350px;
             }
         }
+        /* Estilos para o botão de navegação */
+        .nav-button {
+            background-color: #EF4444;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            font-weight: 700;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 2rem;
+        }
+        .nav-button:hover {
+            background-color: #DC2626;
+        }
+
+        /* Estilos para a página do temporizador */
+        .timer-page {
+            display: none; /* Escondido por padrão */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .timer-display {
+            font-size: 5rem;
+            font-weight: 900;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            margin-bottom: 1rem;
+        }
+
+        .phase-display {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #D1D5DB;
+            margin-bottom: 0.5rem;
+        }
+
+        .set-display {
+            font-size: 1.5rem;
+            color: #9CA3AF;
+            margin-bottom: 2rem;
+        }
+
+        .timer-controls button {
+            background-color: #1F2937;
+            color: #EF4444;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin: 0.5rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border: 2px solid #EF4444;
+        }
+        .timer-controls button:hover:not(:disabled) {
+            background-color: #EF4444;
+            color: white;
+        }
+        .timer-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .config-section {
+            background-color: #1F2937;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border: 1px solid #EF4444;
+        }
+
+        .phase-item {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem; /* Espaçamento entre os itens */
+            align-items: flex-end; /* Alinha os itens pela base */
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background-color: #2D3748;
+            border-radius: 8px;
+            border: 1px solid #4A5568;
+        }
+        .phase-item > div { /* Estilo para os divs que envolvem label e input */
+            display: flex;
+            flex-direction: column;
+        }
+        .phase-item input[type="text"],
+        .phase-item input[type="number"],
+        .config-section select {
+            background-color: #4A5568;
+            color: white;
+            border: 1px solid #6B7280;
+            padding: 0.5rem;
+            border-radius: 4px;
+            flex-grow: 1; /* Permite que cresçam */
+        }
+        .phase-item button {
+            background-color: #EF4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .phase-item button:hover {
+            background-color: #DC2626;
+        }
+        .add-phase-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        .add-phase-btn:hover {
+            background-color: #45a049;
+        }
+        .save-load-buttons button {
+            background-color: #3B82F6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            margin: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+        .save-load-buttons button:hover {
+            background-color: #2563EB;
+        }
     </style>
 </head>
 <body class="text-gray-200">
 
-    <div class="container mx-auto p-4 md:p-8">
+    <!-- Página do Infográfico Principal -->
+    <div id="main-infographic-page" class="container mx-auto p-4 md:p-8">
 
         <header class="mb-12">
             <div class="w-full">
@@ -229,66 +367,965 @@
             </div>
         </section>
 
+        <!-- Botão para aceder à página do temporizador -->
+        <div class="text-center">
+            <button id="goToTimerPageBtn" class="nav-button">Temporizador de Treino</button>
+        </div>
+
+        <!-- Rodapé do infográfico -->
         <footer class="text-center mt-12 pt-8 border-t border-gray-700">
             <p class="text-gray-400">Este infográfico foi gerado para guiar sua jornada de condicionamento. Mantenha o foco e aproveite os resultados!</p>
         </footer>
 
     </div>
 
+    <!-- Página do Temporizador de Treino (inicialmente oculta) -->
+    <div id="timer-app-page" class="timer-page hidden">
+        <h1 class="text-4xl md:text-5xl font-black main-title mb-8 text-center">TEMPORIZADOR DE TREINO</h1>
+
+        <!-- Seletores de Semana e Dia -->
+        <div class="config-section mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4 text-center">Selecionar Treino do Plano</h2>
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
+                <div class="flex-1">
+                    <label for="weekSelect" class="block text-gray-300 text-lg mb-2">Semana:</label>
+                    <select id="weekSelect" class="w-full">
+                        <!-- Opções de semana serão preenchidas via JS -->
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label for="daySelect" class="block text-gray-300 text-lg mb-2">Dia da Semana:</label>
+                    <select id="daySelect" class="w-full">
+                        <!-- Opções de dia serão preenchidas via JS -->
+                    </select>
+                </div>
+            </div>
+            <button id="loadSelectedWorkoutBtn" class="nav-button w-full">Carregar Treino Selecionado</button>
+        </div>
+
+        <!-- Área de exibição do temporizador -->
+        <div class="text-center mb-8">
+            <p class="phase-display" id="currentPhaseName">Pronto para Iniciar</p>
+            <p class="timer-display text-gray-200" id="timeLeftDisplay">00:00</p>
+            <p class="text-gray-400 text-lg mt-2" id="phaseInstructions"></p>
+            <p class="set-display" id="currentSetDisplay">Série: 0/0</p>
+        </div>
+
+        <!-- Controles do temporizador -->
+        <div class="timer-controls flex justify-center flex-wrap">
+            <button id="startBtn">Iniciar</button>
+            <button id="pauseBtn" disabled>Pausar</button>
+            <button id="resetBtn">Reiniciar</button>
+            <button id="skipBtn" disabled>Pular Fase</button>
+            <button id="backToInfographicBtn">Voltar</button>
+        </div>
+
+        <!-- Secção de Configuração de Treino Personalizado -->
+        <div class="config-section mt-8">
+            <h2 class="text-2xl font-bold text-white mb-4 text-center">Ou crie/edite seu treino personalizado</h2>
+            
+            <div id="phasesContainer" class="space-y-4 mb-4">
+                <!-- Cabeçalhos das colunas para melhor clareza -->
+                <!-- REMOVIDO: <div class="flex flex-wrap items-end gap-4 text-gray-400 text-sm font-bold mb-2 px-2">
+                    <span class="flex-1 min-w-[100px]">Nome da Fase</span>
+                    <span class="w-24 text-center">Tempo (MM:SS)</span>
+                    <span class="flex-1 min-w-[80px]">Intensidade</span>
+                    <span class="flex-1 min-w-[150px]">Descrição da Fase</span>
+                    <span class="w-20 text-center"></span>
+                </div> -->
+                <!-- Fases serão adicionadas aqui via JS -->
+            </div>
+
+            <button id="addPhaseBtn" class="add-phase-btn w-full">Adicionar Fase</button>
+
+            <div class="mt-6">
+                <label for="numSets" class="block text-gray-300 text-lg mb-2">Número de Séries:</label>
+                <input type="number" id="numSets" value="1" min="1" class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
+            </div>
+
+            <div class="save-load-buttons flex justify-center mt-6">
+                <button id="saveConfigBtn">Salvar Configuração</button>
+                <button id="loadConfigBtn">Carregar Configuração</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const wrapLabel = (label, maxWidth) => {
-            if (typeof label !== 'string' || label.length <= maxWidth) {
-                return label;
-            }
-            const words = label.split(' ');
-            const lines = [];
-            let currentLine = '';
-            words.forEach(word => {
-                if ((currentLine + ' ' + word).trim().length > maxWidth && currentLine.length > 0) {
-                    lines.push(currentLine);
-                    currentLine = word;
-                } else {
-                    currentLine = (currentLine + ' ' + word).trim();
-                }
-            });
-            lines.push(currentLine);
-            return lines;
-        };
+        // --- Funções Auxiliares de Tempo ---
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
 
-        const tooltipTitleCallback = (tooltipItems) => {
-            const item = tooltipItems[0];
-            let label = item.chart.data.labels[item.dataIndex];
-            return Array.isArray(label) ? label.join(' ') : label;
-        };
-        
-        const commonChartOptions = {
-            maintainAspectRatio: false,
-            responsive: true,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#D1D5DB'
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        title: tooltipTitleCallback
-                    }
-                }
+        function parseMMSS(mmssString) {
+            const parts = mmssString.split(':');
+            if (parts.length === 2) {
+                const minutes = parseInt(parts[0]) || 0;
+                const seconds = parseInt(parts[1]) || 0;
+                return (minutes * 60) + seconds;
+            }
+            return 0;
+        }
+
+        // --- Variáveis Globais do Temporizador ---
+        let workoutConfig = [];
+        let currentPhaseIndex = 0;
+        let currentSet = 1;
+        let timeLeft = 0;
+        let timerIntervalId = null;
+        let isPaused = false;
+
+        // --- Referências de Elementos HTML ---
+        const mainInfographicPage = document.getElementById('main-infographic-page');
+        const timerAppPage = document.getElementById('timer-app-page');
+        const goToTimerPageBtn = document.getElementById('goToTimerPageBtn');
+        const backToInfographicBtn = document.getElementById('backToInfographicBtn');
+
+        const currentPhaseName = document.getElementById('currentPhaseName');
+        const timeLeftDisplay = document.getElementById('timeLeftDisplay');
+        const phaseInstructions = document.getElementById('phaseInstructions');
+        const currentSetDisplay = document.getElementById('currentSetDisplay');
+
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const skipBtn = document.getElementById('skipBtn');
+
+        const phasesContainer = document.getElementById('phasesContainer');
+        const addPhaseBtn = document.getElementById('addPhaseBtn');
+        const numSetsInput = document.getElementById('numSets');
+        const saveConfigBtn = document.getElementById('saveConfigBtn');
+        const loadConfigBtn = document.getElementById('loadConfigBtn');
+
+        const weekSelect = document.getElementById('weekSelect');
+        const daySelect = document.getElementById('daySelect');
+        const loadSelectedWorkoutBtn = document.getElementById('loadSelectedWorkoutBtn');
+
+        // --- Definição do Plano de Treino da Michele (8 Semanas) ---
+        const fullTrainingPlan = {
+            'Semana 1': {
+                'Dia 1': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 2': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ],
+                'Dia 3': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 4': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { color: '#9CA3AF' },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                },
-                x: {
-                    ticks: { color: '#9CA3AF' },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                }
+            'Semana 2': {
+                'Dia 1': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 2': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ],
+                'Dia 3': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 4': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ]
+            },
+            'Semana 3': {
+                'Dia 1': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 2': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ],
+                'Dia 3': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 4': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ]
+            },
+            'Semana 4': {
+                'Dia 1': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 2': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ],
+                'Dia 3': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 4': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ]
+            },
+            'Semana 5': {
+                'Dia 1': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 2': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ],
+                'Dia 3': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 4': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ]
+            },
+            'Semana 6': {
+                'Dia 1': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 2': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ],
+                'Dia 3': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 4': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ]
+            },
+            'Semana 7': {
+                'Dia 1': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 2': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ],
+                'Dia 3': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 4': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ]
+            },
+            'Semana 8': {
+                'Dia 1': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 2': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ],
+                'Dia 3': [ // Esteira
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
+                ],
+                'Dia 4': [ // Escada
+                    { name: 'Aquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Estímulo', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
+                    { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
+                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
+                ]
             }
         };
 
+
+        // --- Funções de Navegação de Página ---
+        goToTimerPageBtn.addEventListener('click', () => {
+            mainInfographicPage.classList.add('hidden');
+            timerAppPage.classList.remove('hidden');
+            timerAppPage.style.display = 'flex';
+            populateWeekAndDaySelects();
+            loadWorkoutConfig();
+            updateDisplay();
+        });
+
+        backToInfographicBtn.addEventListener('click', () => {
+            pauseTimer();
+            mainInfographicPage.classList.remove('hidden');
+            timerAppPage.classList.add('hidden');
+            timerAppPage.style.display = 'none';
+        });
+
+        // --- Funções de Configuração do Treino ---
+
+        // Preenche os seletores de semana e dia
+        function populateWeekAndDaySelects() {
+            weekSelect.innerHTML = '';
+            for (let i = 1; i <= 8; i++) { // Michele's plan is 8 weeks
+                const option = document.createElement('option');
+                option.value = `Semana ${i}`;
+                option.textContent = `Semana ${i}`;
+                weekSelect.appendChild(option);
+            }
+
+            daySelect.innerHTML = '';
+            const days = ['Dia 1', 'Dia 2', 'Dia 3', 'Dia 4']; // Michele's plan has 4 days
+            days.forEach(day => {
+                const option = document.createElement('option');
+                option.value = day;
+                option.textContent = day;
+                daySelect.appendChild(option);
+            });
+        }
+
+        // Adiciona uma nova linha de fase na configuração
+        function addPhaseRow(phase = { name: '', duration: 0, description: '', intensity: 'Baixa' }) {
+            const phaseItem = document.createElement('div');
+            phaseItem.className = 'phase-item';
+            phaseItem.innerHTML = `
+                <div class="flex-1 min-w-[100px]">
+                    <label class="block text-gray-400 text-sm mb-1">Nome da Fase</label>
+                    <input type="text" placeholder="Nome da Fase" value="${phase.name}" class="phase-name-input w-full">
+                </div>
+                <div class="w-24">
+                    <label class="block text-gray-400 text-sm mb-1">Tempo (MM:SS)</label>
+                    <input type="text" placeholder="MM:SS" value="${formatTime(phase.duration)}" class="phase-duration-input w-full" pattern="\\d{2}:\\d{2}">
+                </div>
+                <div class="flex-1 min-w-[80px]">
+                    <label class="block text-gray-400 text-sm mb-1">Intensidade</label>
+                    <select class="phase-intensity-select w-full">
+                        <option value="Baixa" ${phase.intensity === 'Baixa' ? 'selected' : ''}>Baixa</option>
+                        <option value="Moderada" ${phase.intensity === 'Moderada' ? 'selected' : ''}>Moderada</option>
+                        <option value="Alta" ${phase.intensity === 'Alta' ? 'selected' : ''}>Alta</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-gray-400 text-sm mb-1">Descrição da Fase</label>
+                    <input type="text" placeholder="Descrição da Fase" value="${phase.description}" class="phase-description-input w-full">
+                </div>
+                <button class="remove-phase-btn bg-red-500 hover:bg-red-700">Remover</button>
+            `;
+            phasesContainer.appendChild(phaseItem);
+
+            phaseItem.querySelector('.remove-phase-btn').addEventListener('click', () => {
+                phasesContainer.removeChild(phaseItem);
+                updateWorkoutConfigFromUI();
+            });
+
+            phaseItem.querySelectorAll('input, select').forEach(input => {
+                input.addEventListener('input', updateWorkoutConfigFromUI);
+                input.addEventListener('change', updateWorkoutConfigFromUI);
+            });
+
+            updateWorkoutConfigFromUI();
+        }
+
+        // Atualiza o array workoutConfig com os valores atuais da UI
+        function updateWorkoutConfigFromUI() {
+            workoutConfig = [];
+            phasesContainer.querySelectorAll('.phase-item').forEach(phaseItem => {
+                const name = phaseItem.querySelector('.phase-name-input').value;
+                const durationMMSS = phaseItem.querySelector('.phase-duration-input').value;
+                const duration = parseMMSS(durationMMSS);
+                const intensity = phaseItem.querySelector('.phase-intensity-select').value;
+                const description = phaseItem.querySelector('.phase-description-input').value;
+                workoutConfig.push({ name, duration, description, intensity });
+            });
+        }
+
+        // Renderiza as fases na UI a partir do workoutConfig
+        function renderPhasesConfig() {
+            phasesContainer.innerHTML = ``; // Remove o cabeçalho fixo
+            if (workoutConfig.length === 0) {
+                addPhaseRow({ name: 'Aquecimento', duration: 30, description: 'Prepare o corpo para o exercício.', intensity: 'Baixa' });
+                addPhaseRow({ name: 'Estímulo', duration: 45, description: 'Momento de esforço intenso.', intensity: 'Alta' });
+                addPhaseRow({ name: 'Recuperação', duration: 15, description: 'Recupere o fôlego ativamente.', intensity: 'Baixa' });
+                addPhaseRow({ name: 'Descanso', duration: 60, description: 'Pausa completa antes da próxima série.', intensity: 'Baixa' });
+            } else {
+                workoutConfig.forEach(phase => addPhaseRow(phase));
+            }
+        }
+
+        // Salva a configuração no localStorage
+        saveConfigBtn.addEventListener('click', () => {
+            updateWorkoutConfigFromUI();
+            localStorage.setItem('customWorkoutConfigMichele', JSON.stringify(workoutConfig));
+            localStorage.setItem('customNumSetsMichele', numSetsInput.value);
+            alert('Configuração salva com sucesso!');
+        });
+
+        // Carrega a configuração do localStorage (personalizada)
+        function loadWorkoutConfig() {
+            const savedConfig = localStorage.getItem('customWorkoutConfigMichele');
+            const savedNumSets = localStorage.getItem('customNumSetsMichele');
+            if (savedConfig) {
+                workoutConfig = JSON.parse(savedConfig);
+                numSetsInput.value = savedNumSets || 1;
+                renderPhasesConfig();
+                resetTimer();
+            }
+        }
+
+        loadConfigBtn.addEventListener('click', () => {
+            loadWorkoutConfig();
+            alert('Configuração personalizada carregada!');
+        });
+
+        // Carrega o treino do plano completo com base na seleção
+        loadSelectedWorkoutBtn.addEventListener('click', () => {
+            const selectedWeek = weekSelect.value;
+            const selectedDay = daySelect.value;
+            
+            if (fullTrainingPlan[selectedWeek] && fullTrainingPlan[selectedWeek][selectedDay]) {
+                workoutConfig = fullTrainingPlan[selectedWeek][selectedDay];
+                numSetsInput.value = 1;
+                renderPhasesConfig();
+                alert(`Treino de ${selectedDay} da ${selectedWeek} carregado!`);
+                resetTimer();
+            } else {
+                alert('Treino não encontrado para a seleção. Por favor, verifique o plano.');
+            }
+        });
+
+        // Adiciona fase ao clicar no botão
+        addPhaseBtn.addEventListener('click', () => addPhaseRow());
+
+        // --- Funções do Temporizador ---
+
+        // Aplica a cor ao display do temporizador com base na intensidade
+        function applyTimerColor(intensity) {
+            const displayElement = timeLeftDisplay;
+            const phaseNameElement = currentPhaseName;
+
+            displayElement.classList.remove('text-green-500', 'text-yellow-500', 'text-red-500', 'text-gray-200');
+            phaseNameElement.classList.remove('text-green-500', 'text-yellow-500', 'text-red-500');
+
+            switch (intensity) {
+                case 'Baixa':
+                    displayElement.classList.add('text-green-500');
+                    phaseNameElement.classList.add('text-green-500');
+                    break;
+                case 'Moderada':
+                    displayElement.classList.add('text-yellow-500');
+                    phaseNameElement.classList.add('text-yellow-500');
+                    break;
+                case 'Alta':
+                    displayElement.classList.add('text-red-500');
+                    phaseNameElement.classList.add('text-red-500');
+                    break;
+                default:
+                    displayElement.classList.add('text-gray-200');
+                    phaseNameElement.classList.add('text-gray-200');
+                    break;
+            }
+        }
+
+        function updateDisplay() {
+            const totalSets = parseInt(numSetsInput.value);
+            currentSetDisplay.textContent = `Série: ${currentSet}/${totalSets}`;
+            timeLeftDisplay.textContent = formatTime(timeLeft);
+
+            if (workoutConfig.length > 0) {
+                const currentPhase = workoutConfig[currentPhaseIndex];
+                currentPhaseName.textContent = currentPhase.name;
+                phaseInstructions.textContent = currentPhase.description || '';
+                applyTimerColor(currentPhase.intensity);
+            } else {
+                currentPhaseName.textContent = "Nenhuma Fase Configurada";
+                phaseInstructions.textContent = "";
+                applyTimerColor(null);
+            }
+        }
+
+        function nextPhase() {
+            currentPhaseIndex++;
+            if (currentPhaseIndex >= workoutConfig.length) {
+                currentPhaseIndex = 0;
+                currentSet++;
+            }
+
+            const totalSets = parseInt(numSetsInput.value);
+            if (currentSet > totalSets) {
+                clearInterval(timerIntervalId);
+                timerIntervalId = null;
+                currentPhaseName.textContent = "Treino Concluído!";
+                timeLeftDisplay.textContent = "00:00";
+                currentSetDisplay.textContent = `Parabéns! ${totalSets} Séries Completas.`;
+                startBtn.disabled = true;
+                pauseBtn.disabled = true;
+                skipBtn.disabled = true;
+                applyTimerColor(null);
+                return;
+            }
+
+            timeLeft = workoutConfig[currentPhaseIndex].duration;
+            updateDisplay();
+        }
+
+        function startTimer() {
+            if (timerIntervalId) return;
+            if (workoutConfig.length === 0 || workoutConfig.every(phase => phase.duration === 0)) {
+                alert("Por favor, configure pelo menos uma fase de treino com duração válida.");
+                return;
+            }
+
+            startBtn.disabled = false;
+            pauseBtn.disabled = false;
+            resetBtn.disabled = false;
+            skipBtn.disabled = false;
+            isPaused = false;
+
+            if (timeLeft === 0 && currentSet === 1 && currentPhaseIndex === 0) {
+                timeLeft = workoutConfig[currentPhaseIndex].duration;
+            }
+            
+            updateDisplay();
+
+            timerIntervalId = setInterval(() => {
+                timeLeft--;
+                updateDisplay();
+
+                if (timeLeft <= 0) {
+                    nextPhase();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            clearInterval(timerIntervalId);
+            timerIntervalId = null;
+            isPaused = true;
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+        }
+
+        function resetTimer() {
+            clearInterval(timerIntervalId);
+            timerIntervalId = null;
+            currentPhaseIndex = 0;
+            currentSet = 1;
+            timeLeft = 0;
+            isPaused = false;
+            updateDisplay();
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            resetBtn.disabled = false;
+            skipBtn.disabled = true;
+            applyTimerColor(null);
+        }
+
+        function skipPhase() {
+            clearInterval(timerIntervalId);
+            timerIntervalId = null;
+            nextPhase();
+            if (currentSet <= parseInt(numSetsInput.value)) {
+                startTimer();
+            }
+        }
+
+        // --- Event Listeners dos Botões de Controle ---
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        skipBtn.addEventListener('click', skipPhase);
+
+        // --- Lógica dos Gráficos (Mantida do Infográfico da Michele) ---
         const durationData = {
             labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Semana 6', 'Semana 7', 'Semana 8'],
             datasets: [{
@@ -301,18 +1338,6 @@
             }]
         };
 
-        new Chart(document.getElementById('durationChart'), {
-            type: 'line',
-            data: durationData,
-            options: {
-                 ...commonChartOptions,
-                 scales: {
-                     y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Minutos', color: '#9CA3AF' } },
-                     x: { ...commonChartOptions.scales.x }
-                 }
-            }
-        });
-        
         const intensityData = {
             labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'],
             datasets: [
@@ -333,18 +1358,72 @@
             ]
         };
 
-        new Chart(document.getElementById('intensityChart'), {
-            type: 'bar',
-            data: intensityData,
-            options: {
-                 ...commonChartOptions,
-                 scales: {
-                     y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Segundos', color: '#9CA3AF' } },
-                     x: { ...commonChartOptions.scales.x }
-                 }
+        const commonChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#D1D5DB'
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: (tooltipItems) => {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            return Array.isArray(label) ? label.join(' ') : label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#9CA3AF' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                x: {
+                    ticks: { color: '#9CA3AF' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        };
+
+        // Inicializa os gráficos ao carregar o DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            new Chart(document.getElementById('durationChart'), {
+                type: 'line',
+                data: durationData,
+                options: {
+                    ...commonChartOptions,
+                    scales: {
+                        y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Minutos', color: '#9CA3AF' } },
+                        x: { ...commonChartOptions.scales.x }
+                    }
+                }
+            });
+            
+            new Chart(document.getElementById('intensityChart'), {
+                type: 'bar',
+                data: intensityData,
+                options: {
+                    ...commonChartOptions,
+                    scales: {
+                        y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Segundos', color: '#9CA3AF' } },
+                        x: { ...commonChartOptions.scales.x }
+                    }
+                }
+            });
+
+            // Inicializa a configuração das fases ao carregar a página do temporizador
+            if (timerAppPage.classList.contains('hidden')) {
+                // Se a página do temporizador estiver oculta, não renderize as fases ainda
+                // Elas serão renderizadas quando o botão "Temporizador de Treino" for clicado
+            } else {
+                renderPhasesConfig();
             }
         });
-
     </script>
 </body>
 </html>
