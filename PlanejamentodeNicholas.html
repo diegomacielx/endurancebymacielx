@@ -469,7 +469,7 @@
         </div>
 
         <!-- Controles do temporizador -->
-        <div class="timer-controls flex justify-center">
+        <div class="timer-controls flex justify-center flex-wrap">
             <button id="startBtn">Iniciar</button>
             <button id="pauseBtn" disabled>Pausar</button>
             <button id="resetBtn">Reiniciar</button>
@@ -487,6 +487,7 @@
                     <span class="flex-1">Nome da Fase</span>
                     <span class="w-32 text-center">Tempo (MM:SS)</span>
                     <span class="flex-1">Intensidade</span>
+                    <span class="flex-1">Descrição da Fase</span>
                     <span class="w-24 text-center">Ação</span>
                 </div>
                 <!-- Fases serão adicionadas aqui via JS -->
@@ -747,6 +748,7 @@
                 ],
                 'Quarta': [ // TI - 10x (500m forte / 250m trote)
                     { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
+                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
                     { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
                     { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
                     { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
