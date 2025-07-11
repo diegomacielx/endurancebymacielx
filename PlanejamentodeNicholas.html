@@ -102,11 +102,9 @@
             padding: 10px 20px;
             border-radius: 8px;
             font-weight: 700;
-            margin: 0.5rem; /* Margem para espaçamento entre botões */
+            margin: 0.5rem;
             transition: background-color 0.3s ease, color 0.3s ease;
             border: 2px solid #EF4444;
-            flex-grow: 1; /* Permite que os botões cresçam e ocupem espaço */
-            min-width: 100px; /* Largura mínima para evitar que fiquem muito pequenos */
         }
         .timer-controls button:hover:not(:disabled) {
             background-color: #EF4444;
@@ -130,45 +128,15 @@
 
         .phase-item {
             display: flex;
-            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
+            flex-wrap: wrap;
             gap: 1rem;
-            align-items: flex-start; /* Alinha os itens pelo topo */
+            align-items: center;
             margin-bottom: 1rem;
             padding: 0.75rem;
             background-color: #2D3748;
             border-radius: 8px;
             border: 1px solid #4A5568;
         }
-        .phase-item > div { /* Para os grupos de label e input */
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1; /* Permite que cresçam */
-        }
-        /* Ajustes para larguras específicas dentro de phase-item */
-        .phase-item .phase-name-group {
-            flex-basis: 150px; /* Largura base para nome da fase */
-            flex-grow: 2; /* Cresce mais que os outros */
-        }
-        .phase-item .phase-time-group {
-            flex-basis: 100px; /* Largura base para tempo */
-            flex-grow: 0; /* Não cresce muito */
-            text-align: center;
-        }
-        .phase-item .phase-intensity-group {
-            flex-basis: 100px; /* Largura base para intensidade */
-            flex-grow: 1;
-        }
-        .phase-item .phase-description-group {
-            flex-basis: 200px; /* Largura base para descrição */
-            flex-grow: 3; /* Cresce bastante */
-        }
-        .phase-item .remove-button-group {
-            flex-basis: 80px; /* Largura base para o botão remover */
-            flex-grow: 0;
-            align-self: flex-end; /* Alinha o botão remover à base */
-        }
-
-
         .phase-item input[type="text"],
         .phase-item input[type="number"],
         .config-section select {
@@ -177,7 +145,7 @@
             border: 1px solid #6B7280;
             padding: 0.5rem;
             border-radius: 4px;
-            width: 100%; /* Ocupa a largura total do seu grupo flex */
+            flex-grow: 1;
         }
         .phase-item button {
             background-color: #EF4444;
@@ -186,7 +154,6 @@
             border-radius: 4px;
             font-weight: 600;
             transition: background-color 0.3s ease;
-            width: 100%; /* Ocupa a largura total do seu grupo flex */
         }
         .phase-item button:hover {
             background-color: #DC2626;
@@ -214,73 +181,6 @@
         }
         .save-load-buttons button:hover {
             background-color: #2563EB;
-        }
-
-        /* Estilos para os cabeçalhos fixos da tabela de fases */
-        .phase-header-labels {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: flex-end; /* Alinha os rótulos pela base para que "Tempo" fique em 2 linhas */
-            color: #D1D5DB; /* Cor do texto dos rótulos */
-            font-weight: bold;
-            font-size: 0.875rem; /* text-sm */
-            margin-bottom: 0.5rem;
-            padding: 0 0.5rem; /* Padding horizontal para alinhar com os itens */
-        }
-        .phase-header-labels span {
-            flex-grow: 1;
-            text-align: left; /* Alinhamento padrão para rótulos */
-        }
-        .phase-header-labels .header-name {
-            flex-basis: 150px;
-            flex-grow: 2;
-        }
-        .phase-header-labels .header-time {
-            flex-basis: 100px;
-            flex-grow: 0;
-            text-align: center;
-        }
-        .phase-header-labels .header-intensity {
-            flex-basis: 100px;
-            flex-grow: 1;
-            text-align: center;
-        }
-        .phase-header-labels .header-description {
-            flex-basis: 200px;
-            flex-grow: 3;
-        }
-        .phase-header-labels .header-action {
-            flex-basis: 80px;
-            flex-grow: 0;
-            text-align: center;
-        }
-
-
-        /* Responsividade para os cabeçalhos em telas menores */
-        @media (max-width: 767px) {
-            .phase-header-labels {
-                display: none; /* Esconde os cabeçalhos fixos em telas muito pequenas, pois os placeholders já indicam */
-            }
-            .phase-item {
-                flex-direction: column; /* Empilha os inputs em telas pequenas */
-                align-items: stretch;
-            }
-            .phase-item > div {
-                flex-direction: column;
-                align-items: stretch;
-                width: 100%; /* Ocupa a largura total */
-            }
-            .phase-item input, .phase-item select, .phase-item button {
-                width: 100%; /* Ocupa a largura total */
-                text-align: left; /* Volta ao alinhamento padrão para melhor leitura */
-            }
-            .phase-item .phase-time-group label {
-                text-align: left; /* Alinha o rótulo de tempo à esquerda em mobile */
-            }
-            .phase-item .remove-button-group {
-                align-self: stretch; /* Estica o botão remover em mobile */
-            }
         }
     </style>
 </head>
@@ -373,7 +273,7 @@
                 <!-- Ponto 4 -->
                 <div class="card p-6 rounded-lg shadow-lg">
                     <h3 class="font-bold text-xl mb-2 text-white">4 - Um pouco forte</h3>
-                    <p class="text-gray-400">Sensação: O esforço começa a ser mais perceptível. Você consegue falar frases curtas, but já sente a respiração mais ofegante.<br>Exemplo na corrida: Corrida em ritmo constante, um pouco mais rápido que o fácil.</p>
+                    <p class="text-gray-400">Sensação: O esforço começa a ser mais perceptível. Você consegue falar frases curtas, mas já sente a respiração mais ofegante.<br>Exemplo na corrida: Corrida em ritmo constante, um pouco mais rápido que o fácil.</p>
                 </div>
                 <!-- Ponto 5 -->
                 <div class="card p-6 rounded-lg shadow-lg">
@@ -388,7 +288,7 @@
                 <!-- Ponto 7 -->
                 <div class="card p-6 rounded-lg shadow-lg">
                     <h3 class="font-bold text-xl mb-2 text-white">7 - Muito forte</h3>
-                    <p class="text-gray-400">Sensação: Esforço muito, muito difícil. No limite de fala, apenas sons ou palavras isoladas.<br>Exemplo na corrida: Treinos intervalados intensos, ritmo de 5k.</p>
+                    <p class="text-gray-400">Sensação: Esforço muito, muito difícil. Você está no seu limite de fala, só consegue emitir sons ou palavras isoladas.<br>Exemplo na corrida: Treinos intervalados intensos, ritmo de 5k.</p>
                 </div>
                 <!-- Ponto 8 -->
                 <div class="card p-6 rounded-lg shadow-lg">
@@ -581,16 +481,15 @@
         <div class="config-section mt-8">
             <h2 class="text-2xl font-bold text-white mb-4 text-center">Ou crie/edite seu treino personalizado</h2>
             
-            <!-- Rótulos fixos das colunas -->
-            <div class="flex flex-wrap items-center text-gray-400 text-sm font-bold mb-2 px-2">
-                <span class="flex-1 text-left">Nome da Fase</span>
-                <span class="w-32 text-center flex flex-col"><span>Tempo</span><span>(MM:SS)</span></span>
-                <span class="flex-1 text-center">Intensidade</span>
-                <span class="flex-1 text-left">Descrição da Fase</span>
-                <span class="w-24 text-center"></span> <!-- Espaço vazio para alinhar com o botão Remover -->
-            </div>
-            
             <div id="phasesContainer" class="space-y-4 mb-4">
+                <!-- Cabeçalhos das colunas para melhor clareza -->
+                <div class="flex flex-wrap gap-1rem items-center text-gray-400 text-sm font-bold mb-2 px-2">
+                    <span class="flex-1">Nome da Fase</span>
+                    <span class="w-32 text-center">Tempo (MM:SS)</span>
+                    <span class="flex-1">Intensidade</span>
+                    <span class="flex-1">Descrição da Fase</span>
+                    <span class="w-24 text-center">Ação</span>
+                </div>
                 <!-- Fases serão adicionadas aqui via JS -->
             </div>
 
@@ -1077,29 +976,15 @@
             const phaseItem = document.createElement('div');
             phaseItem.className = 'phase-item';
             phaseItem.innerHTML = `
-                <div class="flex-1 flex flex-col phase-name-group">
-                    <label class="text-gray-400 text-sm mb-1">Nome da Fase</label>
-                    <input type="text" value="${phase.name}" class="phase-name-input w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
-                </div>
-                <div class="w-32 flex flex-col phase-time-group">
-                    <label class="text-gray-400 text-sm mb-1 text-center"><span>Tempo</span><br><span>(MM:SS)</span></label>
-                    <input type="text" value="${formatTime(phase.duration)}" class="phase-duration-input w-full text-center p-2 rounded bg-gray-700 text-white border border-gray-600" pattern="\\d{2}:\\d{2}">
-                </div>
-                <div class="flex-1 flex flex-col phase-intensity-group">
-                    <label class="text-gray-400 text-sm mb-1">Intensidade</label>
-                    <select class="phase-intensity-select w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
-                        <option value="Baixa" ${phase.intensity === 'Baixa' ? 'selected' : ''}>Baixa</option>
-                        <option value="Moderada" ${phase.intensity === 'Moderada' ? 'selected' : ''}>Moderada</option>
-                        <option value="Alta" ${phase.intensity === 'Alta' ? 'selected' : ''}>Alta</option>
-                    </select>
-                </div>
-                <div class="flex-1 flex flex-col phase-description-group">
-                    <label class="text-gray-400 text-sm mb-1">Descrição da Fase:</label>
-                    <input type="text" value="${phase.description}" class="phase-description-input w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
-                </div>
-                <div class="w-24 flex flex-col justify-end remove-button-group"> <!-- Grupo para o botão Remover -->
-                    <button class="remove-phase-btn bg-red-500 hover:bg-red-700 p-2 rounded w-full">Remover</button>
-                </div>
+                <input type="text" placeholder="Nome da Fase" value="${phase.name}" class="phase-name-input">
+                <input type="text" placeholder="Tempo (MM:SS)" value="${formatTime(phase.duration)}" class="phase-duration-input w-32" pattern="\\d{2}:\\d{2}">
+                <select class="phase-intensity-select flex-1">
+                    <option value="Baixa" ${phase.intensity === 'Baixa' ? 'selected' : ''}>Baixa</option>
+                    <option value="Moderada" ${phase.intensity === 'Moderada' ? 'selected' : ''}>Moderada</option>
+                    <option value="Alta" ${phase.intensity === 'Alta' ? 'selected' : ''}>Alta</option>
+                </select>
+                <input type="text" placeholder="Descrição da Fase" value="${phase.description}" class="phase-description-input">
+                <button class="remove-phase-btn bg-red-500 hover:bg-red-700">Remover</button>
             `;
             phasesContainer.appendChild(phaseItem);
 
@@ -1133,7 +1018,15 @@
 
         // Renderiza as fases na UI a partir do workoutConfig
         function renderPhasesConfig() {
-            phasesContainer.innerHTML = ''; // Limpa as fases existentes
+            phasesContainer.innerHTML = `
+                <div class="flex flex-wrap gap-1rem items-center text-gray-400 text-sm font-bold mb-2 px-2">
+                    <span class="flex-1">Nome da Fase</span>
+                    <span class="w-32 text-center">Tempo (MM:SS)</span>
+                    <span class="flex-1">Intensidade</span>
+                    <span class="flex-1">Descrição da Fase</span>
+                    <span class="w-24 text-center">Ação</span>
+                </div>
+            `; // Limpa as fases existentes e adiciona os cabeçalhos
             if (workoutConfig.length === 0) {
                 // Adiciona fases padrão se não houver nenhuma configurada
                 addPhaseRow({ name: 'Aquecimento', duration: 30, description: 'Prepare o corpo para o exercício.', intensity: 'Baixa' });
@@ -1407,4 +1300,74 @@
                     grid: { color: 'rgba(255, 255, 255, 0.1)' } // Cor das linhas de grade
                 },
                 x: {
-                    ticks: { color: '#9
+                    ticks: { color: '#9CA3AF' }, // Cor do texto dos ticks do eixo X
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' } // Cor das linhas de grade
+                }
+            }
+        };
+
+        // Inicializa os gráficos ao carregar o DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            // Gráfico de Volume
+            const volumeChartCtx = document.getElementById('volumeChart');
+            if (volumeChartCtx) {
+                new Chart(volumeChartCtx, {
+                    type: 'line',
+                    data: volumeData,
+                    options: {
+                        ...commonChartOptions,
+                        scales: {
+                            y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Minutos', color: '#9CA3AF' } },
+                            x: { ...commonChartOptions.scales.x }
+                        }
+                    }
+                });
+            }
+
+            // Gráfico de Intensidade
+            const intensityMixChartCtx = document.getElementById('intensityMixChart');
+            if (intensityMixChartCtx) {
+                new Chart(intensityMixChartCtx, {
+                    type: 'bar', // Gráfico de barras
+                    data: intensityData,
+                    options: {
+                        ...commonChartOptions,
+                        scales: {
+                            x: {
+                                stacked: true, // Barras empilhadas
+                                ticks: { color: '#9CA3AF' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                            },
+                            y: {
+                                stacked: true, // Barras empilhadas
+                                ticks: { color: '#9CA3AF', callback: function(value) { return value + '%'; } }, // Adiciona % nos ticks
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                title: { display: true, text: 'Porcentagem (%)', color: '#9CA3AF' }
+                            }
+                        },
+                        plugins: {
+                            ...commonChartOptions.plugins,
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y + '%';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
