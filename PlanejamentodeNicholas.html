@@ -102,9 +102,11 @@
             padding: 10px 20px;
             border-radius: 8px;
             font-weight: 700;
-            margin: 0.5rem;
+            margin: 0.5rem; /* Margem para espaçamento entre botões */
             transition: background-color 0.3s ease, color 0.3s ease;
             border: 2px solid #EF4444;
+            flex-grow: 1; /* Permite que os botões cresçam e ocupem espaço */
+            min-width: 100px; /* Largura mínima para evitar que fiquem muito pequenos */
         }
         .timer-controls button:hover:not(:disabled) {
             background-color: #EF4444;
@@ -128,15 +130,22 @@
 
         .phase-item {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column; /* Coloca os itens em coluna para melhor responsividade */
             gap: 1rem;
-            align-items: center;
+            align-items: stretch; /* Estica os itens para preencher a largura */
             margin-bottom: 1rem;
             padding: 0.75rem;
             background-color: #2D3748;
             border-radius: 8px;
             border: 1px solid #4A5568;
         }
+        .phase-item > div { /* Para as linhas internas, como a linha de inputs */
+            display: flex;
+            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
+            gap: 1rem;
+            align-items: center;
+        }
+
         .phase-item input[type="text"],
         .phase-item input[type="number"],
         .config-section select {
@@ -181,6 +190,50 @@
         }
         .save-load-buttons button:hover {
             background-color: #2563EB;
+        }
+
+        /* Estilos para os cabeçalhos fixos da tabela de fases */
+        .phase-header-labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            color: #D1D5DB; /* Cor do texto dos rótulos */
+            font-weight: bold;
+            font-size: 0.875rem; /* text-sm */
+            margin-bottom: 0.5rem;
+            padding: 0 0.5rem; /* Padding horizontal para alinhar com os itens */
+        }
+        .phase-header-labels span {
+            flex-grow: 1;
+            text-align: center; /* Centraliza o texto */
+        }
+        .phase-header-labels .w-32 { /* Ajuste para a coluna de tempo */
+            width: 8rem; /* 128px */
+            flex-grow: 0; /* Não cresce */
+        }
+        .phase-header-labels .w-24 { /* Ajuste para a coluna de ação (remover) */
+            width: 6rem; /* 96px */
+            flex-grow: 0; /* Não cresce */
+        }
+
+        /* Responsividade para os cabeçalhos em telas menores */
+        @media (max-width: 767px) {
+            .phase-header-labels {
+                display: none; /* Esconde os cabeçalhos fixos em telas muito pequenas, pois os placeholders já indicam */
+            }
+            .phase-item > div {
+                flex-direction: column; /* Empilha os inputs em telas pequenas */
+                align-items: stretch;
+            }
+            .phase-item input, .phase-item select, .phase-item button {
+                width: 100%; /* Ocupa a largura total */
+            }
+            .phase-item input[type="text"],
+            .phase-item input[type="number"],
+            .config-section select {
+                text-align: left; /* Volta ao alinhamento padrão para melhor leitura */
+            }
         }
     </style>
 </head>
@@ -273,7 +326,7 @@
                 <!-- Ponto 4 -->
                 <div class="card p-6 rounded-lg shadow-lg">
                     <h3 class="font-bold text-xl mb-2 text-white">4 - Um pouco forte</h3>
-                    <p class="text-gray-400">Sensação: O esforço começa a ser mais perceptível. Você consegue falar frases curtas, mas já sente a respiração mais ofegante.<br>Exemplo na corrida: Corrida em ritmo constante, um pouco mais rápido que o fácil.</p>
+                    <p class="text-gray-400">Sensação: O esforço começa a ser mais perceptível. Você consegue falar frases curtas, but já sente a respiração mais ofegante.<br>Exemplo na corrida: Corrida em ritmo constante, um pouco mais rápido que o fácil.</p>
                 </div>
                 <!-- Ponto 5 -->
                 <div class="card p-6 rounded-lg shadow-lg">
@@ -481,15 +534,9 @@
         <div class="config-section mt-8">
             <h2 class="text-2xl font-bold text-white mb-4 text-center">Ou crie/edite seu treino personalizado</h2>
             
+            
+            
             <div id="phasesContainer" class="space-y-4 mb-4">
-                <!-- Cabeçalhos das colunas para melhor clareza -->
-                <div class="flex flex-wrap gap-1rem items-center text-gray-400 text-sm font-bold mb-2 px-2">
-                    <span class="flex-1">Nome da Fase</span>
-                    <span class="w-32 text-center">Tempo (MM:SS)</span>
-                    <span class="flex-1">Intensidade</span>
-                    <span class="flex-1">Descrição da Fase</span>
-                    <span class="w-24 text-center">Ação</span>
-                </div>
                 <!-- Fases serão adicionadas aqui via JS -->
             </div>
 
@@ -976,15 +1023,20 @@
             const phaseItem = document.createElement('div');
             phaseItem.className = 'phase-item';
             phaseItem.innerHTML = `
-                <input type="text" placeholder="Nome da Fase" value="${phase.name}" class="phase-name-input">
-                <input type="text" placeholder="Tempo (MM:SS)" value="${formatTime(phase.duration)}" class="phase-duration-input w-32" pattern="\\d{2}:\\d{2}">
-                <select class="phase-intensity-select flex-1">
-                    <option value="Baixa" ${phase.intensity === 'Baixa' ? 'selected' : ''}>Baixa</option>
-                    <option value="Moderada" ${phase.intensity === 'Moderada' ? 'selected' : ''}>Moderada</option>
-                    <option value="Alta" ${phase.intensity === 'Alta' ? 'selected' : ''}>Alta</option>
-                </select>
-                <input type="text" placeholder="Descrição da Fase" value="${phase.description}" class="phase-description-input">
-                <button class="remove-phase-btn bg-red-500 hover:bg-red-700">Remover</button>
+                <div class="flex flex-wrap items-center gap-2 w-full">
+                    <input type="text" placeholder="Nome da Fase" value="${phase.name}" class="phase-name-input flex-1 p-2 rounded bg-gray-700 text-white border border-gray-600">
+                    <input type="text" placeholder="MM:SS" value="${formatTime(phase.duration)}" class="phase-duration-input w-32 text-center p-2 rounded bg-gray-700 text-white border border-gray-600" pattern="\\d{2}:\\d{2}">
+                    <select class="phase-intensity-select flex-1 p-2 rounded bg-gray-700 text-white border border-gray-600">
+                        <option value="Baixa" ${phase.intensity === 'Baixa' ? 'selected' : ''}>Baixa</option>
+                        <option value="Moderada" ${phase.intensity === 'Moderada' ? 'selected' : ''}>Moderada</option>
+                        <option value="Alta" ${phase.intensity === 'Alta' ? 'selected' : ''}>Alta</option>
+                    </select>
+                    <button class="remove-phase-btn bg-red-500 hover:bg-red-700 p-2 rounded w-24">Remover</button>
+                </div>
+                <div class="flex flex-col w-full">
+                    <label class="text-gray-400 text-sm mb-1">Descrição da Fase:</label>
+                    <input type="text" placeholder="Descreva o que fazer nesta fase" value="${phase.description}" class="phase-description-input w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
+                </div>
             `;
             phasesContainer.appendChild(phaseItem);
 
@@ -1018,15 +1070,7 @@
 
         // Renderiza as fases na UI a partir do workoutConfig
         function renderPhasesConfig() {
-            phasesContainer.innerHTML = `
-                <div class="flex flex-wrap gap-1rem items-center text-gray-400 text-sm font-bold mb-2 px-2">
-                    <span class="flex-1">Nome da Fase</span>
-                    <span class="w-32 text-center">Tempo (MM:SS)</span>
-                    <span class="flex-1">Intensidade</span>
-                    <span class="flex-1">Descrição da Fase</span>
-                    <span class="w-24 text-center">Ação</span>
-                </div>
-            `; // Limpa as fases existentes e adiciona os cabeçalhos
+            phasesContainer.innerHTML = ''; // Limpa as fases existentes (os cabeçalhos fixos estão no HTML agora)
             if (workoutConfig.length === 0) {
                 // Adiciona fases padrão se não houver nenhuma configurada
                 addPhaseRow({ name: 'Aquecimento', duration: 30, description: 'Prepare o corpo para o exercício.', intensity: 'Baixa' });
