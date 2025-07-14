@@ -312,7 +312,7 @@
                 <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">⚠️ 5 – Forte</h3><p class="text-gray-400">Sensação: Desafiador, mas ainda sustentável. Falar torna-se difícil; você só consegue dizer algumas palavras entre as respirações.<br>Exemplo na corrida: Ritmo próximo ao de maratona ou meia maratona (para corredores experientes).</p></div>
                 <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">⚠️ 6 – Forte (quase muito forte)</h3><p class="text-gray-400">Sensação: Esforço intenso. Falar é limitado a uma ou duas palavras por vez. A respiração está pesada e rápida.<br>Exemplo na corrida: Ritmo de 10 km ou trabalho no limiar anaeróbico.</p></div>
                 <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">🔴 7 – Muito forte</h3><p class="text-gray-400">Sensação: Extremamente desafiador. Você está próximo ao seu limite de fala e consegue apenas emitir sons ou palavras curtas.<br>Exemplo na corrida: Treinos intervalados intensos ou ritmo de 5 km.</p></div>
-                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">� 8 – Muito, muito forte</h3><p class="text-gray-400">Sensação: Intensidade elevada, quase insuportável por muito tempo. A respiração é muito ofegante e o corpo pede pausa.<br>Exemplo na corrida: Final de um treino intenso ou esforço de prova curta.</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">🔥 8 – Muito, muito forte</h3><p class="text-gray-400">Sensação: Intensidade elevada, quase insuportável por muito tempo. A respiração é muito ofegante e o corpo pede pausa.<br>Exemplo na corrida: Final de um treino intenso ou esforço de prova curta.</p></div>
                 <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">💥 9 – Quase máximo</h3><p class="text-gray-400">Sensação: Você está praticamente no seu limite físico. Consegue manter esse esforço por poucos minutos no máximo.<br>Exemplo na corrida: Sprint final em uma prova, esforço de 400 metros.</p></div>
                 <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">⚡ 10 – Máximo</h3><p class="text-gray-400">Sensação: Esforço total. Seu corpo está no seu limite absoluto. É um esforço explosivo e insustentável por mais do que alguns segundos.<br>Exemplo na corrida: Sprint total, como em uma prova de 100 metros.</p></div>
             </div>
@@ -684,7 +684,10 @@
 
         function skipPhase() {
             if (!timerIntervalId) return;
-            timeLeft = 0;
+            // Chamar nextPhase() diretamente torna o pulo instantâneo.
+            // Anteriormente, definia timeLeft = 0 e esperava o próximo ciclo do intervalo,
+            // o que causava um atraso de até 1 segundo.
+            nextPhase();
         }
 
         // --- Event Listeners ---
@@ -760,4 +763,3 @@
     </script>
 </body>
 </html>
-�
