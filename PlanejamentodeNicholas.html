@@ -130,21 +130,44 @@
 
         .phase-item {
             display: flex;
-            flex-direction: column; /* Coloca os itens em coluna para melhor responsividade */
+            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
             gap: 1rem;
-            align-items: stretch; /* Estica os itens para preencher a largura */
+            align-items: flex-start; /* Alinha os itens pelo topo */
             margin-bottom: 1rem;
             padding: 0.75rem;
             background-color: #2D3748;
             border-radius: 8px;
             border: 1px solid #4A5568;
         }
-        .phase-item > div { /* Para as linhas internas, como a linha de inputs */
+        .phase-item > div { /* Para os grupos de label e input */
             display: flex;
-            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
-            gap: 1rem;
-            align-items: center;
+            flex-direction: column;
+            flex-grow: 1; /* Permite que cresçam */
         }
+        /* Ajustes para larguras específicas dentro de phase-item */
+        .phase-item .phase-name-group {
+            flex-basis: 150px; /* Largura base para nome da fase */
+            flex-grow: 2; /* Cresce mais que os outros */
+        }
+        .phase-item .phase-time-group {
+            flex-basis: 100px; /* Largura base para tempo */
+            flex-grow: 0; /* Não cresce muito */
+            text-align: center;
+        }
+        .phase-item .phase-intensity-group {
+            flex-basis: 100px; /* Largura base para intensidade */
+            flex-grow: 1;
+        }
+        .phase-item .phase-description-group {
+            flex-basis: 200px; /* Largura base para descrição */
+            flex-grow: 3; /* Cresce bastante */
+        }
+        .phase-item .remove-button-group {
+            flex-basis: 80px; /* Largura base para o botão remover */
+            flex-grow: 0;
+            align-self: flex-start; /* Alinha o botão remover à base */
+        }
+
 
         .phase-item input[type="text"],
         .phase-item input[type="number"],
@@ -154,7 +177,7 @@
             border: 1px solid #6B7280;
             padding: 0.5rem;
             border-radius: 4px;
-            flex-grow: 1;
+            width: 100%; /* Ocupa a largura total do seu grupo flex */
         }
         .phase-item button {
             background-color: #EF4444;
@@ -163,6 +186,7 @@
             border-radius: 4px;
             font-weight: 600;
             transition: background-color 0.3s ease;
+            width: 100%; /* Ocupa a largura total do seu grupo flex */
         }
         .phase-item button:hover {
             background-color: #DC2626;
@@ -197,7 +221,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-            align-items: center;
+            align-items: flex-end; /* Alinha os rótulos pela base para que "Tempo" fique em 2 linhas */
             color: #D1D5DB; /* Cor do texto dos rótulos */
             font-weight: bold;
             font-size: 0.875rem; /* text-sm */
@@ -206,33 +230,56 @@
         }
         .phase-header-labels span {
             flex-grow: 1;
-            text-align: center; /* Centraliza o texto */
+            text-align: left; /* Alinhamento padrão para rótulos */
         }
-        .phase-header-labels .w-32 { /* Ajuste para a coluna de tempo */
-            width: 8rem; /* 128px */
-            flex-grow: 0; /* Não cresce */
+        .phase-header-labels .header-name {
+            flex-basis: 150px;
+            flex-grow: 2;
         }
-        .phase-header-labels .w-24 { /* Ajuste para a coluna de ação (remover) */
-            width: 6rem; /* 96px */
-            flex-grow: 0; /* Não cresce */
+        .phase-header-labels .header-time {
+            flex-basis: 100px;
+            flex-grow: 0;
+            text-align: center;
         }
+        .phase-header-labels .header-intensity {
+            flex-basis: 100px;
+            flex-grow: 1;
+            text-align: center;
+        }
+        .phase-header-labels .header-description {
+            flex-basis: 200px;
+            flex-grow: 3;
+        }
+        .phase-header-labels .header-action {
+            flex-basis: 80px;
+            flex-grow: 0;
+            text-align: center;
+        }
+
 
         /* Responsividade para os cabeçalhos em telas menores */
         @media (max-width: 767px) {
             .phase-header-labels {
                 display: none; /* Esconde os cabeçalhos fixos em telas muito pequenas, pois os placeholders já indicam */
             }
-            .phase-item > div {
+            .phase-item {
                 flex-direction: column; /* Empilha os inputs em telas pequenas */
                 align-items: stretch;
             }
-            .phase-item input, .phase-item select, .phase-item button {
+            .phase-item > div {
+                flex-direction: column;
+                align-items: stretch;
                 width: 100%; /* Ocupa a largura total */
             }
-            .phase-item input[type="text"],
-            .phase-item input[type="number"],
-            .config-section select {
+            .phase-item input, .phase-item select, .phase-item button {
+                width: 100%; /* Ocupa a largura total */
                 text-align: left; /* Volta ao alinhamento padrão para melhor leitura */
+            }
+            .phase-item .phase-time-group label {
+                text-align: left; /* Alinha o rótulo de tempo à esquerda em mobile */
+            }
+            .phase-item .remove-button-group {
+                align-self: stretch; /* Estica o botão remover em mobile */
             }
         }
     </style>
@@ -270,25 +317,25 @@
                 <div class="card p-6 rounded-lg shadow-lg text-center">
                     <div class="icon text-4xl mb-3">🏃</div>
                     <h3 class="font-bold text-xl mb-2 text-white">Corrida Contínua (CC)</h3>
-                    <p class="text-gray-400">Ritmo leve e confortável (PSE 4-6). Foco na base aeróbica.</p>
+                    <p class="text-gray-400">Ritmo leve e confortável (PSE 2-4). Foco na base aeróbica.</p>
                 </div>
                 <!-- Cartão: Treino de Tempo -->
                 <div class="card p-6 rounded-lg shadow-lg text-center">
                     <div class="icon text-4xl mb-3">⏱️</div>
                     <h3 class="font-bold text-xl mb-2 text-white">Treino de Tempo (TT)</h3>
-                    <p class="text-gray-400">Ritmo moderado a forte (PSE 7-8). Sustentável, desafiador.</p>
+                    <p class="text-gray-400">Ritmo moderado a forte (PSE 5-7). Sustentável, desafiador.</p>
                 </div>
                 <!-- Cartão: Treino Intervalado -->
                 <div class="card p-6 rounded-lg shadow-lg text-center">
                     <div class="icon text-4xl mb-3">⚡</div>
                     <h3 class="font-bold text-xl mb-2 text-white">Treino Intervalado (TI)</h3>
-                    <p class="text-gray-400">Tiros de alta intensidade (PSE 9-10) com recuperação ativa.</p>
+                    <p class="text-gray-400">Tiros de alta intensidade (PSE 8-9) com recuperação ativa.</p>
                 </div>
                 <!-- Cartão: Treino Ritmo TAF -->
                 <div class="card p-6 rounded-lg shadow-lg text-center">
                     <div class="icon text-4xl mb-3">🎯</div>
                     <h3 class="font-bold text-xl mb-2 text-white">Treino Ritmo TAF (TR-TAF)</h3>
-                    <p class="text-gray-400">Simulações de trechos no ritmo alvo de 3:25 min/km.</p>
+                    <p class="text-gray-400">Simulações de trechos no ritmo alvo de 5:42 min/km.</p>
                 </div>
             </div>
         </section>
@@ -298,65 +345,53 @@
             <h2 class="text-3xl font-bold text-center mb-8 text-white">Escala de Percepção Subjetiva de Esforço (PSE) - Borg CR10 (0-10)</h2>
             <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">Use esta escala para autoavaliar a intensidade do seu esforço durante os treinos, combinando sensações de respiração, batimentos cardíacos e fadiga muscular.</p>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Ponto 0 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">0 - Nada de esforço</h3>
-                    <p class="text-gray-400">Sensação: Repouso absoluto. Sentado, deitado, sem fazer absolutamente nada.<br>Exemplo na corrida: Não aplicável (está em repouso).</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">🟢 0 – Nada de esforço</h3>
+                    <p class="text-gray-400">Sensação: Repouso absoluto. Você está completamente relaxado, sem nenhuma atividade física.<br>Exemplo na corrida: Não aplicável (está em repouso).</p>
                 </div>
-                <!-- Ponto 0.5 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">0.5 - Muito, muito leve</h3>
-                    <p class="text-gray-400">Sensação: Quase nada de esforço. Mal perceptível.<br>Exemplo na corrida: Caminhada muito lenta e relaxada.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">🔵 0.5 – Muito, muito leve</h3>
+                    <p class="text-gray-400">Sensação: Praticamente nenhum esforço. A sensação é quase imperceptível, como se você estivesse parado.<br>Exemplo na corrida: Caminhada extremamente lenta e tranquila.</p>
                 </div>
-                <!-- Ponto 1 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">1 - Muito leve</h3>
-                    <p class="text-gray-400">Sensação: Esforço mínimo, quase como se não estivesse fazendo nada. Você pode conversar e cantar facilmente.<br>Exemplo na corrida: Caminhada leve, aquecimento muito suave.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">🔵 1 – Muito leve</h3>
+                    <p class="text-gray-400">Sensação: Esforço mínimo, quase despreocupado. Você pode conversar e cantar com facilidade.<br>Exemplo na corrida: Caminhada suave, aquecimento bem leve.</p>
                 </div>
-                <!-- Ponto 2 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">2 - Leve</h3>
-                    <p class="text-gray-400">Sensação: Esforço fácil. Você pode conversar confortavelmente em frases completas. A respiração está um pouco mais rápida, mas sem dificuldade.<br>Exemplo na corrida: Trote muito leve, corrida de recuperação.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">🌿 2 – Leve</h3>
+                    <p class="text-gray-400">Sensação: Atividade tranquila e confortável. Respiração aumenta levemente, mas ainda há total controle. É possível falar sem esforço.<br>Exemplo na corrida: Trote bem leve ou corrida de recuperação.</p>
                 </div>
-                <!-- Ponto 3 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">3 - Moderado</h3>
-                    <p class="text-gray-400">Sensação: Esforço que você pode manter por um longo período. A conversa é possível, mas você percebe que está se exercitando.<br>Exemplo na corrida: Corrida fácil, ritmo conversacional.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">🟡 3 – Moderado</h3>
+                    <p class="text-gray-400">Sensação: Um esforço constante, mas sustentável por longos períodos. A respiração fica mais profunda, mas você ainda consegue manter uma conversa sem dificuldade.<br>Exemplo na corrida: Corrida em ritmo conversacional, treino leve.</p>
                 </div>
-                <!-- Ponto 4 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">4 - Um pouco forte</h3>
-                    <p class="text-gray-400">Sensação: O esforço começa a ser mais perceptível. Você consegue falar frases curtas, but já sente a respiração mais ofegante.<br>Exemplo na corrida: Corrida em ritmo constante, um pouco mais rápido que o fácil.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">🟡 4 – Um pouco forte</h3>
+                    <p class="text-gray-400">Sensação: O esforço começa a ser notável. A respiração acelera e falar passa a exigir um pouco de atenção.<br>Exemplo na corrida: Ritmo constante, um pouco mais rápido do que o normal.</p>
                 </div>
-                <!-- Ponto 5 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">5 - Forte</h3>
-                    <p class="text-gray-400">Sensação: Esforço desafiador, mas ainda sustentável. A fala é limitada a poucas palavras por vez. Você está respirando pesadamente.<br>Exemplo na corrida: Ritmo de maratona ou meia maratona para corredores experientes.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">⚠️ 5 – Forte</h3>
+                    <p class="text-gray-400">Sensação: Desafiador, mas ainda sustentável. Falar torna-se difícil; você só consegue dizer algumas palavras entre as respirações.<br>Exemplo na corrida: Ritmo próximo ao de maratona ou meia maratona (para corredores experientes).</p>
                 </div>
-                <!-- Ponto 6 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">6 - Forte (quase muito forte)</h3>
-                    <p class="text-gray-400">Sensação: Esforço bem intenso. Você consegue falar apenas uma ou duas palavras por vez. A respiração é muito pesada.<br>Exemplo na corrida: Ritmo de 10k, limiar anaeróbico.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">⚠️ 6 – Forte (quase muito forte)</h3>
+                    <p class="text-gray-400">Sensação: Esforço intenso. Falar é limitado a uma ou duas palavras por vez. A respiração está pesada e rápida.<br>Exemplo na corrida: Ritmo de 10 km ou trabalho no limiar anaeróbico.</p>
                 </div>
-                <!-- Ponto 7 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">7 - Muito forte</h3>
-                    <p class="text-gray-400">Sensação: Esforço muito, muito difícil. Você está no seu limite de fala, só consegue emitir sons ou palavras isoladas.<br>Exemplo na corrida: Treinos intervalados intensos, ritmo de 5k.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">🔴 7 – Muito forte</h3>
+                    <p class="text-gray-400">Sensação: Extremamente desafiador. Você está próximo ao seu limite de fala e consegue apenas emitir sons ou palavras curtas.<br>Exemplo na corrida: Treinos intervalados intensos ou ritmo de 5 km.</p>
                 </div>
-                <!-- Ponto 8 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">8 - Muito, muito forte</h3>
-                    <p class="text-gray-400">Sensação: Esforço extremamente intenso. É quase o máximo que você consegue. A respiração é extremamente difícil.<br>Exemplo na corrida: Final de um treino intervalado muito forte, esforço de prova curta.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">🔥 8 – Muito, muito forte</h3>
+                    <p class="text-gray-400">Sensação: Intensidade elevada, quase insuportável por muito tempo. A respiração é muito ofegante e o corpo pede pausa.<br>Exemplo na corrida: Final de um treino intenso ou esforço de prova curta.</p>
                 </div>
-                <!-- Ponto 9 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">9 - Quase máximo</h3>
-                    <p class="text-gray-400">Sensação: Esforço quase no seu limite absoluto. Você não consegue manter por muito tempo.<br>Exemplo na corrida: Sprint final de uma prova, esforço de 400m.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">💥 9 – Quase máximo</h3>
+                    <p class="text-gray-400">Sensação: Você está praticamente no seu limite físico. Consegue manter esse esforço por poucos minutos no máximo.<br>Exemplo na corrida: Sprint final em uma prova, esforço de 400 metros.</p>
                 </div>
-                <!-- Ponto 10 -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">10 - Máximo</h3>
-                    <p class="text-gray-400">Sensação: Esforço máximo possível. Você não consegue ir mais forte, é um esforço que só pode ser mantido por alguns segundos.<br>Exemplo na corrida: Sprint total, esforço de 100m.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">⚡ 10 – Máximo</h3>
+                    <p class="text-gray-400">Sensação: Esforço total. Seu corpo está no seu limite absoluto. É um esforço explosivo e insustentável por mais do que alguns segundos.<br>Exemplo na corrida: Sprint total, como em uma prova de 100 metros.</p>
                 </div>
             </div>
         </section>
@@ -399,12 +434,11 @@
                 <div class="card p-6 rounded-lg shadow-lg">
                     <div class="icon text-4xl mb-3">🏗️</div>
                     <h3 class="font-bold text-xl mb-2 text-white">Fase 1: Construção da Base (Semanas 1-6)</h3>
-                    <p class="text-gray-400 mb-4">Foco: Construir resistência fundamental para o endurance.</p>
+                    <p class="text-gray-400 mb-4">Foco: Construir resistência fundamental e adaptar o corpo ao esforço.</p>
                     <ul class="list-disc list-inside text-gray-400 space-y-1">
-                        <li>Segunda: Corrida Contínua (CC) - 30 a 45 min leve (progressivo nas semanas).</li>
-                        <li>Quarta: Corrida Contínua (CC) - 30 a 40 min leve (progressivo nas semanas).</li>
-                        <li>Sexta: Corrida Contínua (CC) - 25 a 35 min leve (progressivo nas semanas).</li>
-                        <li>Sábado e Domingo: Descanso Total.</li>
+                        <li>Terça: Corrida Contínua (CC) - 30 a 45 min em ritmo leve (progressivo).</li>
+                        <li>Quinta: Treino Intervalado (TI) - Foco em estímulos curtos e recuperação (ex: 4-8 x 400m).</li>
+                        <li>Sábado: Treino de Tempo (TT) - Introdução ao ritmo alvo, com progressão gradual do pace.</li>
                     </ul>
                 </div>
 
@@ -412,12 +446,11 @@
                 <div class="card p-6 rounded-lg shadow-lg">
                     <div class="icon text-4xl mb-3">📈</div>
                     <h3 class="font-bold text-xl mb-2 text-white">Fase 2: Intensificação e Ritmo Específico (Semanas 7-12)</h3>
-                    <p class="text-gray-400 mb-4">Foco: Aumentar a intensidade e trabalhar o ritmo do TAF.</p>
+                    <p class="text-gray-400 mb-4">Foco: Aumentar a capacidade de suportar intensidade e melhorar o ritmo do TAF.</p>
                     <ul class="list-disc list-inside text-gray-400 space-y-1">
-                        <li>Segunda: Treino de Tempo (TT) - 20 a 30 min moderado (progressivo nas semanas).</li>
-                        <li>Quarta: Treino Intervalado (TI) - 6-10 x (400-500m forte / 200-250m trote leve).</li>
-                        <li>Sexta: Corrida Contínua (CC) - 35 a 45 min leve (progressivo nas semanas).</li>
-                        <li>Sábado e Domingo: Descanso Total.</li>
+                        <li>Terça: Corrida Contínua (CC) - Manutenção do volume em ritmo leve.</li>
+                        <li>Quinta: Treino Intervalado (TI) - Aumento da distância ou número de repetições (ex: 6-8 x 600m).</li>
+                        <li>Sábado: Treino de Tempo (TT) - Aproximação contínua do pace alvo do TAF.</li>
                     </ul>
                 </div>
 
@@ -425,28 +458,23 @@
                 <div class="card p-6 rounded-lg shadow-lg">
                     <div class="icon text-4xl mb-3">🚀</div>
                     <h3 class="font-bold text-xl mb-2 text-white">Fase 3: Polimento e Simulação (Semanas 13-17)</h3>
-                    <p class="text-gray-400 mb-4">Foco: Refinar o ritmo do TAF, aumentar a especificidade e preparar para o pico de performance.</p>
+                    <p class="text-gray-400 mb-4">Foco: Refinar o ritmo, aumentar a especificidade e preparar para o pico de performance.</p>
                     <ul class="list-disc list-inside text-gray-400 space-y-1">
-                        <li>Segunda: Treino de Tempo (TT) - 25 a 15 min moderado a forte (decrescente nas semanas).</li>
-                        <li>Quarta: Treino Intervalado (TI) - 6-8 x (600m) ou 5-6 x (800m) ou 4-5 x (400m) forte.</li>
-                        <li>Sexta: Simulação TAF - Teste de 12 min (visando >2100m) nas S13-14; depois 10 min (S15-16); depois 6-8 min (S17).</li>
-                        <li>Sábado e Domingo: Descanso Total.</li>
+                        <li>Terça: Corrida Contínua (CC) - Redução gradual do volume.</li>
+                        <li>Quinta: Treino Intervalado (TI) - Intervalos mais longos ou mais rápidos (ex: 4-5 x 800m).</li>
+                        <li>Sábado: Simulação TAF - Testes em distâncias e tempos variados, focando no pace de prova.</li>
                     </ul>
                 </div>
 
                 <!-- Cartão da Fase 4: Semana do TAF - Taper -->
                 <div class="card p-6 rounded-lg shadow-lg">
                     <div class="icon text-4xl mb-3">🏆</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Fase 4: Semana do TAF - Taper (Semana 18 - 04/11 a 10/11)</h3>
+                    <h3 class="font-bold text-xl mb-2 text-white">Fase 4: Semana do TAF - Taper (Semana 18)</h3>
                     <p class="text-gray-400 mb-4">Foco: Recuperação total e ativação para o dia da prova.</p>
                     <ul class="list-disc list-inside text-gray-400 space-y-1">
-                        <li>Segunda (04/11): Corrida Leve - 20-25 min muito leve.</li>
-                        <li>Terça (05/11): Descanso Total.</li>
-                        <li>Quarta (06/11): Ativação - Aquecimento + 3-4 tiros de 100m progressivos.</li>
-                        <li>Quinta (07/11): Descanso Total.</li>
-                        <li>Sexta (08/11): Descanso Total.</li>
-                        <li>Sábado (09/11): Descanso Total.</li>
-                        <li>Domingo (10/11): TAF!</li>
+                        <li>Terça: Corrida Leve - 20 min muito leve para manter o corpo ativo.</li>
+                        <li>Quinta: Ativação - Aquecimento leve + 3-4 tiros curtos e progressivos (100m).</li>
+                        <li>Sábado: Descanso Total.</li>
                     </ul>
                 </div>
             </div>
@@ -517,7 +545,7 @@
         <div class="text-center mb-8">
             <p class="phase-display" id="currentPhaseName">Pronto para Iniciar</p>
             <p class="timer-display text-gray-200" id="timeLeftDisplay">00:00</p>
-            <p class="text-gray-400 text-lg mt-2" id="phaseInstructions"></p> <!-- Nova linha para as instruções -->
+            <p class="text-gray-400 text-lg mt-2" id="phaseInstructions"></p>
             <p class="set-display" id="currentSetDisplay">Série: 0/0</p>
         </div>
 
@@ -534,7 +562,14 @@
         <div class="config-section mt-8">
             <h2 class="text-2xl font-bold text-white mb-4 text-center">Ou crie/edite seu treino personalizado</h2>
             
-            
+            <!-- Rótulos fixos das colunas -->
+            <div class="flex flex-wrap items-end text-gray-400 text-sm font-bold mb-2 px-2">
+                <span class="flex-1 text-left">Nome da Fase</span>
+                <span class="w-32 text-center flex flex-col"><span>Tempo</span><span>(MM:SS)</span></span>
+                <span class="flex-1 text-center">Intensidade</span>
+                <span class="flex-1 text-left">Descrição da Fase</span>
+                <span class="w-24 text-center"></span> <!-- Espaço vazio para alinhar com o botão Remover -->
+            </div>
             
             <div id="phasesContainer" class="space-y-4 mb-4">
                 <!-- Fases serão adicionadas aqui via JS -->
@@ -572,7 +607,9 @@
             return 0; // Retorna 0 se o formato for inválido
         }
 
-        // --- Variáveis Globais do Temporizador ---
+        // =============================================
+        // VARIÁVEIS GLOBAIS
+        // =============================================
         let workoutConfig = []; // Array de objetos { name, duration, description, intensity }
         let currentPhaseIndex = 0;
         let currentSet = 1;
@@ -588,7 +625,7 @@
 
         const currentPhaseName = document.getElementById('currentPhaseName');
         const timeLeftDisplay = document.getElementById('timeLeftDisplay');
-        const phaseInstructions = document.getElementById('phaseInstructions'); // Novo elemento para instruções
+        const phaseInstructions = document.getElementById('phaseInstructions');
         const currentSetDisplay = document.getElementById('currentSetDisplay');
 
         const startBtn = document.getElementById('startBtn');
@@ -607,372 +644,100 @@
         const loadSelectedWorkoutBtn = document.getElementById('loadSelectedWorkoutBtn');
 
         // --- Definição do Plano de Treino Completo (18 Semanas) ---
-        // Duração em segundos, intensidade e descrição
         const fullTrainingPlan = {
+            // Fase 1: Construção da Base (Semanas 1-6)
             'Semana 1': {
-                'Segunda': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 20 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 20 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 15 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada ou trote leve.' }, { name: 'Corrida Contínua', duration: 30 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 2-3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 4x400m', duration: 105, intensity: 'Alta', description: '400m forte (PSE 7-8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x400m', duration: 105, intensity: 'Alta', description: '400m forte (PSE 7-8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x400m', duration: 105, intensity: 'Alta', description: '400m forte (PSE 7-8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x400m', duration: 105, intensity: 'Alta', description: '400m forte (PSE 7-8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 12 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 6:10 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 2': {
-                'Segunda': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 25 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 25 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 20 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada ou trote leve.' }, { name: 'Corrida Contínua', duration: 35 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 2-3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 5x400m', duration: 105, intensity: 'Alta', description: '400m forte (PSE 7-8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 105, intensity: 'Alta', description: '400m forte (PSE 7-8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 105, intensity: 'Alta', description: '400m forte (PSE 7-8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 105, intensity: 'Alta', description: '400m forte (PSE 7-8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 105, intensity: 'Alta', description: '400m forte (PSE 7-8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 12 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 6:05 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 3': {
-                'Segunda': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 25 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 25 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 20 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada ou trote leve.' }, { name: 'Corrida Contínua', duration: 40 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 2-3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 6x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 12 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 6:00 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 4': {
-                'Segunda': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 30 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 30 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 25 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada ou trote leve.' }, { name: 'Corrida Contínua', duration: 45 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 2-3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 7x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 7x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 7x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 7x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 7x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 7x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 7x400m', duration: 100, intensity: 'Alta', description: '400m forte (PSE 8).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 12 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 5:55 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 5': {
-                'Segunda': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 30 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 30 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 25 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada ou trote leve.' }, { name: 'Corrida Contínua', duration: 45 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 2-3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 8x400m', duration: 95, intensity: 'Alta', description: '400m forte (PSE 8-9).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 8x400m', duration: 95, intensity: 'Alta', description: '400m forte (PSE 8-9).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 8x400m', duration: 95, intensity: 'Alta', description: '400m forte (PSE 8-9).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 8x400m', duration: 95, intensity: 'Alta', description: '400m forte (PSE 8-9).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 8x400m', duration: 95, intensity: 'Alta', description: '400m forte (PSE 8-9).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 8x400m', duration: 95, intensity: 'Alta', description: '400m forte (PSE 8-9).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 8x400m', duration: 95, intensity: 'Alta', description: '400m forte (PSE 8-9).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 8x400m', duration: 95, intensity: 'Alta', description: '400m forte (PSE 8-9).' }, { name: 'Rec: 200m', duration: 80, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 12 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 5:50 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 6': {
-                'Segunda': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 35 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 35 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 30 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada ou trote leve.' }, { name: 'Corrida Contínua', duration: 35 * 60, intensity: 'Baixa', description: 'Semana de recuperação. Ritmo leve (PSE 2).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 5x400m', duration: 100, intensity: 'Moderada', description: '400m em ritmo controlado (PSE 7).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 100, intensity: 'Moderada', description: '400m em ritmo controlado (PSE 7).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 100, intensity: 'Moderada', description: '400m em ritmo controlado (PSE 7).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 100, intensity: 'Moderada', description: '400m em ritmo controlado (PSE 7).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 100, intensity: 'Moderada', description: '400m em ritmo controlado (PSE 7).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 10 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 5:50 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
+            // Fase 2: Intensificação e Ritmo Específico (Semanas 7-12)
             'Semana 7': {
-                'Segunda': [ // TT - 20 min moderado
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Treino de Tempo (Moderado)', duration: 20 * 60, intensity: 'Moderada', description: 'Corra em um ritmo moderado, desafiador, mas que você consiga sustentar por este período.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [ // TI - 6x (400m forte / 200m trote)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' },
-                    { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' },
-                    { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' },
-                    { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' },
-                    { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' },
-                    { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' },
-                    { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 25 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Contínua', duration: 45 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 4x600m', duration: 150, intensity: 'Alta', description: '600m forte (PSE 8).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x600m', duration: 150, intensity: 'Alta', description: '600m forte (PSE 8).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x600m', duration: 150, intensity: 'Alta', description: '600m forte (PSE 8).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x600m', duration: 150, intensity: 'Alta', description: '600m forte (PSE 8).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 12 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 5:45 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 8': {
-                'Segunda': [ // TT - 25 min moderado
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Treino de Tempo (Moderado)', duration: 25 * 60, intensity: 'Moderada', description: 'Corra em um ritmo moderado, desafiador, mas que você consiga sustentar por este período.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [ // TI - 8x (400m forte / 200m trote)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 30 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Contínua', duration: 45 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 5x600m', duration: 145, intensity: 'Alta', description: '600m forte (PSE 8).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x600m', duration: 145, intensity: 'Alta', description: '600m forte (PSE 8).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x600m', duration: 145, intensity: 'Alta', description: '600m forte (PSE 8).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x600m', duration: 145, intensity: 'Alta', description: '600m forte (PSE 8).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x600m', duration: 145, intensity: 'Alta', description: '600m forte (PSE 8).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 12 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 5:42 min/km (Pace TAF!).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 9': {
-                'Segunda': [ // TT - 30 min moderado
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Treino de Tempo (Moderado)', duration: 30 * 60, intensity: 'Moderada', description: 'Corra em um ritmo moderado, desafiador, mas que você consiga sustentar por este período.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [ // TI - 8x (500m forte / 250m trote)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 35 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Contínua', duration: 50 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 6x600m', duration: 145, intensity: 'Alta', description: '600m forte (PSE 8-9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x600m', duration: 145, intensity: 'Alta', description: '600m forte (PSE 8-9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x600m', duration: 145, intensity: 'Alta', description: '600m forte (PSE 8-9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x600m', duration: 145, intensity: 'Alta', description: '600m forte (PSE 8-9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x600m', duration: 145, intensity: 'Alta', description: '600m forte (PSE 8-9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x600m', duration: 145, intensity: 'Alta', description: '600m forte (PSE 8-9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 12 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 5:40 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 10': {
-                'Segunda': [ // TT - 30 min moderado
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Treino de Tempo (Moderado)', duration: 30 * 60, intensity: 'Moderada', description: 'Corra em um ritmo moderado, desafiador, mas que você consiga sustentar por este período.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [ // TI - 10x (500m forte / 250m trote)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 500m Forte', duration: 110, intensity: 'Alta', description: 'Corra 500m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 250m Trote', duration: 75, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 35 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Contínua', duration: 50 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 4x800m', duration: 200, intensity: 'Alta', description: '800m forte (PSE 8).' }, { name: 'Rec: 400m', duration: 150, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x800m', duration: 200, intensity: 'Alta', description: '800m forte (PSE 8).' }, { name: 'Rec: 400m', duration: 150, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x800m', duration: 200, intensity: 'Alta', description: '800m forte (PSE 8).' }, { name: 'Rec: 400m', duration: 150, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x800m', duration: 200, intensity: 'Alta', description: '800m forte (PSE 8).' }, { name: 'Rec: 400m', duration: 150, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 12 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 5:38 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 11': {
-                'Segunda': [ // TT - 25 min moderado a forte
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Treino de Tempo (Mod/Forte)', duration: 25 * 60, intensity: 'Moderada', description: 'Corra em um ritmo moderado a forte, desafiador, mas que você consiga sustentar por este período.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [ // TI - 6x (600m forte / 300m trote)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 30 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Contínua', duration: 50 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 5x800m', duration: 195, intensity: 'Alta', description: '800m forte (PSE 8-9).' }, { name: 'Rec: 400m', duration: 150, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x800m', duration: 195, intensity: 'Alta', description: '800m forte (PSE 8-9).' }, { name: 'Rec: 400m', duration: 150, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x800m', duration: 195, intensity: 'Alta', description: '800m forte (PSE 8-9).' }, { name: 'Rec: 400m', duration: 150, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x800m', duration: 195, intensity: 'Alta', description: '800m forte (PSE 8-9).' }, { name: 'Rec: 400m', duration: 150, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x800m', duration: 195, intensity: 'Alta', description: '800m forte (PSE 8-9).' }, { name: 'Rec: 400m', duration: 150, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 12 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 5:35 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 12': {
-                'Segunda': [ // TT - 20 min moderado a forte
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Treino de Tempo (Mod/Forte)', duration: 20 * 60, intensity: 'Moderada', description: 'Corra em um ritmo moderado a forte, desafiador, mas que você consiga sustentar por este período.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [ // TI - 5x (800m forte / 400m trote)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'TI: 800m Forte', duration: 170, intensity: 'Alta', description: 'Corra 800m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 400m Trote', duration: 120, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 800m Forte', duration: 170, intensity: 'Alta', description: 'Corra 800m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 400m Trote', duration: 120, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 800m Forte', duration: 170, intensity: 'Alta', description: 'Corra 800m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 400m Trote', duration: 120, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 800m Forte', duration: 170, intensity: 'Alta', description: 'Corra 800m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 400m Trote', duration: 120, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 800m Forte', duration: 170, intensity: 'Alta', description: 'Corra 800m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 400m Trote', duration: 120, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'CC Leve', duration: 20 * 60, intensity: 'Baixa', description: 'Mantenha uma corrida contínua em ritmo leve, onde consegue conversar confortavelmente.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Contínua', duration: 40 * 60, intensity: 'Baixa', description: 'Semana de recuperação. Ritmo leve (PSE 2).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 4x600m', duration: 150, intensity: 'Moderada', description: '600m em ritmo controlado (PSE 7).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x600m', duration: 150, intensity: 'Moderada', description: '600m em ritmo controlado (PSE 7).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x600m', duration: 150, intensity: 'Moderada', description: '600m em ritmo controlado (PSE 7).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x600m', duration: 150, intensity: 'Moderada', description: '600m em ritmo controlado (PSE 7).' }, { name: 'Rec: 300m', duration: 120, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 10 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 5:35 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
+            // Fase 3: Polimento e Simulação (Semanas 13-17)
             'Semana 13': {
-                'Segunda': [ // TT - 25 min moderado a forte (decrescente)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Treino de Tempo (Mod/Forte)', duration: 25 * 60, intensity: 'Moderada', description: 'Corra em um ritmo moderado a forte, desafiador, mas que você consiga sustentar por este período.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [ // TI - 6x (600m forte / 300m trote)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 600m Forte', duration: 130, intensity: 'Alta', description: 'Corra 600m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 300m Trote', duration: 90, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [ // Simulação TAF - Teste de 12 min (visando >2100m)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Simulação TAF (12min)', duration: 12 * 60, intensity: 'Alta', description: 'Simule o teste de 12 minutos, buscando superar a distância alvo. Mantenha um ritmo constante e forte.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Contínua', duration: 45 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 3x1000m', duration: 240, intensity: 'Alta', description: '1000m forte (PSE 8-9).' }, { name: 'Rec: 500m', duration: 180, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 3x1000m', duration: 240, intensity: 'Alta', description: '1000m forte (PSE 8-9).' }, { name: 'Rec: 500m', duration: 180, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 3x1000m', duration: 240, intensity: 'Alta', description: '1000m forte (PSE 8-9).' }, { name: 'Rec: 500m', duration: 180, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Simulação TAF', duration: 12 * 60, intensity: 'Alta', description: 'Teste de 12 minutos! Pace alvo: 5:32 min/km ou mais rápido.' }, { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 14': {
-                'Segunda': [ // TT - 20 min moderado a forte
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Treino de Tempo (Mod/Forte)', duration: 20 * 60, intensity: 'Moderada', description: 'Corra em um ritmo moderado a forte, desafiador, mas que você consiga sustentar por este período.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [ // TI - 5x (800m forte / 400m trote)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'TI: 800m Forte', duration: 170, intensity: 'Alta', description: 'Corra 800m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 400m Trote', duration: 120, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 800m Forte', duration: 170, intensity: 'Alta', description: 'Corra 800m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 400m Trote', duration: 120, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 800m Forte', duration: 170, intensity: 'Alta', description: 'Corra 800m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 400m Trote', duration: 120, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 800m Forte', duration: 170, intensity: 'Alta', description: 'Corra 800m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 400m Trote', duration: 120, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 800m Forte', duration: 170, intensity: 'Alta', description: 'Corra 800m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 400m Trote', duration: 120, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [ // Simulação TAF - Teste de 12 min (visando >2100m)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Simulação TAF (12min)', duration: 12 * 60, intensity: 'Alta', description: 'Simule o teste de 12 minutos, buscando superar a distância alvo. Mantenha um ritmo constante e forte.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Contínua', duration: 40 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 4x1000m', duration: 235, intensity: 'Alta', description: '1000m forte (PSE 9).' }, { name: 'Rec: 500m', duration: 180, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x1000m', duration: 235, intensity: 'Alta', description: '1000m forte (PSE 9).' }, { name: 'Rec: 500m', duration: 180, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x1000m', duration: 235, intensity: 'Alta', description: '1000m forte (PSE 9).' }, { name: 'Rec: 500m', duration: 180, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 4x1000m', duration: 235, intensity: 'Alta', description: '1000m forte (PSE 9).' }, { name: 'Rec: 500m', duration: 180, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 12 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 5:30 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 15': {
-                'Segunda': [ // TT - 20 min moderado a forte (decrescente)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Treino de Tempo (Mod/Forte)', duration: 20 * 60, intensity: 'Moderada', description: 'Corra em um ritmo moderado a forte, desafiador, mas que você consiga sustentar por este período.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [ // TI - 4x (400m forte / 200m trote)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [ // Simulação TAF - Teste de 10 min (S15-16)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Simulação TAF (10min)', duration: 10 * 60, intensity: 'Alta', description: 'Corra por 10 minutos em ritmo de prova, focando na sustentação da velocidade.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Contínua', duration: 35 * 60, intensity: 'Baixa', description: 'Ritmo leve e confortável (PSE 2-3).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 5x800m', duration: 190, intensity: 'Alta', description: '800m forte (PSE 9).' }, { name: 'Rec: 400m', duration: 140, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x800m', duration: 190, intensity: 'Alta', description: '800m forte (PSE 9).' }, { name: 'Rec: 400m', duration: 140, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x800m', duration: 190, intensity: 'Alta', description: '800m forte (PSE 9).' }, { name: 'Rec: 400m', duration: 140, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x800m', duration: 190, intensity: 'Alta', description: '800m forte (PSE 9).' }, { name: 'Rec: 400m', duration: 140, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x800m', duration: 190, intensity: 'Alta', description: '800m forte (PSE 9).' }, { name: 'Rec: 400m', duration: 140, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Simulação TAF', duration: 12 * 60, intensity: 'Alta', description: 'Teste de 12 minutos! Pace alvo: 5:28 min/km ou mais rápido.' }, { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
             'Semana 16': {
-                'Segunda': [ // TT - 15 min moderado a forte (decrescente)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Treino de Tempo (Mod/Forte)', duration: 15 * 60, intensity: 'Moderada', description: 'Corra em um ritmo moderado a forte, desafiador, mas que você consiga sustentar por este período.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [ // TI - 4x (400m forte / 200m trote)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 400m Forte', duration: 90, intensity: 'Alta', description: 'Corra 400m em ritmo forte, buscando alta intensidade.' }, { name: 'TI: 200m Trote', duration: 60, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [ // Simulação TAF - Teste de 10 min (S15-16)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Simulação TAF (10min)', duration: 10 * 60, intensity: 'Alta', description: 'Corra por 10 minutos em ritmo de prova, focando na sustentação da velocidade.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Contínua', duration: 30 * 60, intensity: 'Baixa', description: 'Ritmo leve (PSE 2).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 6x600m', duration: 140, intensity: 'Alta', description: '600m forte (PSE 9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x600m', duration: 140, intensity: 'Alta', description: '600m forte (PSE 9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x600m', duration: 140, intensity: 'Alta', description: '600m forte (PSE 9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x600m', duration: 140, intensity: 'Alta', description: '600m forte (PSE 9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x600m', duration: 140, intensity: 'Alta', description: '600m forte (PSE 9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 6x600m', duration: 140, intensity: 'Alta', description: '600m forte (PSE 9).' }, { name: 'Rec: 300m', duration: 110, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Treino de Tempo', duration: 10 * 60, intensity: 'Moderada', description: 'Foco no pace alvo de 5:25 min/km.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
-            'Semana 17': { // Polimento final
-                'Segunda': [ // TT - 15 min moderado
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Treino de Tempo (Moderado)', duration: 15 * 60, intensity: 'Moderada', description: 'Corra em um ritmo moderado, desafiador, mas que você consiga sustentar por este período.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Quarta': [ // TI - 3-4x (300m forte / 150m trote) - ativação
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'TI: 300m Forte', duration: 65, intensity: 'Alta', description: 'Realize um tiro de 300m em ritmo forte.' }, { name: 'TI: 150m Trote', duration: 45, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 300m Forte', duration: 65, intensity: 'Alta', description: 'Realize um tiro de 300m em ritmo forte.' }, { name: 'TI: 150m Trote', duration: 45, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'TI: 300m Forte', duration: 65, intensity: 'Alta', description: 'Realize um tiro de 300m em ritmo forte.' }, { name: 'TI: 150m Trote', duration: 45, intensity: 'Baixa', description: 'Trote leve para recuperação ativa.' },
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [ // Simulação TAF - 6-8 min (apenas para sentir o ritmo)
-                    { name: 'Aquecimento (CC)', duration: 10 * 60, intensity: 'Baixa', description: 'Inicie com uma corrida contínua leve para aquecer os músculos e preparar o corpo.' },
-                    { name: 'Simulação TAF (6-8min)', duration: 7 * 60, intensity: 'Alta', description: 'Corra por 6 a 8 minutos em ritmo de prova, para ativar a velocidade sem exaustão.' }, // Duração média
-                    { name: 'Desaquecimento (CC)', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ]
+            'Semana 17': {
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Contínua', duration: 25 * 60, intensity: 'Baixa', description: 'Ritmo leve (PSE 2).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'TI: 5x400m', duration: 90, intensity: 'Alta', description: '400m no pace do TAF (PSE 9).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 90, intensity: 'Alta', description: '400m no pace do TAF (PSE 9).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 90, intensity: 'Alta', description: '400m no pace do TAF (PSE 9).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 90, intensity: 'Alta', description: '400m no pace do TAF (PSE 9).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'TI: 5x400m', duration: 90, intensity: 'Alta', description: '400m no pace do TAF (PSE 9).' }, { name: 'Rec: 200m', duration: 90, intensity: 'Baixa', description: 'Trote ou caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Simulação TAF', duration: 8 * 60, intensity: 'Alta', description: 'Teste de 8 minutos no pace do TAF ou mais rápido.' }, { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }]
             },
-            'Semana 18': { // Taper
-                'Segunda': [
-                    { name: 'Corrida Leve', duration: 20 * 60, intensity: 'Baixa', description: 'Realize uma corrida muito leve, focando na recuperação ativa.' }
-                ],
-                'Quarta': [
-                    { name: 'Ativação Leve', duration: 10 * 60, intensity: 'Baixa', description: 'Faça um aquecimento leve para preparar o corpo.' },
-                    { name: 'Tiros Progressivos (100m)', duration: 20, intensity: 'Alta', description: 'Realize tiros de 100m aumentando a velocidade gradualmente.' },
-                    { name: 'Caminhada', duration: 30, intensity: 'Baixa', description: 'Caminhe para recuperação entre os tiros.' },
-                    { name: 'Tiros Progressivos (100m)', duration: 20, intensity: 'Alta', description: 'Realize tiros de 100m aumentando a velocidade gradualmente.' },
-                    { name: 'Caminhada', duration: 30, intensity: 'Baixa', description: 'Caminhe para recuperação entre os tiros.' },
-                    { name: 'Desaquecimento', duration: 5 * 60, intensity: 'Baixa', description: 'Diminua o ritmo para uma corrida contínua muito leve, ajudando o corpo a recuperar.' }
-                ],
-                'Sexta': [
-                    { name: 'Descanso Total', duration: 1, intensity: 'Baixa', description: 'Dia de descanso completo. Priorize a recuperação e o sono.' } // Apenas um placeholder para o dia
-                ]
+            // Fase 4: Taper (Semana 18)
+            'Semana 18': {
+                'Terça': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Corrida Leve', duration: 20 * 60, intensity: 'Baixa', description: 'Corrida muito leve, apenas para soltar (PSE 1-2).' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Quinta': [{ name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Trote leve.' }, { name: 'Ativação', duration: 20, intensity: 'Moderada', description: '3x100m progressivos.' }, { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada.' }, { name: 'Ativação', duration: 20, intensity: 'Moderada', description: '3x100m progressivos.' }, { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada.' }, { name: 'Ativação', duration: 20, intensity: 'Moderada', description: '3x100m progressivos.' }, { name: 'Recuperação', duration: 60, intensity: 'Baixa', description: 'Caminhada.' }, { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve.' }],
+                'Sábado': [{ name: 'Descanso Total', duration: 1, intensity: 'Baixa', description: 'Relaxe e prepare-se para o TAF!' }]
             }
         };
 
@@ -1007,9 +772,9 @@
                 weekSelect.appendChild(option);
             }
 
-            // Preencher Dias (inicialmente, apenas os dias que têm treino no plano)
+            // Preencher Dias (apenas os dias que têm treino no plano)
             daySelect.innerHTML = '';
-            const days = ['Segunda', 'Quarta', 'Sexta'];
+            const days = ['Terça', 'Quinta', 'Sábado']; // Dias de treino atualizados
             days.forEach(day => {
                 const option = document.createElement('option');
                 option.value = day;
@@ -1023,19 +788,28 @@
             const phaseItem = document.createElement('div');
             phaseItem.className = 'phase-item';
             phaseItem.innerHTML = `
-                <div class="flex flex-wrap items-center gap-2 w-full">
-                    <input type="text" placeholder="Nome da Fase" value="${phase.name}" class="phase-name-input flex-1 p-2 rounded bg-gray-700 text-white border border-gray-600">
-                    <input type="text" placeholder="MM:SS" value="${formatTime(phase.duration)}" class="phase-duration-input w-32 text-center p-2 rounded bg-gray-700 text-white border border-gray-600" pattern="\\d{2}:\\d{2}">
-                    <select class="phase-intensity-select flex-1 p-2 rounded bg-gray-700 text-white border border-gray-600">
+                <div class="flex-1 flex flex-col phase-name-group">
+                    <label class="text-gray-400 text-sm mb-1">Nome da Fase</label>
+                    <input type="text" value="${phase.name}" class="phase-name-input w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
+                </div>
+                <div class="w-32 flex flex-col phase-time-group">
+                    <label class="text-gray-400 text-sm mb-1 text-center"><span>Tempo</span><br><span>(MM:SS)</span></label>
+                    <input type="text" value="${formatTime(phase.duration)}" class="phase-duration-input w-full text-center p-2 rounded bg-gray-700 text-white border border-gray-600" pattern="\\d{2}:\\d{2}">
+                </div>
+                <div class="flex-1 flex flex-col phase-intensity-group">
+                    <label class="text-gray-400 text-sm mb-1">Intensidade</label>
+                    <select class="phase-intensity-select w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
                         <option value="Baixa" ${phase.intensity === 'Baixa' ? 'selected' : ''}>Baixa</option>
                         <option value="Moderada" ${phase.intensity === 'Moderada' ? 'selected' : ''}>Moderada</option>
                         <option value="Alta" ${phase.intensity === 'Alta' ? 'selected' : ''}>Alta</option>
                     </select>
-                    <button class="remove-phase-btn bg-red-500 hover:bg-red-700 p-2 rounded w-24">Remover</button>
                 </div>
-                <div class="flex flex-col w-full">
+                <div class="flex-1 flex flex-col phase-description-group">
                     <label class="text-gray-400 text-sm mb-1">Descrição da Fase:</label>
-                    <input type="text" placeholder="Descreva o que fazer nesta fase" value="${phase.description}" class="phase-description-input w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
+                    <input type="text" value="${phase.description}" class="phase-description-input w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
+                </div>
+                <div class="w-24 flex flex-col justify-end remove-button-group"> <!-- Grupo para o botão Remover -->
+                    <button class="remove-phase-btn bg-red-500 hover:bg-red-700 p-2 rounded w-full">Remover</button>
                 </div>
             `;
             phasesContainer.appendChild(phaseItem);
@@ -1070,13 +844,13 @@
 
         // Renderiza as fases na UI a partir do workoutConfig
         function renderPhasesConfig() {
-            phasesContainer.innerHTML = ''; // Limpa as fases existentes (os cabeçalhos fixos estão no HTML agora)
+            phasesContainer.innerHTML = ''; // Limpa as fases existentes
             if (workoutConfig.length === 0) {
                 // Adiciona fases padrão se não houver nenhuma configurada
-                addPhaseRow({ name: 'Aquecimento', duration: 30, description: 'Prepare o corpo para o exercício.', intensity: 'Baixa' });
-                addPhaseRow({ name: 'Estímulo', duration: 45, description: 'Momento de esforço intenso.', intensity: 'Alta' });
-                addPhaseRow({ name: 'Recuperação', duration: 15, description: 'Recupere o fôlego ativamente.', intensity: 'Baixa' });
-                addPhaseRow({ name: 'Descanso', duration: 60, description: 'Pausa completa antes da próxima série.', intensity: 'Baixa' });
+                addPhaseRow({ name: 'Aquecimento', duration: 180, description: 'Prepare o corpo para o exercício.', intensity: 'Baixa' });
+                addPhaseRow({ name: 'Estímulo', duration: 600, description: 'Momento de esforço intenso.', intensity: 'Alta' });
+                addPhaseRow({ name: 'Recuperação', duration: 120, description: 'Recupere o fôlego ativamente.', intensity: 'Baixa' });
+                addPhaseRow({ name: 'Desaquecimento', duration: 180, description: 'Pausa completa antes da próxima série.', intensity: 'Baixa' });
             } else {
                 workoutConfig.forEach(phase => addPhaseRow(phase));
             }
@@ -1278,9 +1052,9 @@
             datasets: [{
                 label: 'Volume de Corrida (min)',
                 data: [
-                    90, 105, 120, 135, 135, 135, // Fase 1: Aumento e estabilização
-                    140, 150, 160, 170, 180, 190, // Fase 2: Aumento constante
-                    180, 170, 160, 100, 50, 20  // Fase 3: Polimento e Taper
+                    52, 58, 64, 70, 73, 55, // Fase 1
+                    76, 76, 82, 82, 82, 67, // Fase 2
+                    79, 73, 68, 59, 52, 26  // Fase 3 e 4
                 ],
                 borderColor: '#EF4444',
                 backgroundColor: 'rgba(239, 68, 68, 0.2)',
@@ -1295,23 +1069,16 @@
             datasets: [
                 {
                     label: 'Treino Leve (%)',
-                    data: [70, 40, 30, 50], // Proporção fictícia de treinos leves por fase
+                    data: [65, 55, 45, 80], // Proporção fictícia de treinos leves por fase
                     backgroundColor: 'rgba(107, 114, 128, 0.7)', // Cinza para leve
                     borderColor: 'rgba(107, 114, 128, 1)',
                     borderWidth: 1
                 },
                 {
-                    label: 'Treino Moderado (%)',
-                    data: [20, 30, 30, 20], // Proporção fictícia de treinos moderados
-                    backgroundColor: 'rgba(239, 68, 68, 0.7)', // Vermelho para moderado
+                    label: 'Treino Moderado/Forte (%)',
+                    data: [35, 45, 55, 20], // Proporção fictícia de treinos moderados/fortes
+                    backgroundColor: 'rgba(239, 68, 68, 0.7)', // Vermelho para moderado/forte
                     borderColor: 'rgba(239, 68, 68, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Treino Forte (%)',
-                    data: [10, 30, 40, 30], // Proporção fictícia de treinos fortes
-                    backgroundColor: 'rgba(255, 159, 64, 0.7)', // Laranja para forte
-                    borderColor: 'rgba(255, 159, 64, 1)',
                     borderWidth: 1
                 }
             ]
