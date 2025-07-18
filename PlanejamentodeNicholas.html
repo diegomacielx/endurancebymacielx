@@ -6,7 +6,7 @@
     <title>Infográfico: Preparação TAF - 2100m em 12min</title>
     <!-- Carrega Tailwind CSS para estilização rápida e responsiva -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Carrega Chart.js para gráficos (usado como placeholder aqui) -->
+    <!-- Carrega Chart.js para gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Carrega a fonte Roboto do Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -130,9 +130,9 @@
 
         .phase-item {
             display: flex;
-            flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
+            flex-wrap: wrap;
             gap: 1rem;
-            align-items: flex-start; /* Alinha os itens pelo topo */
+            align-items: flex-end; /* Alinha os itens pela base (inputs e botão) */
             margin-bottom: 1rem;
             padding: 0.75rem;
             background-color: #2D3748;
@@ -142,55 +142,35 @@
         .phase-item > div { /* Para os grupos de label e input */
             display: flex;
             flex-direction: column;
-            flex-grow: 1; /* Permite que cresçam */
-        }
-        /* Ajustes para larguras específicas dentro de phase-item */
-        .phase-item .phase-name-group {
-            flex-basis: 150px; /* Largura base para nome da fase */
-            flex-grow: 2; /* Cresce mais que os outros */
-        }
-        .phase-item .phase-time-group {
-            flex-basis: 100px; /* Largura base para tempo */
-            flex-grow: 0; /* Não cresce muito */
-            text-align: center;
-        }
-        .phase-item .phase-intensity-group {
-            flex-basis: 100px; /* Largura base para intensidade */
             flex-grow: 1;
         }
-        .phase-item .phase-description-group {
-            flex-basis: 200px; /* Largura base para descrição */
-            flex-grow: 3; /* Cresce bastante */
-        }
-        .phase-item .remove-button-group {
-            flex-basis: 80px; /* Largura base para o botão remover */
-            flex-grow: 0;
-            align-self: flex-start; /* Alinha o botão remover à base */
-        }
-
-
+        
+        /* CORREÇÃO APLICADA AQUI */
         .phase-item input[type="text"],
         .phase-item input[type="number"],
-        .config-section select {
+        .phase-item select,
+        .config-section select { /* Regra adicionada para os seletores de semana/dia */
             background-color: #4A5568;
             color: white;
             border: 1px solid #6B7280;
             padding: 0.5rem;
             border-radius: 4px;
-            width: 100%; /* Ocupa a largura total do seu grupo flex */
+            width: 100%;
         }
-        .phase-item button {
+
+        .phase-item button.remove-phase-btn {
             background-color: #EF4444;
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 4px;
             font-weight: 600;
             transition: background-color 0.3s ease;
-            width: 100%; /* Ocupa a largura total do seu grupo flex */
+            height: fit-content; /* Alinha a altura com os inputs */
         }
-        .phase-item button:hover {
+        .phase-item button.remove-phase-btn:hover {
             background-color: #DC2626;
         }
+
         .add-phase-btn {
             background-color: #4CAF50; /* Verde para adicionar */
             color: white;
@@ -216,70 +196,14 @@
             background-color: #2563EB;
         }
 
-        /* Estilos para os cabeçalhos fixos da tabela de fases */
-        .phase-header-labels {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: flex-end; /* Alinha os rótulos pela base para que "Tempo" fique em 2 linhas */
-            color: #D1D5DB; /* Cor do texto dos rótulos */
-            font-weight: bold;
-            font-size: 0.875rem; /* text-sm */
-            margin-bottom: 0.5rem;
-            padding: 0 0.5rem; /* Padding horizontal para alinhar com os itens */
-        }
-        .phase-header-labels span {
-            flex-grow: 1;
-            text-align: left; /* Alinhamento padrão para rótulos */
-        }
-        .phase-header-labels .header-name {
-            flex-basis: 150px;
-            flex-grow: 2;
-        }
-        .phase-header-labels .header-time {
-            flex-basis: 100px;
-            flex-grow: 0;
-            text-align: center;
-        }
-        .phase-header-labels .header-intensity {
-            flex-basis: 100px;
-            flex-grow: 1;
-            text-align: center;
-        }
-        .phase-header-labels .header-description {
-            flex-basis: 200px;
-            flex-grow: 3;
-        }
-        .phase-header-labels .header-action {
-            flex-basis: 80px;
-            flex-grow: 0;
-            text-align: center;
-        }
-
-
-        /* Responsividade para os cabeçalhos em telas menores */
+        /* Responsividade para a criação de fases */
         @media (max-width: 767px) {
-            .phase-header-labels {
-                display: none; /* Esconde os cabeçalhos fixos em telas muito pequenas, pois os placeholders já indicam */
-            }
             .phase-item {
                 flex-direction: column; /* Empilha os inputs em telas pequenas */
-                align-items: stretch;
+                align-items: stretch; /* Estica os itens para ocupar a largura total */
             }
-            .phase-item > div {
-                flex-direction: column;
-                align-items: stretch;
-                width: 100%; /* Ocupa a largura total */
-            }
-            .phase-item input, .phase-item select, .phase-item button {
-                width: 100%; /* Ocupa a largura total */
-                text-align: left; /* Volta ao alinhamento padrão para melhor leitura */
-            }
-            .phase-item .phase-time-group label {
-                text-align: left; /* Alinha o rótulo de tempo à esquerda em mobile */
-            }
-            .phase-item .remove-button-group {
-                align-self: stretch; /* Estica o botão remover em mobile */
+            .phase-item > div, .phase-item button {
+                width: 100%; /* Garante que todos os elementos ocupem a largura total */
             }
         }
     </style>
@@ -386,7 +310,7 @@
                     <p class="text-gray-400">Sensação: Intensidade elevada, quase insuportável por muito tempo. A respiração é muito ofegante e o corpo pede pausa.<br>Exemplo na corrida: Final de um treino intenso ou esforço de prova curta.</p>
                 </div>
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">💥 9 – Quase máximo</h3>
+                    <h3 class="font-bold text-xl mb-2 text-white">� 9 – Quase máximo</h3>
                     <p class="text-gray-400">Sensação: Você está praticamente no seu limite físico. Consegue manter esse esforço por poucos minutos no máximo.<br>Exemplo na corrida: Sprint final em uma prova, esforço de 400 metros.</p>
                 </div>
                 <div class="card p-6 rounded-lg shadow-lg">
@@ -527,15 +451,11 @@
             <div class="flex flex-col md:flex-row gap-4 mb-4">
                 <div class="flex-1">
                     <label for="weekSelect" class="block text-gray-300 text-lg mb-2">Semana:</label>
-                    <select id="weekSelect" class="w-full">
-                        <!-- Opções de semana serão preenchidas via JS -->
-                    </select>
+                    <select id="weekSelect" class="w-full"></select>
                 </div>
                 <div class="flex-1">
                     <label for="daySelect" class="block text-gray-300 text-lg mb-2">Dia da Semana:</label>
-                    <select id="daySelect" class="w-full">
-                        <!-- Opções de dia serão preenchidas via JS -->
-                    </select>
+                    <select id="daySelect" class="w-full"></select>
                 </div>
             </div>
             <button id="loadSelectedWorkoutBtn" class="nav-button w-full">Carregar Treino Selecionado</button>
@@ -561,27 +481,14 @@
         <!-- Secção de Configuração de Treino Personalizado -->
         <div class="config-section mt-8">
             <h2 class="text-2xl font-bold text-white mb-4 text-center">Ou crie/edite seu treino personalizado</h2>
-            
-            <!-- Rótulos fixos das colunas -->
-            <div class="flex flex-wrap items-end text-gray-400 text-sm font-bold mb-2 px-2">
-                <span class="flex-1 text-left">Nome da Fase</span>
-                <span class="w-32 text-center flex flex-col"><span>Tempo</span><span>(MM:SS)</span></span>
-                <span class="flex-1 text-center">Intensidade</span>
-                <span class="flex-1 text-left">Descrição da Fase</span>
-                <span class="w-24 text-center"></span> <!-- Espaço vazio para alinhar com o botão Remover -->
-            </div>
-            
             <div id="phasesContainer" class="space-y-4 mb-4">
                 <!-- Fases serão adicionadas aqui via JS -->
             </div>
-
             <button id="addPhaseBtn" class="add-phase-btn w-full">Adicionar Fase</button>
-
             <div class="mt-6">
                 <label for="numSets" class="block text-gray-300 text-lg mb-2">Número de Séries:</label>
                 <input type="number" id="numSets" value="1" min="1" class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
             </div>
-
             <div class="save-load-buttons flex justify-center mt-6">
                 <button id="saveConfigBtn">Salvar Configuração</button>
                 <button id="loadConfigBtn">Carregar Configuração</button>
@@ -788,29 +695,27 @@
             const phaseItem = document.createElement('div');
             phaseItem.className = 'phase-item';
             phaseItem.innerHTML = `
-                <div class="flex-1 flex flex-col phase-name-group">
-                    <label class="text-gray-400 text-sm mb-1">Nome da Fase</label>
-                    <input type="text" value="${phase.name}" class="phase-name-input w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
+                <div class="flex-1 min-w-[100px]">
+                    <label class="block text-gray-400 text-sm mb-1">Nome</label>
+                    <input type="text" placeholder="Nome da Fase" value="${phase.name}" class="phase-name-input w-full">
                 </div>
-                <div class="w-32 flex flex-col phase-time-group">
-                    <label class="text-gray-400 text-sm mb-1 text-center"><span>Tempo</span><br><span>(MM:SS)</span></label>
-                    <input type="text" value="${formatTime(phase.duration)}" class="phase-duration-input w-full text-center p-2 rounded bg-gray-700 text-white border border-gray-600" pattern="\\d{2}:\\d{2}">
+                <div class="w-24">
+                    <label class="block text-gray-400 text-sm mb-1">Tempo</label>
+                    <input type="text" placeholder="MM:SS" value="${formatTime(phase.duration)}" class="phase-duration-input w-full text-center" pattern="\\d{2}:\\d{2}">
                 </div>
-                <div class="flex-1 flex flex-col phase-intensity-group">
-                    <label class="text-gray-400 text-sm mb-1">Intensidade</label>
-                    <select class="phase-intensity-select w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
+                <div class="flex-1 min-w-[80px]">
+                    <label class="block text-gray-400 text-sm mb-1">Intensidade</label>
+                    <select class="phase-intensity-select w-full">
                         <option value="Baixa" ${phase.intensity === 'Baixa' ? 'selected' : ''}>Baixa</option>
                         <option value="Moderada" ${phase.intensity === 'Moderada' ? 'selected' : ''}>Moderada</option>
                         <option value="Alta" ${phase.intensity === 'Alta' ? 'selected' : ''}>Alta</option>
                     </select>
                 </div>
-                <div class="flex-1 flex flex-col phase-description-group">
-                    <label class="text-gray-400 text-sm mb-1">Descrição da Fase:</label>
-                    <input type="text" value="${phase.description}" class="phase-description-input w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-gray-400 text-sm mb-1">Descrição</label>
+                    <input type="text" placeholder="Descrição da Fase" value="${phase.description}" class="phase-description-input w-full">
                 </div>
-                <div class="w-24 flex flex-col justify-end remove-button-group"> <!-- Grupo para o botão Remover -->
-                    <button class="remove-phase-btn bg-red-500 hover:bg-red-700 p-2 rounded w-full">Remover</button>
-                </div>
+                <button class="remove-phase-btn">Remover</button>
             `;
             phasesContainer.appendChild(phaseItem);
 
@@ -821,9 +726,9 @@
             });
 
             // Adiciona event listeners para atualizar a configuração ao digitar
-            phaseItem.querySelectorAll('input, select').forEach(input => { // Inclui select
+            phaseItem.querySelectorAll('input, select').forEach(input => {
                 input.addEventListener('input', updateWorkoutConfigFromUI);
-                input.addEventListener('change', updateWorkoutConfigFromUI); // Para o select
+                input.addEventListener('change', updateWorkoutConfigFromUI);
             });
 
             updateWorkoutConfigFromUI(); // Atualiza a configuração após adicionar
@@ -1182,3 +1087,4 @@
     </script>
 </body>
 </html>
+�
