@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treinamentos de Endurance - Maria Clara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #000000;
+        }
+        .main-title {
+            color: #EF4444; /* Vermelho Vibrante */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .card {
+            background-color: #1F2937;
+            border-left: 4px solid #EF4444; /* Vermelho Vibrante */
+        }
+        .icon {
+            color: #EF4444; /* Vermelho Vibrante */
+        }
+        .nav-button {
+            background-color: #EF4444; /* Vermelho Vibrante */
+            color: white;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            font-weight: 700;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 2rem;
+        }
+        .nav-button:hover {
+            background-color: #DC2626; /* Vermelho mais escuro */
+        }
+        .timer-page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        .timer-display {
+            font-size: 5rem;
+            font-weight: 900;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            margin-bottom: 1rem;
+        }
+        .phase-display {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #D1D5DB;
+            margin-bottom: 0.5rem;
+        }
+        .set-display {
+            font-size: 1.5rem;
+            color: #9CA3AF;
+            margin-bottom: 2rem;
+        }
+        .timer-controls button {
+            background-color: #1F2937;
+            color: #EF4444; /* Vermelho Vibrante */
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin: 0.5rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border: 2px solid #EF4444; /* Vermelho Vibrante */
+        }
+        .timer-controls button:hover:not(:disabled) {
+            background-color: #EF4444; /* Vermelho Vibrante */
+            color: white;
+        }
+        .timer-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .config-section {
+            background-color: #1F2937;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border: 1px solid #EF4444; /* Vermelho Vibrante */
+        }
+        .phase-item {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background-color: #2D3748;
+            border-radius: 8px;
+            border: 1px solid #4A5568;
+        }
+        .phase-item > div {
+            display: flex;
+            flex-direction: column;
+        }
+        .phase-item input[type="text"],
+        .phase-item input[type="number"],
+        .config-section select {
+            background-color: #4A5568;
+            color: white;
+            border: 1px solid #6B7280;
+            padding: 0.5rem;
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+        .phase-item button {
+            background-color: #EF4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .phase-item button:hover {
+            background-color: #DC2626;
+        }
+        .add-phase-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        .add-phase-btn:hover {
+            background-color: #45a049;
+        }
+        .save-load-buttons button {
+            background-color: #EF4444;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            margin: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+        .save-load-buttons button:hover {
+            background-color: #DC2626;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- Página do Infográfico Principal -->
+    <div id="main-infographic-page" class="container mx-auto p-4 md:p-8">
+
+        <header class="mb-12">
+            <div class="w-full">
+                <div class="mb-12 text-center">
+                    <img id="userLogo" src="https://i.imgur.com/rLLYQ3Z.png" alt="Sua Logo" class="inline-block rounded-lg shadow-md" style="max-width: 150px; height: auto;">
+                    <p class="text-xl font-bold text-white mt-2">Consultoria Esportiva Premium</p>
+                </div>
+                <div class="text-left mb-10">
+                    <p class="text-md md:text-lg text-gray-400">Aluna: Maria Clara Hinojosa de Morais Vieira</p>
+                    <p class="text-md md:text-lg text-gray-400">Objetivo: Melhoria da capacidade cardiovascular</p>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <h1 class="text-4xl md:text-6xl font-black main-title mb-2">SUA JORNADA CARDIO DE 12 SEMANAS</h1>
+                <p class="text-lg md:text-xl text-gray-300">Uma periodização completa para você evoluir e superar seus limites.</p>
+            </div>
+        </header>
+
+        <section id="weekly-routine" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Sua Rotina Semanal de Cardio</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Segunda-feira -->
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-2 text-white">Segunda-feira: HIIT Intenso</h3>
+                    <p class="text-gray-400">Treino intervalado para maximizar a queima de calorias e melhorar o VO₂ máx. Foco total na intensidade dos tiros!</p>
+                    <ul class="list-disc list-inside text-gray-400 mt-3">
+                        <li><strong>Aquecimento:</strong> 5 minutos</li>
+                        <li><strong>Estrutura:</strong> 7 tiros com recuperação</li>
+                        <li><strong>Equipamento:</strong> Esteira</li>
+                    </ul>
+                </div>
+                <!-- Quarta-feira -->
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-2 text-white">Quarta-feira: Cardio Moderado</h3>
+                    <p class="text-gray-400">Sessão para construir resistência e auxiliar na recuperação ativa. Mantenha um ritmo constante e conversacional.</p>
+                     <ul class="list-disc list-inside text-gray-400 mt-3">
+                        <li><strong>Aquecimento:</strong> 5 minutos</li>
+                        <li><strong>Duração:</strong> Até 30 minutos</li>
+                        <li><strong>Equipamento:</strong> Esteira</li>
+                    </ul>
+                </div>
+                <!-- Sábado -->
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-2 text-white">Sábado: HIIT com Foco em Resistência</h3>
+                    <p class="text-gray-400">Segundo treino intervalado da semana, com um aquecimento mais longo para preparar bem o corpo para o esforço.</p>
+                     <ul class="list-disc list-inside text-gray-400 mt-3">
+                        <li><strong>Aquecimento:</strong> 7 minutos</li>
+                        <li><strong>Estrutura:</strong> 7 tiros com recuperação</li>
+                        <li><strong>Equipamento:</strong> Esteira</li>
+                    </ul>
+                </div>
+                <!-- Domingo -->
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-2 text-white">Domingo: Corrida Progressiva</h3>
+                    <p class="text-gray-400">Dia de testar seus limites de resistência. Corra em intensidade moderada/alta pelo máximo de tempo que conseguir, visando as metas do mês.</p>
+                     <ul class="list-disc list-inside text-gray-400 mt-3">
+                        <li><strong>Intensidade:</strong> Moderada/Alta (PSE 5-7)</li>
+                        <li><strong>Duração:</strong> Progressiva (até 30 min)</li>
+                        <li><strong>Equipamento:</strong> Esteira</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section id="progression" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Sua Progressão de 12 Semanas</h2>
+            <div class="space-y-8">
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <h3 class="font-bold text-xl mb-2 text-white">Mês 1 (Semanas 1-4): Adaptação</h3>
+                    <p class="text-gray-400">
+                        <strong>HIIT (Seg/Sáb):</strong> 7 tiros de <span class="font-bold">20s Estímulo</span> / <span class="font-bold">60s Recuperação</span>.
+                        <br>
+                        <strong>Corrida (Dom):</strong> Tente manter a corrida por <span class="font-bold">15 a 20 minutos</span>.
+                    </p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <h3 class="font-bold text-xl mb-2 text-white">Mês 2 (Semanas 5-8): Intensificação</h3>
+                    <p class="text-gray-400">
+                        <strong>HIIT (Seg/Sáb):</strong> 7 tiros de <span class="font-bold">22s Estímulo</span> / <span class="font-bold">60s Recuperação</span>.
+                        <br>
+                        <strong>Corrida (Dom):</strong> Aumente a meta para <span class="font-bold">20 a 25 minutos</span> de corrida contínua.
+                    </p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <h3 class="font-bold text-xl mb-2 text-white">Mês 3 (Semanas 9-12): Performance</h3>
+                    <p class="text-gray-400">
+                        <strong>HIIT (Seg/Sáb):</strong> 7 tiros de <span class="font-bold">24s Estímulo</span> / <span class="font-bold">60s Recuperação</span>.
+                        <br>
+                        <strong>Corrida (Dom):</strong> Desafie-se a atingir <span class="font-bold">25 a 30 minutos</span> de corrida.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="reminders" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Orientações Essenciais</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">❤️</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Saúde Mental</h3>
+                    <p class="text-gray-400">O exercício é seu aliado. Respeite seus limites nos dias difíceis e anote como se sente após cada treino.</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">👂</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Escute seu Corpo</h3>
+                    <p class="text-gray-400">Monitore qualquer desconforto. Ajuste a velocidade se necessário. A consistência é mais importante que a intensidade máxima.</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🔄</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Flexibilidade</h3>
+                    <p class="text-gray-400">Este plano é um guia. Sinta-se à vontade para repetir uma semana se a progressão parecer muito rápida. O importante é não parar.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="rpe-scale" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Escala de Percepção Subjetiva de Esforço (PSE)</h2>
+            <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">Esta escala (Borg CR10) ajuda você a monitorar a intensidade do seu treino, baseando-se em como você se sente. Use-a para guiar seus esforços.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">🟢 0 – Nada de esforço</h3><p class="text-gray-400">Sensação: Repouso absoluto. Você está completamente relaxado, sem nenhuma atividade física.<br>Exemplo na corrida: Não aplicável (está em repouso).</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">🔵 0.5 – Muito, muito leve</h3><p class="text-gray-400">Sensação: Praticamente nenhum esforço. A sensação é quase imperceptível, como se você estivesse parado.<br>Exemplo na corrida: Caminhada extremamente lenta e tranquila.</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">🔵 1 – Muito leve</h3><p class="text-gray-400">Sensação: Esforço mínimo, quase despreocupado. Você pode conversar e cantar com facilidade.<br>Exemplo na corrida: Caminhada suave, aquecimento bem leve.</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">🌿 2 – Leve</h3><p class="text-gray-400">Sensação: Atividade tranquila e confortável. Respiração aumenta levemente, mas ainda há total controle. É possível falar sem esforço.<br>Exemplo na corrida: Trote bem leve ou corrida de recuperação.</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">🟡 3 – Moderado</h3><p class="text-gray-400">Sensação: Um esforço constante, mas sustentável por longos períodos. A respiração fica mais profunda, mas você ainda consegue manter uma conversa sem dificuldade.<br>Exemplo na corrida: Corrida em ritmo conversacional, treino leve.</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">🟡 4 – Um pouco forte</h3><p class="text-gray-400">Sensação: O esforço começa a ser notável. A respiração acelera e falar passa a exigir um pouco de atenção.<br>Exemplo na corrida: Ritmo constante, um pouco mais rápido do que o normal.</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">⚠️ 5 – Forte</h3><p class="text-gray-400">Sensação: Desafiador, mas ainda sustentável. Falar torna-se difícil; você só consegue dizer algumas palavras entre as respirações.<br>Exemplo na corrida: Ritmo próximo ao de maratona ou meia maratona (para corredores experientes).</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">⚠️ 6 – Forte (quase muito forte)</h3><p class="text-gray-400">Sensação: Esforço intenso. Falar é limitado a uma ou duas palavras por vez. A respiração está pesada e rápida.<br>Exemplo na corrida: Ritmo de 10 km ou trabalho no limiar anaeróbico.</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">🔴 7 – Muito forte</h3><p class="text-gray-400">Sensação: Extremamente desafiador. Você está próximo ao seu limite de fala e consegue apenas emitir sons ou palavras curtas.<br>Exemplo na corrida: Treinos intervalados intensos ou ritmo de 5 km.</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">🔥 8 – Muito, muito forte</h3><p class="text-gray-400">Sensação: Intensidade elevada, quase insuportável por muito tempo. A respiração é muito ofegante e o corpo pede pausa.<br>Exemplo na corrida: Final de um treino intenso ou esforço de prova curta.</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">💥 9 – Quase máximo</h3><p class="text-gray-400">Sensação: Você está praticamente no seu limite físico. Consegue manter esse esforço por poucos minutos no máximo.<br>Exemplo na corrida: Sprint final em uma prova, esforço de 400 metros.</p></div>
+                <div class="card p-6 rounded-lg shadow-lg"><h3 class="font-bold text-xl mb-2 text-white">⚡ 10 – Máximo</h3><p class="text-gray-400">Sensação: Esforço total. Seu corpo está no seu limite absoluto. É um esforço explosivo e insustentável por mais do que alguns segundos.<br>Exemplo na corrida: Sprint total, como em uma prova de 100 metros.</p></div>
+            </div>
+        </section>
+
+        <div class="text-center">
+            <button id="goToTimerPageBtn" class="nav-button">Abrir Temporizador de Treino</button>
+        </div>
+
+        <footer class="text-center mt-12 pt-8 border-t border-gray-700">
+            <p class="text-gray-400">Só alegria!</p>
+        </footer>
+
+    </div>
+
+    <!-- Página do Temporizador de Treino -->
+    <div id="timer-app-page" class="timer-page hidden">
+        <h1 class="text-4xl md:text-5xl font-black main-title mb-8 text-center">TEMPORIZADOR DE TREINO</h1>
+
+        <div class="config-section mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4 text-center">Selecionar Treino do Plano</h2>
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
+                <div class="flex-1">
+                    <label for="monthSelect" class="block text-gray-300 text-lg mb-2">Mês:</label>
+                    <select id="monthSelect" class="w-full"></select>
+                </div>
+                <div class="flex-1">
+                    <label for="daySelect" class="block text-gray-300 text-lg mb-2">Dia da Semana:</label>
+                    <select id="daySelect" class="w-full"></select>
+                </div>
+            </div>
+            <button id="loadSelectedWorkoutBtn" class="nav-button w-full">Carregar Treino Selecionado</button>
+        </div>
+
+        <div class="text-center mb-8">
+            <p class="phase-display" id="currentPhaseName">Pronto para Iniciar</p>
+            <p class="timer-display text-gray-200" id="timeLeftDisplay">00:00</p>
+            <p class="text-gray-400 text-lg mt-2" id="phaseInstructions"></p>
+            <p class="set-display" id="currentSetDisplay">Série: 0/0</p>
+        </div>
+
+        <div class="timer-controls flex justify-center flex-wrap">
+            <button id="startBtn">Iniciar</button>
+            <button id="pauseBtn" disabled>Pausar</button>
+            <button id="resetBtn">Reiniciar</button>
+            <button id="skipBtn" disabled>Pular Fase</button>
+            <button id="backToInfographicBtn">Voltar</button>
+        </div>
+
+        <div class="config-section mt-8">
+            <h2 class="text-2xl font-bold text-white mb-4 text-center">Ou crie/edite seu treino personalizado</h2>
+            <div id="phasesContainer" class="space-y-4 mb-4"></div>
+            <button id="addPhaseBtn" class="add-phase-btn w-full">Adicionar Fase</button>
+            <div class="mt-6">
+                <label for="numSets" class="block text-gray-300 text-lg mb-2">Número de Séries:</label>
+                <input type="number" id="numSets" value="1" min="1" class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
+            </div>
+            <div class="save-load-buttons flex justify-center mt-6">
+                <button id="saveConfigBtn">Salvar Configuração</button>
+                <button id="loadConfigBtn">Carregar Configuração</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Funções Auxiliares ---
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
+        function parseMMSS(mmssString) {
+            const parts = mmssString.split(':');
+            if (parts.length === 2) {
+                const minutes = parseInt(parts[0]) || 0;
+                const seconds = parseInt(parts[1]) || 0;
+                return (minutes * 60) + seconds;
+            }
+            return 0;
+        }
+
+        // --- Variáveis Globais do Temporizador ---
+        let workoutConfig = [];
+        let currentPhaseIndex = 0;
+        let currentSet = 1;
+        let timeLeft = 0;
+        let timerIntervalId = null;
+        let isPaused = false;
+
+        // --- Referências de Elementos HTML ---
+        const mainInfographicPage = document.getElementById('main-infographic-page');
+        const timerAppPage = document.getElementById('timer-app-page');
+        const goToTimerPageBtn = document.getElementById('goToTimerPageBtn');
+        const backToInfographicBtn = document.getElementById('backToInfographicBtn');
+        const currentPhaseName = document.getElementById('currentPhaseName');
+        const timeLeftDisplay = document.getElementById('timeLeftDisplay');
+        const phaseInstructions = document.getElementById('phaseInstructions');
+        const currentSetDisplay = document.getElementById('currentSetDisplay');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const phasesContainer = document.getElementById('phasesContainer');
+        const addPhaseBtn = document.getElementById('addPhaseBtn');
+        const numSetsInput = document.getElementById('numSets');
+        const saveConfigBtn = document.getElementById('saveConfigBtn');
+        const loadConfigBtn = document.getElementById('loadConfigBtn');
+        const monthSelect = document.getElementById('monthSelect');
+        const daySelect = document.getElementById('daySelect');
+        const loadSelectedWorkoutBtn = document.getElementById('loadSelectedWorkoutBtn');
+
+        // --- Definição do Plano de Treino da Maria Clara (12 Semanas) ---
+        function generateHIIT(stimulus, recovery, rounds, warmup, cooldown) {
+            const workout = [{ name: 'Aquecimento', duration: warmup * 60, intensity: 'Baixa', description: 'Caminhada para aquecer.' }];
+            for (let i = 0; i < rounds; i++) {
+                workout.push({ name: `Tiro ${i + 1}/${rounds}`, duration: stimulus, intensity: 'Alta', description: 'Corra! PSE 8-9.' });
+                workout.push({ name: `Recuperação ${i + 1}/${rounds}`, duration: recovery, intensity: 'Baixa', description: 'Caminhe para recuperar. PSE 3-4.' });
+            }
+            workout.push({ name: 'Desaquecimento', duration: cooldown * 60, intensity: 'Baixa', description: 'Caminhada leve.' });
+            return workout;
+        }
+
+        function generateSteadyState(duration, warmup) {
+            return [
+                { name: 'Aquecimento', duration: warmup * 60, intensity: 'Baixa', description: 'Caminhada para aquecer.' },
+                { name: 'Cardio Moderado', duration: (duration - warmup) * 60, intensity: 'Moderada', description: 'Mantenha um ritmo constante. PSE 4-5.' }
+            ];
+        }
+        
+        function generateProgressiveRun(duration, warmup, cooldown) {
+             const workout = [];
+             if (warmup > 0) {
+                workout.push({ name: 'Aquecimento', duration: warmup * 60, intensity: 'Baixa', description: 'Caminhada para aquecer.' });
+             }
+             workout.push({ name: 'Corrida', duration: duration * 60, intensity: 'Moderada', description: `Corra em ritmo moderado/alto. PSE 5-7.` });
+             if (cooldown > 0) {
+                workout.push({ name: 'Desaquecimento', duration: cooldown * 60, intensity: 'Baixa', description: 'Caminhada leve.' });
+             }
+             return workout;
+        }
+
+        const fullTrainingPlan = {
+            'Mês 1': {
+                'Segunda-feira': generateHIIT(20, 60, 7, 5, 2),
+                'Quarta-feira': generateSteadyState(30, 5),
+                'Sábado': generateHIIT(20, 60, 7, 7, 2),
+                'Domingo': generateProgressiveRun(15, 5, 2)
+            },
+            'Mês 2': {
+                'Segunda-feira': generateHIIT(22, 60, 7, 5, 2),
+                'Quarta-feira': generateSteadyState(30, 5),
+                'Sábado': generateHIIT(22, 60, 7, 7, 2),
+                'Domingo': generateProgressiveRun(20, 5, 2)
+            },
+            'Mês 3': {
+                'Segunda-feira': generateHIIT(24, 60, 7, 5, 2),
+                'Quarta-feira': generateSteadyState(30, 5),
+                'Sábado': generateHIIT(24, 60, 7, 7, 2),
+                'Domingo': generateProgressiveRun(25, 5, 2)
+            }
+        };
+
+        // --- Funções de Navegação ---
+        goToTimerPageBtn.addEventListener('click', () => {
+            mainInfographicPage.classList.add('hidden');
+            timerAppPage.classList.remove('hidden');
+            timerAppPage.style.display = 'flex';
+            populateSelectors();
+            loadWorkoutConfig();
+            updateDisplay();
+        });
+
+        backToInfographicBtn.addEventListener('click', () => {
+            pauseTimer();
+            mainInfographicPage.classList.remove('hidden');
+            timerAppPage.classList.add('hidden');
+            timerAppPage.style.display = 'none';
+        });
+
+        // --- Funções de Configuração do Treino ---
+        function populateSelectors() {
+            monthSelect.innerHTML = '';
+            Object.keys(fullTrainingPlan).forEach(month => {
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = month;
+                monthSelect.appendChild(option);
+            });
+
+            daySelect.innerHTML = '';
+            const days = ['Segunda-feira', 'Quarta-feira', 'Sábado', 'Domingo'];
+            days.forEach(day => {
+                const option = document.createElement('option');
+                option.value = day;
+                option.textContent = day;
+                daySelect.appendChild(option);
+            });
+        }
+
+        function addPhaseRow(phase = { name: '', duration: 0, description: '', intensity: 'Baixa' }) {
+            const phaseItem = document.createElement('div');
+            phaseItem.className = 'phase-item';
+            phaseItem.innerHTML = `
+                <div class="flex-1 min-w-[100px]"><label class="block text-gray-400 text-sm mb-1">Nome</label><input type="text" placeholder="Nome da Fase" value="${phase.name}" class="phase-name-input w-full"></div>
+                <div class="w-24"><label class="block text-gray-400 text-sm mb-1">Tempo</label><input type="text" placeholder="MM:SS" value="${formatTime(phase.duration)}" class="phase-duration-input w-full" pattern="\\d{2}:\\d{2}"></div>
+                <div class="flex-1 min-w-[80px]"><label class="block text-gray-400 text-sm mb-1">Intensidade</label><select class="phase-intensity-select w-full"><option value="Baixa" ${phase.intensity === 'Baixa' ? 'selected' : ''}>Baixa</option><option value="Moderada" ${phase.intensity === 'Moderada' ? 'selected' : ''}>Moderada</option><option value="Alta" ${phase.intensity === 'Alta' ? 'selected' : ''}>Alta</option></select></div>
+                <div class="flex-1 min-w-[150px]"><label class="block text-gray-400 text-sm mb-1">Descrição</label><input type="text" placeholder="Descrição da Fase" value="${phase.description}" class="phase-description-input w-full"></div>
+                <button class="remove-phase-btn">Remover</button>
+            `;
+            phasesContainer.appendChild(phaseItem);
+
+            phaseItem.querySelector('.remove-phase-btn').addEventListener('click', () => {
+                phasesContainer.removeChild(phaseItem);
+                updateWorkoutConfigFromUI();
+            });
+
+            phaseItem.querySelectorAll('input, select').forEach(input => {
+                input.addEventListener('input', updateWorkoutConfigFromUI);
+                input.addEventListener('change', updateWorkoutConfigFromUI);
+            });
+
+            updateWorkoutConfigFromUI();
+        }
+
+        function updateWorkoutConfigFromUI() {
+            workoutConfig = [];
+            phasesContainer.querySelectorAll('.phase-item').forEach(phaseItem => {
+                const name = phaseItem.querySelector('.phase-name-input').value;
+                const duration = parseMMSS(phaseItem.querySelector('.phase-duration-input').value);
+                const intensity = phaseItem.querySelector('.phase-intensity-select').value;
+                const description = phaseItem.querySelector('.phase-description-input').value;
+                workoutConfig.push({ name, duration, description, intensity });
+            });
+        }
+
+        function renderPhasesConfig() {
+            phasesContainer.innerHTML = '';
+            if (workoutConfig.length === 0) {
+                addPhaseRow({ name: 'Aquecimento', duration: 180, description: 'Prepare o corpo.', intensity: 'Baixa' });
+                addPhaseRow({ name: 'Estímulo', duration: 30, description: 'Esforço intenso.', intensity: 'Alta' });
+                addPhaseRow({ name: 'Recuperação', duration: 30, description: 'Recupere ativamente.', intensity: 'Baixa' });
+            } else {
+                workoutConfig.forEach(phase => addPhaseRow(phase));
+            }
+        }
+
+        saveConfigBtn.addEventListener('click', () => {
+            updateWorkoutConfigFromUI();
+            localStorage.setItem('customWorkoutConfigMariaClara', JSON.stringify(workoutConfig));
+            localStorage.setItem('customNumSetsMariaClara', numSetsInput.value);
+            alert('Configuração salva com sucesso!');
+        });
+
+        function loadWorkoutConfig() {
+            const savedConfig = localStorage.getItem('customWorkoutConfigMariaClara');
+            const savedNumSets = localStorage.getItem('customNumSetsMariaClara');
+            if (savedConfig) {
+                workoutConfig = JSON.parse(savedConfig);
+                numSetsInput.value = savedNumSets || 1;
+                renderPhasesConfig();
+                resetTimer();
+            }
+        }
+
+        loadConfigBtn.addEventListener('click', () => {
+            loadWorkoutConfig();
+            alert('Configuração personalizada carregada!');
+        });
+
+        loadSelectedWorkoutBtn.addEventListener('click', () => {
+            const selectedMonth = monthSelect.value;
+            const selectedDay = daySelect.value;
+            
+            if (fullTrainingPlan[selectedMonth] && fullTrainingPlan[selectedMonth][selectedDay]) {
+                workoutConfig = fullTrainingPlan[selectedMonth][selectedDay];
+                numSetsInput.value = 1; // Plan workouts are single-set sequences
+                renderPhasesConfig();
+                alert(`Treino de ${selectedDay} do ${selectedMonth} carregado!`);
+                resetTimer();
+            } else {
+                alert('Treino não encontrado para a seleção.');
+            }
+        });
+
+        addPhaseBtn.addEventListener('click', () => addPhaseRow());
+
+        // --- Funções do Temporizador ---
+        function applyTimerColor(intensity) {
+            timeLeftDisplay.classList.remove('text-green-500', 'text-yellow-500', 'text-red-500', 'text-gray-200');
+            currentPhaseName.classList.remove('text-green-500', 'text-yellow-500', 'text-red-500');
+
+            switch (intensity) {
+                case 'Baixa': timeLeftDisplay.classList.add('text-green-500'); currentPhaseName.classList.add('text-green-500'); break;
+                case 'Moderada': timeLeftDisplay.classList.add('text-yellow-500'); currentPhaseName.classList.add('text-yellow-500'); break;
+                case 'Alta': timeLeftDisplay.classList.add('text-red-500'); currentPhaseName.classList.add('text-red-500'); break;
+                default: timeLeftDisplay.classList.add('text-gray-200'); currentPhaseName.classList.add('text-gray-200'); break;
+            }
+        }
+
+        function updateDisplay() {
+            const totalSets = numSetsInput.value;
+            const currentPhase = workoutConfig[currentPhaseIndex];
+            
+            if (numSetsInput.value == 1 && workoutConfig.length > 1) {
+                 currentSetDisplay.textContent = `Fase: ${currentPhaseIndex + 1}/${workoutConfig.length}`;
+            } else if (numSetsInput.value > 1) {
+                 currentSetDisplay.textContent = `Série: ${currentSet}/${totalSets}`;
+            } else {
+                 currentSetDisplay.textContent = '';
+            }
+
+            timeLeftDisplay.textContent = formatTime(timeLeft);
+
+            if (currentPhase) {
+                currentPhaseName.textContent = currentPhase.name;
+                phaseInstructions.textContent = currentPhase.description || '';
+                applyTimerColor(currentPhase.intensity);
+            } else {
+                currentPhaseName.textContent = "Nenhuma Fase";
+                phaseInstructions.textContent = "";
+                applyTimerColor(null);
+            }
+        }
+
+        function nextPhase() {
+            currentPhaseIndex++;
+            if (currentPhaseIndex >= workoutConfig.length) {
+                currentPhaseIndex = 0;
+                currentSet++;
+            }
+
+            const totalSets = parseInt(numSetsInput.value);
+            if (currentSet > totalSets) {
+                clearInterval(timerIntervalId);
+                timerIntervalId = null;
+                currentPhaseName.textContent = "Treino Concluído!";
+                timeLeftDisplay.textContent = "00:00";
+                currentSetDisplay.textContent = `Parabéns!`;
+                startBtn.disabled = true;
+                pauseBtn.disabled = true;
+                skipBtn.disabled = true;
+                applyTimerColor(null);
+                return;
+            }
+
+            timeLeft = workoutConfig[currentPhaseIndex].duration;
+            updateDisplay();
+        }
+
+        function startTimer() {
+            if (timerIntervalId || workoutConfig.length === 0) return;
+
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            skipBtn.disabled = false;
+            isPaused = false;
+
+            if (timeLeft === 0) {
+                timeLeft = workoutConfig[0].duration;
+            }
+            
+            updateDisplay();
+
+            timerIntervalId = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateDisplay();
+                }
+
+                if (timeLeft <= 0) {
+                    nextPhase();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            clearInterval(timerIntervalId);
+            timerIntervalId = null;
+            isPaused = true;
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+        }
+
+        function resetTimer() {
+            clearInterval(timerIntervalId);
+            timerIntervalId = null;
+            currentPhaseIndex = 0;
+            currentSet = 1;
+            timeLeft = workoutConfig.length > 0 ? workoutConfig[0].duration : 0;
+            isPaused = false;
+            updateDisplay();
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            skipBtn.disabled = true;
+            applyTimerColor(null);
+        }
+
+        function skipPhase() {
+            if (!timerIntervalId) return;
+            nextPhase();
+        }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        skipBtn.addEventListener('click', skipPhase);
+
+        // --- Inicialização ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateSelectors();
+            // Carrega o primeiro treino por padrão no temporizador
+            if (fullTrainingPlan['Mês 1'] && fullTrainingPlan['Mês 1']['Segunda-feira']) {
+                workoutConfig = fullTrainingPlan['Mês 1']['Segunda-feira'];
+                renderPhasesConfig();
+                resetTimer();
+            }
+        });
+    </script>
+</body>
+</html>
