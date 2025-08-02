@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Treinamentos de Endurance - Maria Clara</title>
+    <title>Infográfico: Periodização de Cardio 12 Semanas - Maria Clara</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,6 +24,20 @@
         }
         .icon {
             color: #EF4444; /* Vermelho Vibrante */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
         }
         .nav-button {
             background-color: #EF4444; /* Vermelho Vibrante */
@@ -177,6 +191,32 @@
             </div>
         </header>
 
+        <section id="understanding" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Entendendo Seu Treino</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🔥</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Estímulo (Tiro)</h3>
+                    <p class="text-gray-400">Aumente a velocidade da esteira. A meta é atingir um esforço muito forte (PSE 8-9).</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">💧</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Recuperação Ativa</h3>
+                    <p class="text-gray-400">Reduza a velocidade para uma caminhada ou trote leve para recuperar o fôlego (PSE 3-4).</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🌡️</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Aquecimento</h3>
+                    <p class="text-gray-400">Caminhada moderada para preparar o corpo e as articulações para o esforço que está por vir.</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3">🧘</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">Desaquecimento</h3>
+                    <p class="text-gray-400">Caminhada leve para normalizar os batimentos cardíacos e relaxar a musculatura.</p>
+                </div>
+            </div>
+        </section>
+
         <section id="weekly-routine" class="mb-16">
             <h2 class="text-3xl font-bold text-center mb-8 text-white">Sua Rotina Semanal de Cardio</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -223,8 +263,28 @@
             </div>
         </section>
         
-        <section id="progression" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">Sua Progressão de 12 Semanas</h2>
+        <section id="progression-charts" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Gráficos da Sua Progressão</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-4 text-center text-white">Progressão do Estímulo HIIT</h3>
+                    <div class="chart-container">
+                        <canvas id="stimulusChart"></canvas>
+                    </div>
+                     <p class="text-center text-gray-400 mt-4">A duração de cada tiro aumentará gradualmente a cada mês, tornando o treino mais desafiador.</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-4 text-center text-white">Progressão da Corrida de Domingo</h3>
+                    <div class="chart-container">
+                        <canvas id="sundayRunChart"></canvas>
+                    </div>
+                     <p class="text-center text-gray-400 mt-4">Sua meta de tempo na corrida de domingo aumentará, construindo sua resistência cardiovascular.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="monthly-breakdown" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Detalhamento Mensal</h2>
             <div class="space-y-8">
                 <div class="card p-6 rounded-lg shadow-lg text-center">
                     <h3 class="font-bold text-xl mb-2 text-white">Mês 1 (Semanas 1-4): Adaptação</h3>
@@ -698,8 +758,54 @@
         resetBtn.addEventListener('click', resetTimer);
         skipBtn.addEventListener('click', skipPhase);
 
+        // --- Lógica dos Gráficos ---
+        const commonChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: { legend: { labels: { color: '#D1D5DB' } } },
+            scales: {
+                y: { beginAtZero: true, ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                x: { ticks: { color: '#9CA3AF' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+            }
+        };
+
+        const stimulusData = {
+            labels: ['Mês 1', 'Mês 2', 'Mês 3'],
+            datasets: [{
+                label: 'Duração do Estímulo (s)',
+                data: [20, 22, 24],
+                borderColor: '#EF4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        };
+
+        const sundayRunData = {
+            labels: ['Mês 1', 'Mês 2', 'Mês 3'],
+            datasets: [{
+                label: 'Meta de Duração (min)',
+                data: [15, 20, 25],
+                backgroundColor: '#EF4444',
+                borderColor: '#F87171',
+                borderWidth: 1
+            }]
+        };
+
         // --- Inicialização ---
         document.addEventListener('DOMContentLoaded', () => {
+            new Chart(document.getElementById('stimulusChart'), {
+                type: 'line',
+                data: stimulusData,
+                options: { ...commonChartOptions, scales: { ...commonChartOptions.scales, y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Segundos', color: '#9CA3AF' } } } }
+            });
+            
+            new Chart(document.getElementById('sundayRunChart'), {
+                type: 'bar',
+                data: sundayRunData,
+                options: { ...commonChartOptions, scales: { ...commonChartOptions.scales, y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Minutos', color: '#9CA3AF' } } } }
+            });
+
             populateSelectors();
             // Carrega o primeiro treino por padrão no temporizador
             if (fullTrainingPlan['Mês 1'] && fullTrainingPlan['Mês 1']['Segunda-feira']) {
