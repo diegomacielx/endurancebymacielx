@@ -233,7 +233,7 @@
                 <!-- Quarta-feira -->
                 <div class="card p-6 rounded-lg shadow-lg">
                     <h3 class="font-bold text-xl mb-2 text-white">Quarta-feira: Cardio Moderado</h3>
-                    <p class="text-gray-400">Sessão para construir resistência. <span class="font-bold">BPM Alvo: 114-143</span>.</p>
+                    <p class="text-gray-400">Sessão para construir resistência. <span class="font-bold">BPM Alvo: 111-141</span>.</p>
                      <ul class="list-disc list-inside text-gray-400 mt-3">
                         <li><strong>Aquecimento:</strong> 5 minutos</li>
                         <li><strong>Duração:</strong> Até 30 minutos</li>
@@ -253,7 +253,7 @@
                 <!-- Domingo -->
                 <div class="card p-6 rounded-lg shadow-lg">
                     <h3 class="font-bold text-xl mb-2 text-white">Domingo: Corrida Progressiva</h3>
-                    <p class="text-gray-400">Dia de testar seus limites de resistência. <span class="font-bold">BPM Alvo: 114-143</span>.</p>
+                    <p class="text-gray-400">Dia de testar seus limites de resistência. <span class="font-bold">BPM Alvo: 111-141</span>.</p>
                      <ul class="list-disc list-inside text-gray-400 mt-3">
                         <li><strong>Intensidade:</strong> Moderada/Alta (PSE 5-7)</li>
                         <li><strong>Duração:</strong> Progressiva (até 30 min)</li>
@@ -319,7 +319,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="card p-6 rounded-lg shadow-lg">
                     <h3 class="font-bold text-xl mb-2 text-white">Zona Moderada (55-70% FCM)</h3>
-                    <p class="text-gray-400"><strong>Alvo: <span class="font-bold text-red-400">114 - 143 BPM</span></strong></p>
+                    <p class="text-gray-400"><strong>Alvo: <span class="font-bold text-red-400">111 - 141 BPM</span></strong></p>
                     <p class="text-gray-400 mt-2">Ideal para os treinos de quarta e domingo. Melhora a resistência e a capacidade do corpo de usar gordura como combustível. O esforço é confortável e sustentável.</p>
                 </div>
                 <div class="card p-6 rounded-lg shadow-lg">
@@ -471,7 +471,7 @@
         function generateSteadyState(duration, warmup) {
             return [
                 { name: 'Aquecimento', duration: warmup * 60, intensity: 'Baixa', description: 'Caminhada para aquecer.' },
-                { name: 'Cardio Moderado', duration: (duration - warmup) * 60, intensity: 'Moderada', description: 'Mantenha um ritmo constante. PSE 4-5.' }
+                { name: 'Cardio Moderado', duration: (duration - warmup) * 60, intensity: 'Moderada', description: 'Mantenha um ritmo constante. PSE 4-5. BPM: 111-141' }
             ];
         }
         
@@ -480,7 +480,7 @@
              if (warmup > 0) {
                 workout.push({ name: 'Aquecimento', duration: warmup * 60, intensity: 'Baixa', description: 'Caminhada para aquecer.' });
              }
-             workout.push({ name: 'Corrida', duration: duration * 60, intensity: 'Moderada', description: `Corra em ritmo moderado/alto. PSE 5-7.` });
+             workout.push({ name: 'Corrida', duration: duration * 60, intensity: 'Moderada', description: `Corra em ritmo moderado/alto. PSE 5-7. BPM: 121-141` });
              if (cooldown > 0) {
                 workout.push({ name: 'Desaquecimento', duration: cooldown * 60, intensity: 'Baixa', description: 'Caminhada leve.' });
              }
