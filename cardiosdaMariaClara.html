@@ -222,10 +222,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Segunda-feira -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">Segunda-feira: HIIT Intenso</h3>
+                    <h3 class="font-bold text-xl mb-2 text-white">Segunda-feira: Treino Intervalado - HIIT</h3>
                     <p class="text-gray-400">Treino intervalado para maximizar a queima de calorias. <span class="font-bold">BPM Alvo nos tiros: 161-191</span>.</p>
                     <ul class="list-disc list-inside text-gray-400 mt-3">
-                        <li><strong>Aquecimento:</strong> 5 minutos</li>
+                        <li><strong>Aquecimento:</strong> 7 minutos</li>
                         <li><strong>Estrutura:</strong> 7 tiros com recuperação</li>
                         <li><strong>Equipamento:</strong> Esteira</li>
                     </ul>
@@ -242,7 +242,7 @@
                 </div>
                 <!-- Sábado -->
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">Sábado: HIIT com Foco em Resistência</h3>
+                    <h3 class="font-bold text-xl mb-2 text-white">Sábado: Treino Intervalado - HIIT</h3>
                     <p class="text-gray-400">Segundo treino intervalado da semana. <span class="font-bold">BPM Alvo nos tiros: 161-191</span>.</p>
                      <ul class="list-disc list-inside text-gray-400 mt-3">
                         <li><strong>Aquecimento:</strong> 7 minutos</li>
@@ -315,7 +315,7 @@
 
         <section id="heart-rate-zones" class="mb-16">
             <h2 class="text-3xl font-bold text-center mb-8 text-white">Suas Zonas de Frequência Cardíaca</h2>
-            <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">Baseado na sua idade, sua frequência cardíaca máxima (FCM) estimada é de <span class="font-bold text-red-400">190 BPM</span>. Use as zonas abaixo como guia, em conjunto com a Escala de Esforço (PSE).</p>
+            <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">Baseado na sua idade, sua frequência cardíaca máxima (FCM) estimada é de <span class="font-bold text-red-400">202 BPM</span>. Use as zonas abaixo como guia, em conjunto com a Escala de Esforço (PSE).</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="card p-6 rounded-lg shadow-lg">
                     <h3 class="font-bold text-xl mb-2 text-white">Zona Moderada (60-75% FCM)</h3>
@@ -489,19 +489,19 @@
 
         const fullTrainingPlan = {
             'Mês 1': {
-                'Segunda-feira': generateHIIT(20, 60, 7, 5, 2),
+                'Segunda-feira': generateHIIT(20, 60, 7, 7, 2),
                 'Quarta-feira': generateSteadyState(30, 5),
                 'Sábado': generateHIIT(20, 60, 7, 7, 2),
                 'Domingo': generateProgressiveRun(15, 5, 2)
             },
             'Mês 2': {
-                'Segunda-feira': generateHIIT(22, 60, 7, 5, 2),
+                'Segunda-feira': generateHIIT(22, 60, 7, 7, 2),
                 'Quarta-feira': generateSteadyState(30, 5),
                 'Sábado': generateHIIT(22, 60, 7, 7, 2),
                 'Domingo': generateProgressiveRun(20, 5, 2)
             },
             'Mês 3': {
-                'Segunda-feira': generateHIIT(24, 60, 7, 5, 2),
+                'Segunda-feira': generateHIIT(24, 60, 7, 7, 2),
                 'Quarta-feira': generateSteadyState(30, 5),
                 'Sábado': generateHIIT(24, 60, 7, 7, 2),
                 'Domingo': generateProgressiveRun(25, 5, 2)
