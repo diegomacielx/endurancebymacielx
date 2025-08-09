@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Nossa Jornada - Um Presente para Kailane</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #game-container {
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            background-color: #000;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4) blur(2px);
+            transition: opacity 1s ease-in-out;
+        }
+
+        #content-overlay {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            transition: opacity 1s ease-in-out;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+        }
+
+        #options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button, input[type="text"] {
+            font-family: 'Lato', sans-serif;
+            font-size: 1em;
+            padding: 12px 20px;
+            border: 2px solid #fff;
+            background-color: transparent;
+            color: #fff;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        input[type="text"] {
+            text-align: center;
+        }
+        
+        #feedback-message {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 24px;
+        }
+
+        .correct {
+            color: #4CAF50; /* Verde */
+        }
+
+        .incorrect {
+            color: #F44336; /* Vermelho */
+        }
+        
+        #final-promise {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <img id="background-image" src="" alt="Fundo da fase">
+        <div id="content-overlay">
+            <h2 id="phase-title"></h2>
+            <p id="phase-text"></p>
+            <div id="options-container"></div>
+            <p id="feedback-message"></p>
+            <button id="next-button" class="hidden">Continuar...</button>
+        </div>
+    </div>
+
+    <script>
+        const gamePhases = [
+            // Fase 0: Tela de Início
+            {
+                phase: 0,
+                title: "A Nossa Jornada",
+                // backgroundImage: "https://i.imgur.com/gGWHg4f.jpeg",
+                text: "Bem-vinda, meu amor. Nossa história parece um sonho, e hoje, eu transformei esse sonho em um jogo só para você. Hoje, 09 de Agosto de 2025, completamos 6 meses. Esta é a minha forma de dizer que cada segundo valeu a pena.",
+                challenge: { type: "start_button", label: "START" }
+            },
+            // Fase 1: A Viagem
+            {
+                phase: 1,
+                title: "A Viagem que Mudou Tudo",
+                // backgroundImage: "https://i.imgur.com/2Pqwe8B.jpeg",
+                text: "O tempo criou uma névoa sobre a nossa primeira memória. Para continuar, você precisa encontrar a faísca que deu início a tudo. Quando eu te vi pela primeira vez, um pensamento dominou minha mente. Qual foi?",
+                challenge: {
+                    type: "multiple_choice",
+                    options: ["'Nossa, como ela é bonita.'", "'Espero que ela goste de mim.'", "'Parece que estou sonhando, encontrei a mulher que eu tanto sonhei.'"],
+                    correctAnswer: 2
+                },
+                feedback: "Naquele momento, eu soube. Cada dia ao seu lado foi mágico. Eu tive que voltar com o coração apertado, mas felizmente, eu estava errado sobre o medo de não te ver mais...",
+                item: "✨ Item Coletado: Fragmento de Sonho Realizado ✨"
+            },
+            // Fase 2: A Princesa
+            {
+                phase: 2,
+                title: "A Princesa na Cidade Grande",
+                // backgroundImage: "https://i.imgur.com/B9P9Hwb.jpeg",
+                text: "Sua mãe me confiou a 'princesinha' dela. Para provar que fui um bom guardião, você precisa se lembrar da promessa que fiz à minha sogra. O que eu respondi a ela?",
+                challenge: {
+                    type: "multiple_choice",
+                    options: ["'Vou mostrar a cidade toda pra ela.'", "'Pode deixar, minha sogra... Vou cuidar dela da melhor forma possível.'", "'Ela vai voltar cheia de sacolas.'"],
+                    correctAnswer: 1
+                },
+                feedback: "E eu cumpri. Ver o brilho nos seus olhos conhecendo cada lugar não tinha preço. E o nosso primeiro carnaval juntos? Foi a minha maior recompensa.",
+                item: "🛡️ Item Coletado: Amuleto do Guardião Fiel 🛡️"
+            },
+            // Fase 3: Santuário
+            {
+                phase: 3,
+                title: "O Santuário das Memórias",
+                // backgroundImage: "https://i.imgur.com/j5jAGIO.jpeg",
+                text: "A distância pode ser cruel, mas eu guardo nossas memórias num santuário. Em nosso terceiro mês, naquele dia no shopping, nosso compromisso ganhou um novo símbolo para substituir o primeiro. O que eu te dei?",
+                challenge: {
+                    type: "multiple_choice",
+                    options: ["Um ingresso para um show.", "Um chocolate que você adora.", "Uma aliança nova, para celebrar nosso amor."],
+                    correctAnswer: 2
+                },
+                feedback: "A alegria nos seus olhos foi impagável. Cada foto que tiro é pra te sentir perto, mesmo longe. E nossa vontade de explorar só crescia...",
+                item: "💍 Item Coletado: Aliança Eterna (v2.0) 💍"
+            },
+            // Fase 4: Desbravadores
+            {
+                phase: 4,
+                title: "Desbravadores do Cotidiano",
+                // backgroundImage: "https://i.imgur.com/O6L5mB5.jpeg",
+                text: "Tínhamos um acordo de 'não sair', que nunca cumprimos. Você despertou algo em mim. Complete a frase: 'Quando estou com você, me desperta um espírito...?'",
+                challenge: {
+                    type: "text_input",
+                    placeholder: "Digite a palavra aqui",
+                    correctAnswer: "desbravador" // aceita 'aventureiro' também
+                },
+                feedback: "Isso mesmo! Você me deu coragem para explorar o mundo e o orgulho de te apresentar para toda a minha família. Eles sabem que eu tenho a namorada mais linda do universo.",
+                item: "🧭 Item Coletado: Bússola dos Desbravadores 🧭"
+            },
+             // Fase 5: 15 Dias
+            {
+                phase: 5,
+                title: "Quinze Dias de Cuidado",
+                 // backgroundImage: "https://i.imgur.com/UvYwL8i.jpeg",
+                text: "Foram 15 dias que pareceram um sonho. Lembra da noite em que nosso passeio ao Mirante deu errado, mas terminou com um banquete que nos deixou passando mal de felizes? Onde foi?",
+                challenge: {
+                    type: "multiple_choice",
+                    options: ["Numa pizzaria famosa.", "Em casa, pedindo delivery.", "No restaurante dos meus pais, com aquela sopa incrível."],
+                    correctAnswer: 2
+                },
+                feedback: " Naqueles 15 dias, seu cuidado, seu carinho... tudo foi perfeito. Até um passeio frustrado se tornou incrível só por estar com você. E agora, olhamos para o futuro...",
+                item: "❤️ Item Coletado: Coração Satisfeito e Transbordando ❤️"
+            },
+            // Fase 6: Final
+            {
+                phase: 6,
+                title: "A Nossa Promessa",
+                 // backgroundImage: "https://i.imgur.com/sC0m2z5.jpeg",
+                text: "", // O texto será digitado
+                challenge: { type: "final_message" }
+            }
+        ];
+
+        let currentPhaseIndex = 0;
+
+        const bgImage = document.getElementById('background-image');
+        const contentOverlay = document.getElementById('content-overlay');
+        const phaseTitle = document.getElementById('phase-title');
+        const phaseText = document.getElementById('phase-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const nextButton = document.getElementById('next-button');
+
+        function renderPhase(index) {
+            const phaseData = gamePhases[index];
+            
+            contentOverlay.style.opacity = 0;
+            bgImage.style.opacity = 0;
+
+            setTimeout(() => {
+                bgImage.src = phaseData.backgroundImage;
+                phaseTitle.textContent = phaseData.title;
+                phaseText.innerHTML = phaseData.text; // Usar innerHTML para possíveis quebras de linha
+                
+                optionsContainer.innerHTML = '';
+                feedbackMessage.textContent = '';
+                nextButton.classList.add('hidden');
+
+                const challenge = phaseData.challenge;
+                if (challenge.type === 'start_button') {
+                    const button = document.createElement('button');
+                    button.textContent = challenge.label;
+                    button.onclick = () => handleNextClick();
+                    optionsContainer.appendChild(button);
+                } else if (challenge.type === 'multiple_choice') {
+                    challenge.options.forEach((option, i) => {
+                        const button = document.createElement('button');
+                        button.innerHTML = option;
+                        button.onclick = () => handleMultipleChoice(i, phaseData);
+                        optionsContainer.appendChild(button);
+                    });
+                } else if (challenge.type === 'text_input') {
+                     const input = document.createElement('input');
+                     input.type = 'text';
+                     input.placeholder = challenge.placeholder;
+                     input.onkeydown = (event) => {
+                         if (event.key === 'Enter') {
+                             handleTextInput(input.value, phaseData);
+                         }
+                     };
+                     optionsContainer.appendChild(input);
+                     const button = document.createElement('button');
+                     button.textContent = 'Confirmar';
+                     button.onclick = () => handleTextInput(input.value, phaseData);
+                     optionsContainer.appendChild(button);
+                } else if (challenge.type === 'final_message') {
+                     renderFinalMessage();
+                }
+
+                contentOverlay.style.opacity = 1;
+                bgImage.style.opacity = 1;
+            }, 1000);
+        }
+
+        function handleMultipleChoice(selectedIndex, phaseData) {
+            if (selectedIndex === phaseData.challenge.correctAnswer) {
+                feedbackMessage.textContent = `${phaseData.item}\n${phaseData.feedback}`;
+                feedbackMessage.className = 'correct';
+                nextButton.classList.remove('hidden');
+                 // Desabilita os botões após a escolha
+                document.querySelectorAll('#options-container button').forEach(b => b.disabled = true);
+            } else {
+                feedbackMessage.textContent = 'Hmm, não foi bem isso. Tente de novo!';
+                feedbackMessage.className = 'incorrect';
+            }
+        }
+        
+        function handleTextInput(inputValue, phaseData) {
+            const answer = inputValue.toLowerCase().trim();
+            if (answer === phaseData.challenge.correctAnswer || answer === 'aventureiro') {
+                 feedbackMessage.textContent = `${phaseData.item}\n${phaseData.feedback}`;
+                feedbackMessage.className = 'correct';
+                nextButton.classList.remove('hidden');
+                document.querySelectorAll('#options-container button, #options-container input').forEach(el => el.disabled = true);
+            } else {
+                feedbackMessage.textContent = 'Não é essa a palavra... Pense bem!';
+                feedbackMessage.className = 'incorrect';
+            }
+        }
+
+        function handleNextClick() {
+            currentPhaseIndex++;
+            if (currentPhaseIndex < gamePhases.length) {
+                renderPhase(currentPhaseIndex);
+            }
+        }
+        
+        function renderFinalMessage() {
+            const promiseText = `Nosso sexto encontro talvez demore pra acontecer, mas eu espero que seja o mais rápido possível.\n\nMas, mesmo que demore uma eternidade...\n\nEu a esperarei.\n\nE a amarei.\n\nPelo tempo que for preciso.`;
+            phaseText.textContent = '';
+            
+            let i = 0;
+            const typing = setInterval(() => {
+                if (i < promiseText.length) {
+                    phaseText.textContent += promiseText.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typing);
+                    setTimeout(showFinalScreen, 2000);
+                }
+            }, 80); // Velocidade da digitação
+        }
+
+        function showFinalScreen() {
+             phaseText.innerHTML = `
+                <pre id="final-promise">
+=========================================================
+      _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._
+    .'                                           '.
+   /      P A R A B É N S,  M E U  A M O R !      \\
+  |                                                  |
+  |    Você zerou o jogo da nossa história até aqui.   |
+  | A maior recompensa não é um item, mas saber que  |
+  |        a próxima fase será ao seu lado.          |
+  |                                                  |
+  |      FELIZ 6 MESES DE NAMORO, KAILANE!           |
+  |                                                  |
+  |    Obrigado por ser a melhor parte da minha vida.  |
+  |                                                  |
+  |                   Eu te amo.                     |
+  |                                                  |
+   \\                                                /
+    '._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.'
+=========================================================
+                </pre>
+            `;
+        }
+
+        nextButton.onclick = handleNextClick;
+        
+        // Iniciar o jogo
+        window.onload = () => renderPhase(currentPhaseIndex);
+    </script>
+
+</body>
+</html>
