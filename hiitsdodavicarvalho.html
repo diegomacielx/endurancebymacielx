@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infográfico: Periodização HIIT de 12 Semanas - Davi Carvalho</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Periodização HIIT de 12 Semanas - Davi Carvalho</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +13,7 @@
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #000000;
+            touch-action: manipulation; /* Impede zoom com duplo toque */
         }
         .main-title {
             color: #EF4444; /* Vermelho Vibrante */
@@ -187,12 +188,12 @@
             </div>
             <div class="text-center mt-8">
                 <h1 class="text-4xl md:text-6xl font-black main-title mb-2">SUA JORNADA HIIT DE 12 SEMANAS</h1>
-                <p class="text-lg md:text-xl text-gray-300">Uma periodização completa para você evoluir na esteira e superar seus limites.</p>
+                <p class="text-lg md:text-xl text-gray-300">Feito pra você superar seus limites na corrida de rua.</p>
             </div>
         </header>
 
         <section id="understanding" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">Entendendo Seu Treino</h2>
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Entendendo seu treino</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="card p-6 rounded-lg shadow-lg text-center">
                     <div class="icon text-4xl mb-3">🔥</div>
@@ -278,7 +279,7 @@
                     <p class="text-gray-400 mt-2">Ideal para a recuperação ativa entre os tiros. Melhora a resistência e a capacidade do corpo de usar gordura como combustível. O esforço é confortável e sustentável.</p>
                 </div>
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">Zona de Alta Intensidade (85-100% FCM)</h3>
+                    <h3 class="font-bold text-xl mb-2 text-white">Zona de Alta Intensidade (85-95% FCM)</h3>
                     <p class="text-gray-400"><strong>Alvo: <span class="font-bold text-red-400">169 - 189 BPM</span></strong></p>
                     <p class="text-gray-400 mt-2">O objetivo durante os tiros dos treinos HIIT. Melhora o VO₂ máx. e a capacidade anaeróbica. O esforço é muito desafiador e só pode ser mantido por curtos períodos.</p>
                 </div>
@@ -360,6 +361,7 @@
         let timeLeft = 0;
         let timerIntervalId = null;
         let isPaused = false;
+        let wakeLock = null; // Variável para o Wake Lock
 
         // --- Referências de Elementos HTML ---
         const mainInfographicPage = document.getElementById('main-infographic-page');
@@ -436,6 +438,26 @@
             alert(`Treino do ${monthSelect.value} carregado!`);
         });
 
+        // --- Wake Lock (Manter a tela acesa) ---
+        const requestWakeLock = async () => {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Wake Lock ativado!');
+                } catch (err) {
+                    console.error(`${err.name}, ${err.message}`);
+                }
+            }
+        };
+
+        const releaseWakeLock = async () => {
+            if (wakeLock !== null) {
+                await wakeLock.release();
+                wakeLock = null;
+                console.log('Wake Lock liberado.');
+            }
+        };
+
         // --- Funções do Temporizador ---
         function applyTimerColor(intensity) {
             timeLeftDisplay.classList.remove('text-green-500', 'text-yellow-500', 'text-red-500', 'text-gray-200');
@@ -469,7 +491,7 @@
         function nextPhase() {
             currentPhaseIndex++;
             if (currentPhaseIndex >= workoutConfig.length) {
-                 clearInterval(timerIntervalId);
+                clearInterval(timerIntervalId);
                 timerIntervalId = null;
                 currentPhaseName.textContent = "Treino Concluído!";
                 timeLeftDisplay.textContent = "00:00";
@@ -478,6 +500,7 @@
                 pauseBtn.disabled = true;
                 skipBtn.disabled = true;
                 applyTimerColor(null);
+                releaseWakeLock(); // Liberar a tela ao final
                 return;
             }
             timeLeft = workoutConfig[currentPhaseIndex].duration;
@@ -486,6 +509,8 @@
 
         function startTimer() {
             if (timerIntervalId || workoutConfig.length === 0) return;
+            
+            requestWakeLock(); // Ativar bloqueio de tela
 
             startBtn.disabled = true;
             pauseBtn.disabled = false;
@@ -516,6 +541,7 @@
             isPaused = true;
             startBtn.disabled = false;
             pauseBtn.disabled = true;
+            releaseWakeLock(); // Liberar a tela ao pausar
         }
 
         function resetTimer() {
@@ -529,6 +555,7 @@
             pauseBtn.disabled = true;
             skipBtn.disabled = true;
             applyTimerColor(null);
+            releaseWakeLock(); // Liberar a tela ao reiniciar
         }
         
         function skipPhase() {
@@ -541,6 +568,13 @@
         pauseBtn.addEventListener('click', pauseTimer);
         resetBtn.addEventListener('click', resetTimer);
         skipBtn.addEventListener('click', skipPhase);
+        
+        // Re-adquirir o wake lock se a aba ficar visível novamente
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && timerIntervalId !== null) {
+                requestWakeLock();
+            }
+        });
 
         // --- Lógica dos Gráficos ---
         const commonChartOptions = {
