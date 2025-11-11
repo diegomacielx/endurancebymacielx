@@ -95,7 +95,7 @@
             background-color: #EF4444; /* Vermelho Vibrante */
             color: white;
         }
-        .timer-controls button:disabled {
+        .timer-controls button:disabled, .timer-controls button.disabled-style {
             opacity: 0.5;
             cursor: not-allowed;
         }
@@ -325,9 +325,9 @@
 
         <div class="timer-controls flex justify-center flex-wrap">
             <button id="startBtn">Iniciar</button>
-            <button id="pauseBtn" disabled>Pausar</button>
+            <button id="pauseBtn" class="disabled-style">Pausar</button>
             <button id="resetBtn">Reiniciar</button>
-            <button id="skipBtn" disabled>Pular fase</button>
+            <button id="skipBtn" class="disabled-style">Pular fase</button>
             <button id="backToInfographicBtn">Voltar</button>
         </div>
     </div>
@@ -516,9 +516,9 @@
                 currentPhaseName.textContent = "Treino Concluído!";
                 timeLeftDisplay.textContent = "00:00";
                 currentSetDisplay.textContent = `Parabéns!`;
-                startBtn.disabled = true;
-                pauseBtn.disabled = true;
-                skipBtn.disabled = true;
+                startBtn.classList.add('disabled-style');
+                pauseBtn.classList.add('disabled-style');
+                skipBtn.classList.add('disabled-style');
                 applyTimerColor(null);
                 releaseWakeLock(); // Liberar a tela ao final
                 return;
@@ -528,13 +528,14 @@
         }
 
         function startTimer() {
-            if (timerIntervalId || workoutConfig.length === 0) return;
+            // Cláusula de guarda: não faz nada se o timer já estiver rodando
+            if (timerIntervalId) return; 
             
             requestWakeLock(); // Ativar bloqueio de tela
 
-            startBtn.disabled = true;
-            pauseBtn.disabled = false;
-            skipBtn.disabled = false;
+            startBtn.classList.add('disabled-style');
+            pauseBtn.classList.remove('disabled-style');
+            skipBtn.classList.remove('disabled-style');
             isPaused = false;
 
             if (timeLeft === 0) {
@@ -556,11 +557,14 @@
         }
 
         function pauseTimer() {
+            // Cláusula de guarda: não faz nada se já estiver pausado
+            if (isPaused || !timerIntervalId) return; 
+
             clearInterval(timerIntervalId);
             timerIntervalId = null;
             isPaused = true;
-            startBtn.disabled = false;
-            pauseBtn.disabled = true;
+            startBtn.classList.remove('disabled-style');
+            pauseBtn.classList.add('disabled-style');
             releaseWakeLock(); // Liberar a tela ao pausar
         }
 
@@ -571,9 +575,9 @@
             timeLeft = workoutConfig.length > 0 ? workoutConfig[0].duration : 0;
             isPaused = false;
             updateDisplay();
-            startBtn.disabled = false;
-            pauseBtn.disabled = true;
-            skipBtn.disabled = true;
+            startBtn.classList.remove('disabled-style');
+            pauseBtn.classList.add('disabled-style');
+            skipBtn.classList.add('disabled-style');
             applyTimerColor(null);
             releaseWakeLock(); // Liberar a tela ao reiniciar
         }
@@ -597,28 +601,14 @@
         });
 
         // --- Correção Adicional para Zoom (Duplo Toque no iOS) ---
-        // Em vez de adicionar a cada botão (o que falha quando o botão está 'disabled'),
-        // adicionamos o listener aos CONTAINERS dos botões. Isso captura o evento
-        // "borbulhado" (bubbled) e previne o zoom de forma mais confiável no iOS.
-
-        // 1. Container do botão "Abrir temporizador"
-        const goToTimerBtnContainer = document.getElementById('goToTimerPageBtn').parentElement;
-        if (goToTimerBtnContainer) {
-            goToTimerBtnContainer.addEventListener('dblclick', (e) => e.preventDefault());
-        }
-
-        // 2. Container do botão "Carregar treino" (toda a seção)
-        const configSection = document.querySelector('.config-section');
-        if (configSection) {
-            configSection.addEventListener('dblclick', (e) => e.preventDefault());
-        }
-
-        // 3. Container dos botões "Iniciar", "Pausar", "Voltar", etc.
-        // Este é o principal para o seu problema.
-        const timerControlsContainer = document.querySelector('.timer-controls');
-        if (timerControlsContainer) {
-            timerControlsContainer.addEventListener('dblclick', (e) => e.preventDefault());
-        }
+        // Adiciona o listener de 'dblclick' diretamente aos botões.
+        // Como não estamos mais usando 'disabled', os botões sempre
+        // poderão capturar o evento e prevenir o zoom.
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('dblclick', (event) => {
+                event.preventDefault();
+            });
+        });
 
 
         // --- Lógica dos Gráficos ---
