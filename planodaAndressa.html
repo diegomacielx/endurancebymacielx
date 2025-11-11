@@ -596,6 +596,16 @@
             }
         });
 
+        // --- Correção Adicional para Zoom (Duplo Toque no iOS) ---
+        // Adiciona um listener a todos os botões principais para prevenir o
+        // comportamento padrão do "double click" (duplo toque), que o iOS interpreta como zoom.
+        const allButtons = document.querySelectorAll('button'); // Pega TODOS os botões
+        allButtons.forEach(button => {
+            button.addEventListener('dblclick', (event) => {
+                event.preventDefault();
+            });
+        });
+
         // --- Lógica dos Gráficos ---
         const commonChartOptions = {
             maintainAspectRatio: false,
