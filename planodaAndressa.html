@@ -597,14 +597,29 @@
         });
 
         // --- Correção Adicional para Zoom (Duplo Toque no iOS) ---
-        // Adiciona um listener a todos os botões principais para prevenir o
-        // comportamento padrão do "double click" (duplo toque), que o iOS interpreta como zoom.
-        const allButtons = document.querySelectorAll('button'); // Pega TODOS os botões
-        allButtons.forEach(button => {
-            button.addEventListener('dblclick', (event) => {
-                event.preventDefault();
-            });
-        });
+        // Em vez de adicionar a cada botão (o que falha quando o botão está 'disabled'),
+        // adicionamos o listener aos CONTAINERS dos botões. Isso captura o evento
+        // "borbulhado" (bubbled) e previne o zoom de forma mais confiável no iOS.
+
+        // 1. Container do botão "Abrir temporizador"
+        const goToTimerBtnContainer = document.getElementById('goToTimerPageBtn').parentElement;
+        if (goToTimerBtnContainer) {
+            goToTimerBtnContainer.addEventListener('dblclick', (e) => e.preventDefault());
+        }
+
+        // 2. Container do botão "Carregar treino" (toda a seção)
+        const configSection = document.querySelector('.config-section');
+        if (configSection) {
+            configSection.addEventListener('dblclick', (e) => e.preventDefault());
+        }
+
+        // 3. Container dos botões "Iniciar", "Pausar", "Voltar", etc.
+        // Este é o principal para o seu problema.
+        const timerControlsContainer = document.querySelector('.timer-controls');
+        if (timerControlsContainer) {
+            timerControlsContainer.addEventListener('dblclick', (e) => e.preventDefault());
+        }
+
 
         // --- Lógica dos Gráficos ---
         const commonChartOptions = {
