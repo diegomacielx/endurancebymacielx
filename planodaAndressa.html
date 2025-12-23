@@ -23,6 +23,10 @@
             background-color: #1F2937;
             border-left: 4px solid #EF4444; /* Vermelho Vibrante */
         }
+        .hiit-card {
+            background-color: #1F2937;
+            border-left: 4px solid #F59E0B; /* Laranja/Amarelo para HIIT */
+        }
         .icon {
             color: #EF4444; /* Vermelho Vibrante */
         }
@@ -120,11 +124,9 @@
             border-radius: 4px;
             flex-grow: 1;
         }
-
-        /* Correção: Força a cor do texto nas opções do seletor */
         .config-section select option {
-            background-color: #4A5568; /* Mantém o fundo escuro */
-            color: #FFFFFF; /* Força o texto branco */
+            background-color: #4A5568; 
+            color: #FFFFFF;
         }
     </style>
 </head>
@@ -137,70 +139,98 @@
             <div class="w-full">
                 <div class="mb-12 text-center">
                     <img id="userLogo" src="https://i.imgur.com/rLLYQ3Z.png" alt="Sua Logo" class="inline-block rounded-lg shadow-md" style="max-width: 150px; height: auto;">
-                    <p class="text-xl font-bold text-white mt-2">Consultoria Esportiva Premium</p>
+                    <p class="text-xl font-bold text-white mt-2">PERFORMANCE & FIT</p>
                 </div>
                 <div class="text-left mb-10">
                     <p class="text-md md:text-lg text-gray-400">Aluna: Andressa de Oliveira Alves</p>
-                    <p class="text-md md:text-lg text-gray-400">Idade: 23 anos</p>
-                    <p class="text-md md:text-lg text-gray-400">Objetivo: Correr 5km, sem parar</p>
+                    <p class="text-md md:text-lg text-gray-400">Idade: 24 anos</p>
+                    <p class="text-md md:text-lg text-gray-400">Objetivo: melhoria da saúde cardiorespiratória</p>
                 </div>
             </div>
             <div class="text-center mt-8">
-                <h1 class="text-4xl md:text-6xl font-black main-title mb-2">SUA JORNADA C25K DE 16 SEMANAS</h1>
-                <p class="text-lg md:text-xl text-gray-300">Uma periodização completa para você sair do 1km e conquistar os 5km.</p>
+                <h1 class="text-4xl md:text-6xl font-black main-title mb-2">ENDURANCE DA ANDRESSA</h1>
+                <p class="text-lg md:text-xl text-gray-300">Corridas de rua + HIITs.</p>
             </div>
         </header>
 
         <section id="understanding" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">Entendendo seu treino (C25K)</h2>
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Estrutura do Treino</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="card p-6 rounded-lg shadow-lg text-center">
                     <div class="icon text-4xl mb-3">🏃‍♀️</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Corrida (Trote)</h3>
-                    <p class="text-gray-400">Ritmo constante e controlado (PSE 6-7). A meta é construir resistência, não velocidade. BPM Alvo: <span class="font-bold text-red-400">148-167 BPM</span>.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">Corrida (Ter/Qui/Sáb)</h3>
+                    <p class="text-gray-400">Foco em volume e resistência. Siga as fases do plano C25K abaixo.</p>
                 </div>
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">🚶‍♀️</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Caminhada (Recuperação)</h3>
-                    <p class="text-gray-400">Caminhada ativa (PSE 3-4) para recuperar o fôlego e baixar os batimentos. BPM Alvo: <span class="font-bold text-red-400">118-138 BPM</span>.</p>
+                <div class="hiit-card p-6 rounded-lg shadow-lg text-center">
+                    <div class="icon text-4xl mb-3 text-yellow-500">🔥</div>
+                    <h3 class="font-bold text-xl mb-2 text-white">HIIT (Seg/Qua/Sex)</h3>
+                    <p class="text-gray-400">25 min total. Alta intensidade no elíptico ou bike.</p>
                 </div>
                 <div class="card p-6 rounded-lg shadow-lg text-center">
                     <div class="icon text-4xl mb-3">🌡️</div>
                     <h3 class="font-bold text-xl mb-2 text-white">Aquecimento</h3>
-                    <p class="text-gray-400">5 minutos de caminhada leve a moderada para preparar o corpo e as articulações.</p>
+                    <p class="text-gray-400">Obrigatório 5 min antes de qualquer treino para evitar lesões.</p>
                 </div>
                 <div class="card p-6 rounded-lg shadow-lg text-center">
                     <div class="icon text-4xl mb-3">🧘</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Desaquecimento</h3>
-                    <p class="text-gray-400">5 minutos de caminhada leve para normalizar os batimentos cardíacos.</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">Domingo</h3>
+                    <p class="text-gray-400">Descanso total ou caminhada muito leve e alongamento.</p>
                 </div>
             </div>
         </section>
 
-        <section id="progression-charts" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">Gráficos da sua progressão (4 meses)</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Seção HIIT Detalhada -->
+        <section id="hiit-details" class="mb-16 bg-gray-800 p-6 rounded-xl border border-yellow-600">
+            <h2 class="text-3xl font-bold text-center mb-6 text-yellow-500">Protocolo HIIT (Seg/Qua/Sex)</h2>
+            <p class="text-center text-gray-300 mb-6 max-w-2xl mx-auto">
+                Realize este treino no <strong>Elíptico, Bike Ergométrica ou Air Bike</strong>. O objetivo é atingir picos de frequência cardíaca.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div>
+                    <h4 class="font-bold text-xl text-white">1. Aquecimento</h4>
+                    <p class="text-gray-400">5 minutos leve</p>
+                    <p class="text-sm text-gray-500">RPM moderado, carga leve.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-xl text-yellow-500">2. O Treino (15 min)</h4>
+                    <p class="text-white font-bold">15 Séries de:</p>
+                    <p class="text-gray-300">30s <span class="text-red-500 font-bold">FORTE</span> (Carga/Velocidade Máx)</p>
+                    <p class="text-gray-300">30s <span class="text-green-500 font-bold">LEVE</span> (Recuperação)</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-xl text-white">3. Volta à Calma</h4>
+                    <p class="text-gray-400">5 minutos leve</p>
+                    <p class="text-sm text-gray-500">Diminua até parar.</p>
+                </div>
+            </div>
+            <div class="text-center mt-6">
+                <p class="text-sm text-gray-400 italic">*Use o temporizador selecionando "Treino HIIT" para guiar os 30s/30s.</p>
+            </div>
+        </section>
+
+        <section id="heart-rate-zones" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Zonas Cardíacas (Baseadas no Teste)</h2>
+            <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">
+                Seu teste de 1km mostrou um pico de <strong>183 BPM</strong> e média de <strong>177 BPM</strong>. Isso indica que você consegue sustentar alta intensidade. Ajustamos as zonas para sua realidade atual.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-4 text-center text-white">Corrida contínua (bloco máximo)</h3>
-                    <div class="chart-container">
-                        <canvas id="runBlockChart"></canvas>
-                    </div>
-                     <p class="text-center text-gray-400 mt-4">Veja como seu maior bloco de corrida ininterrupta vai aumentar de 4 para 40 minutos!</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">Zona Moderada (Corrida Leve/Recuperação)</h3>
+                    <p class="text-gray-400"><strong>Alvo: <span class="font-bold text-green-400">135 - 155 BPM</span></strong></p>
+                    <p class="text-gray-400 mt-2">Use esta zona para as caminhadas do C25K e para os intervalos de descanso do HIIT.</p>
                 </div>
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-4 text-center text-white">Volume total de corrida (min)</h3>
-                    <div class="chart-container">
-                        <canvas id="totalRunVolumeChart"></canvas>
-                    </div>
-                     <p class="text-center text-gray-400 mt-4">O tempo total que você passa correndo em cada treino aumentará progressivamente. (Nota: O volume pode diminuir no Mês 3, quando o foco muda para blocos contínuos mais longos).</p>
+                    <h3 class="font-bold text-xl mb-2 text-white">Zona de Treino (Corrida/HIIT Forte)</h3>
+                    <p class="text-gray-400"><strong>Alvo: <span class="font-bold text-red-400">165 - 183+ BPM</span></strong></p>
+                    <p class="text-gray-400 mt-2">Durante os trotes do C25K e os tiros de 30s do HIIT, é normal e esperado que sua frequência suba para esta faixa.</p>
                 </div>
             </div>
         </section>
 
         <section id="weekly-breakdown" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">Detalhamento semanal (Plano C25K de 4 meses)</h2>
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Detalhamento C25K (Terça, Quinta, Sábado)</h2>
              <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">
-                Realize este treino <span class="font-bold text-red-400">3 vezes por semana (Terça, Quinta, Sábado)</span>. Como seus treinos são na rua, foque em manter o esforço (PSE e BPM) constante, sem se preocupar com a velocidade exata. Nos outros dias (Seg, Qua, Sex, Dom), você pode fazer uma <span class="font-bold text-red-400">caminhada leve de 30-60 minutos</span> como recuperação ativa.
+                Abaixo está a progressão da corrida. Nos dias intercalados (Seg, Qua, Sex), faça o treino de HIIT descrito acima.
              </p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="card p-6 rounded-lg shadow-lg">
@@ -254,40 +284,21 @@
             </div>
         </section>
 
-        <section id="heart-rate-zones" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">Suas zonas de frequência cardíaca</h2>
-            <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">Baseado na sua idade (23 anos), sua frequência cardíaca máxima (FCM) estimada é de <span class="font-bold text-red-400">197 BPM</span>. Seu teste (pico 183) confirma que você atinge zonas altas. Use as zonas abaixo como guia, em conjunto com a Escala de Esforço (PSE).</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <section id="progression-charts" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-white">Gráficos de Progressão</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">Zona moderada (60-70% FCM)</h3>
-                    <p class="text-gray-400"><strong>Alvo: <span class="font-bold text-red-400">118 - 138 BPM</span></strong></p>
-                    <p class="text-gray-400 mt-2">Ideal para a **caminhada** de recuperação e aquecimento (PSE 3-4). O esforço é confortável e sustentável.</p>
+                    <h3 class="font-bold text-xl mb-4 text-center text-white">Corrida contínua (bloco máximo)</h3>
+                    <div class="chart-container">
+                        <canvas id="runBlockChart"></canvas>
+                    </div>
                 </div>
                 <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white">Zona vigorosa (75-85% FCM)</h3>
-                    <p class="text-gray-400"><strong>Alvo: <span class="font-bold text-red-400">148 - 167 BPM</span></strong></p>
-                    <p class="text-gray-400 mt-2">O objetivo durante os blocos de **corrida (trote)** (PSE 6-7). O esforço é desafiador, mas você ainda consegue manter por vários minutos.</p>
+                    <h3 class="font-bold text-xl mb-4 text-center text-white">Volume total de corrida (min)</h3>
+                    <div class="chart-container">
+                        <canvas id="totalRunVolumeChart"></canvas>
+                    </div>
                 </div>
-            </div>
-        </section>
-
-        <section id="rpe-scale" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">Escala de percepção subjetiva de esforço (PSE)</h2>
-            <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">Esta escala (Borg CR10) ajuda você a monitorar a intensidade do seu treino, baseando-se em como você se sente. Use-a para guiar seus esforços.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">🟢 0 – Nada de esforço</h3><p class="text-gray-400 text-sm">Sensação: Repouso absoluto. Você está completamente relaxado, sem nenhuma atividade física.<br>Exemplo na corrida: Não aplicável (está em repouso).</p></div>
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">🔵 0.5 – Muito, muito leve</h3><p class="text-gray-400 text-sm">Sensação: Praticamente nenhum esforço. A sensação é quase imperceptível, como se você estivesse parado.<br>Exemplo na corrida: Caminhada extremamente lenta e tranquila.</p></div>
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">🔵 1 – Muito leve</h3><p class="text-gray-400 text-sm">Sensação: Esforço mínimo, quase despreocupado. Você pode conversar e cantar com facilidade.<br>Exemplo na corrida: Caminhada suave, aquecimento bem leve.</p></div>
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">🌿 2 – Leve</h3><p class="text-gray-400 text-sm">Sensação: Atividade tranquila e confortável. Respiração aumenta levemente, mas ainda há total controle. É possível falar sem esforço.<br>Exemplo na corrida: Trote bem leve ou corrida de recuperação.</p></div>
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">🟡 3 – Moderado</h3><p class="text-gray-400 text-sm">Sensação: Um esforço constante, mas sustentável por longos períodos. A respiração fica mais profunda, mas você ainda consegue manter uma conversa sem dificuldade.<br>Exemplo na corrida: Corrida em ritmo conversacional, treino leve.</p></div>
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">🟡 4 – Um pouco forte</h3><p class="text-gray-400 text-sm">Sensação: O esforço começa a ser notável. A respiração acelera e falar passa a exigir um pouco de atenção.<br>Exemplo na corrida: Ritmo constante, um pouco mais rápido do que o normal.</p></div>
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">⚠️ 5 – Forte</h3><p class="text-gray-400 text-sm">Sensação: Desafiador, mas ainda sustentável. Falar torna-se difícil; você só consegue dizer algumas palavras entre as respirações.<br>Exemplo na corrida: Ritmo próximo ao de maratona ou meia maratona (para corredores experientes).</p></div>
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">⚠️ 6 – Forte (quase muito forte)</h3><p class="text-gray-400 text-sm">Sensação: Esforço intenso. Falar é limitado a uma ou duas palavras por vez. A respiração está pesada e rápida.<br>Exemplo na corrida: Ritmo de 10 km ou trabalho no limiar anaeróbico.</p></div>
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">🔴 7 – Muito forte</h3><p class="text-gray-400 text-sm">Sensação: Extremamente desafiador. Você está próximo ao seu limite de fala e consegue apenas emitir sons ou palavras curtas.<br>Exemplo na corrida: Treinos intervalados intensos ou ritmo de 5 km.</p></div>
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">🔥 8 – Muito, muito forte</h3><p class="text-gray-400 text-sm">Sensação: Intensidade elevada, quase insuportável por muito tempo. A respiração é muito ofegante e o corpo pede pausa.<br>Exemplo na corrida: Final de um treino intenso ou esforço de prova curta.</p></div>
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">💥 9 – Quase máximo</h3><p class="text-gray-400 text-sm">Sensação: Você está praticamente no seu limite físico. Consegue manter esse esforço por poucos minutos no máximo.<br>Exemplo na corrida: Sprint final em uma prova, esforço de 400 metros.</p></div>
-                <div class="card p-4 rounded-lg shadow-lg"><h3 class="font-bold text-lg mb-2 text-white">⚡ 10 – Máximo</h3><p class="text-gray-400 text-sm">Sensação: Esforço total. Seu corpo está no seu limite absoluto. É um esforço explosivo e insustentável por mais do que alguns segundos.<br>Exemplo na corrida: Sprint total, como em uma prova de 100 metros.</p></div>
             </div>
         </section>
 
@@ -303,21 +314,21 @@
 
     <!-- Página do Temporizador de Treino -->
     <div id="timer-app-page" class="timer-page hidden">
-        <h1 class="text-4xl md:text-5xl font-black main-title mb-8 text-center">TEMPORIZADOR DE TREINO</h1>
+        <h1 class="text-4xl md:text-5xl font-black main-title mb-8 text-center">TEMPORIZADOR</h1>
 
         <div class="config-section mb-8">
-            <h2 class="text-2xl font-bold text-white mb-4 text-center">Selecionar treino do plano</h2>
+            <h2 class="text-2xl font-bold text-white mb-4 text-center">Escolha o Treino de Hoje</h2>
             <div class="flex flex-col md:flex-row gap-4 mb-4">
                 <div class="flex-1">
-                    <label for="weekSelect" class="block text-gray-300 text-lg mb-2">Semana:</label>
+                    <label for="weekSelect" class="block text-gray-300 text-lg mb-2">Treino:</label>
                     <select id="weekSelect" class="w-full"></select>
                 </div>
             </div>
-            <button id="loadSelectedWorkoutBtn" class="nav-button w-full">Carregar treino selecionado</button>
+            <button id="loadSelectedWorkoutBtn" class="nav-button w-full">Carregar</button>
         </div>
 
         <div class="text-center mb-8">
-            <p class="phase-display" id="currentPhaseName">Pronto para iniciar</p>
+            <p class="phase-display" id="currentPhaseName">Pronto</p>
             <p class="timer-display text-gray-200" id="timeLeftDisplay">00:00</p>
             <p class="text-gray-400 text-lg mt-2" id="phaseInstructions"></p>
             <p class="set-display" id="currentSetDisplay">Série: 0/0</p>
@@ -327,7 +338,7 @@
             <button id="startBtn">Iniciar</button>
             <button id="pauseBtn" class="disabled-style">Pausar</button>
             <button id="resetBtn">Reiniciar</button>
-            <button id="skipBtn" class="disabled-style">Pular fase</button>
+            <button id="skipBtn" class="disabled-style">Pular</button>
             <button id="backToInfographicBtn">Voltar</button>
         </div>
     </div>
@@ -346,7 +357,7 @@
         let timeLeft = 0;
         let timerIntervalId = null;
         let isPaused = false;
-        let wakeLock = null; // Variável para o Wake Lock
+        let wakeLock = null;
 
         // --- Referências de Elementos HTML ---
         const mainInfographicPage = document.getElementById('main-infographic-page');
@@ -361,58 +372,73 @@
         const pauseBtn = document.getElementById('pauseBtn');
         const resetBtn = document.getElementById('resetBtn');
         const skipBtn = document.getElementById('skipBtn');
-        const weekSelect = document.getElementById('weekSelect'); // Renomeado de monthSelect
+        const weekSelect = document.getElementById('weekSelect');
         const loadSelectedWorkoutBtn = document.getElementById('loadSelectedWorkoutBtn');
 
-        // --- Geração de Fases do C25K ---
+        // --- Geração de Fases ---
         function generateC25KPhases(runMin, walkMin, rounds) {
             const phases = [];
             for (let i = 0; i < rounds; i++) {
-                phases.push({ name: `Corrida ${i + 1}/${rounds}`, duration: runMin * 60, intensity: 'Alta', description: 'Corra! PSE 6-7. BPM: 148-167' });
-                phases.push({ name: `Caminhada ${i + 1}/${rounds}`, duration: walkMin * 60, intensity: 'Baixa', description: 'Caminhe. PSE 3-4. BPM: 118-138' });
+                phases.push({ name: `Corrida ${i + 1}/${rounds}`, duration: runMin * 60, intensity: 'Alta', description: 'Corra! BPM alvo: 165-180+' });
+                phases.push({ name: `Caminhada ${i + 1}/${rounds}`, duration: walkMin * 60, intensity: 'Baixa', description: 'Recupere. BPM alvo: 135-155' });
             }
             return phases;
         }
 
-        function createWorkout(phases, warmupMin = 5, cooldownMin = 5) {
+        // --- Geração de HIIT ---
+        function generateHIITPhases() {
+            const phases = [];
+            // 15 minutos = 15 séries de 1 minuto (30s/30s)
+            for (let i = 0; i < 15; i++) {
+                phases.push({ name: `TIRO ${i + 1}/15`, duration: 30, intensity: 'Alta', description: 'Acelere MÁXIMO! Carga ou Velocidade.' });
+                phases.push({ name: `Recuperação ${i + 1}/15`, duration: 30, intensity: 'Baixa', description: 'Devagar para recuperar o fôlego.' });
+            }
+            return phases;
+        }
+
+        function createWorkout(phases, warmupMin = 5, cooldownMin = 5, type = 'Run') {
+            const warmupDesc = type === 'HIIT' ? 'Aquecimento na máquina (leve)' : 'Caminhada de aquecimento';
+            const cooldownDesc = type === 'HIIT' ? 'Desaquecimento (diminua o ritmo)' : 'Caminhada leve';
+            
             return [
-                { name: 'Aquecimento', duration: warmupMin * 60, intensity: 'Baixa', description: 'Caminhada para aquecer.' },
+                { name: 'Aquecimento', duration: warmupMin * 60, intensity: 'Baixa', description: warmupDesc },
                 ...phases,
-                { name: 'Desaquecimento', duration: cooldownMin * 60, intensity: 'Baixa', description: 'Caminhada leve.' }
+                { name: 'Desaquecimento', duration: cooldownMin * 60, intensity: 'Baixa', description: cooldownDesc }
             ];
         }
 
-        // --- Definição do Plano de Treino C25K (16 Semanas) ---
+        // --- Definição do Plano Completo ---
         const fullTrainingPlan = {
-            'Semana 1': createWorkout(generateC25KPhases(1, 2, 8)), // Mês 1
-            'Semana 2': createWorkout(generateC25KPhases(2, 2, 7)),
-            'Semana 3': createWorkout(generateC25KPhases(3, 2, 5)),
-            'Semana 4': createWorkout(generateC25KPhases(4, 2, 5)),
-            'Semana 5': createWorkout(generateC25KPhases(5, 2, 4)), // Mês 2
-            'Semana 6': createWorkout(generateC25KPhases(8, 2, 3)),
-            'Semana 7': createWorkout(generateC25KPhases(10, 2, 2)),
-            'Semana 8': createWorkout(generateC25KPhases(12, 2, 2)),
-            'Semana 9': createWorkout(generateC25KPhases(15, 1, 2)), // Mês 3
-            'Semana 10': createWorkout([
-                { name: 'Corrida Contínua', duration: 18 * 60, intensity: 'Alta', description: 'Corra! PSE 6-7. BPM: 148-167' }
+            'Treino HIIT (Seg/Qua/Sex)': createWorkout(generateHIITPhases(), 5, 5, 'HIIT'),
+            'Semana 1 (C25K)': createWorkout(generateC25KPhases(1, 2, 8)),
+            'Semana 2 (C25K)': createWorkout(generateC25KPhases(2, 2, 7)),
+            'Semana 3 (C25K)': createWorkout(generateC25KPhases(3, 2, 5)),
+            'Semana 4 (C25K)': createWorkout(generateC25KPhases(4, 2, 5)),
+            'Semana 5 (C25K)': createWorkout(generateC25KPhases(5, 2, 4)),
+            'Semana 6 (C25K)': createWorkout(generateC25KPhases(8, 2, 3)),
+            'Semana 7 (C25K)': createWorkout(generateC25KPhases(10, 2, 2)),
+            'Semana 8 (C25K)': createWorkout(generateC25KPhases(12, 2, 2)),
+            'Semana 9 (C25K)': createWorkout(generateC25KPhases(15, 1, 2)),
+            'Semana 10 (C25K)': createWorkout([
+                { name: 'Corrida Contínua', duration: 18 * 60, intensity: 'Alta', description: 'Mantenha ritmo constante.' }
             ]),
-            'Semana 11': createWorkout([
-                { name: 'Corrida Contínua', duration: 20 * 60, intensity: 'Alta', description: 'Corra! PSE 6-7. BPM: 148-167' }
+            'Semana 11 (C25K)': createWorkout([
+                { name: 'Corrida Contínua', duration: 20 * 60, intensity: 'Alta', description: 'Mantenha ritmo constante.' }
             ]),
-            'Semana 12': createWorkout([
-                { name: 'Corrida Contínua', duration: 22 * 60, intensity: 'Alta', description: 'Corra! PSE 6-7. BPM: 148-167' }
+            'Semana 12 (C25K)': createWorkout([
+                { name: 'Corrida Contínua', duration: 22 * 60, intensity: 'Alta', description: 'Mantenha ritmo constante.' }
             ]),
-            'Semana 13': createWorkout([ // Mês 4
-                { name: 'Corrida Contínua', duration: 25 * 60, intensity: 'Alta', description: 'Corra! PSE 6-7. BPM: 148-167' }
+            'Semana 13 (C25K)': createWorkout([
+                { name: 'Corrida Contínua', duration: 25 * 60, intensity: 'Alta', description: 'Mantenha ritmo constante.' }
             ]),
-            'Semana 14': createWorkout([
-                { name: 'Corrida Contínua', duration: 30 * 60, intensity: 'Alta', description: 'Corra! PSE 6-7. BPM: 148-167' }
+            'Semana 14 (C25K)': createWorkout([
+                { name: 'Corrida Contínua', duration: 30 * 60, intensity: 'Alta', description: 'Mantenha ritmo constante.' }
             ]),
-            'Semana 15': createWorkout([
-                { name: 'Corrida Contínua', duration: 35 * 60, intensity: 'Alta', description: 'Corra! PSE 6-7. BPM: 148-167' }
+            'Semana 15 (C25K)': createWorkout([
+                { name: 'Corrida Contínua', duration: 35 * 60, intensity: 'Alta', description: 'Mantenha ritmo constante.' }
             ]),
-            'Semana 16': createWorkout([
-                { name: 'Corrida Contínua', duration: 40 * 60, intensity: 'Alta', description: 'Corra! PSE 6-7. BPM: 148-167' }
+            'Semana 16 (C25K)': createWorkout([
+                { name: 'Corrida Contínua', duration: 40 * 60, intensity: 'Alta', description: 'Mantenha ritmo constante.' }
             ]),
         };
 
@@ -422,7 +448,7 @@
             timerAppPage.classList.remove('hidden');
             timerAppPage.style.display = 'flex';
             populateSelectors();
-            loadSelectedWorkout(); // Load default workout on open
+            loadSelectedWorkout(); 
         });
 
         backToInfographicBtn.addEventListener('click', () => {
@@ -432,7 +458,7 @@
             timerAppPage.style.display = 'none';
         });
 
-        // --- Funções de Configuração do Treino ---
+        // --- Configuração do Treino ---
         function populateSelectors() {
             weekSelect.innerHTML = '';
             Object.keys(fullTrainingPlan).forEach(week => {
@@ -449,21 +475,33 @@
                 workoutConfig = fullTrainingPlan[selectedWeek];
                 resetTimer();
             } else {
-                alert('Treino não encontrado para a seleção.');
+                if (weekSelect.options.length > 0) {
+                     weekSelect.selectedIndex = 0;
+                     workoutConfig = fullTrainingPlan[weekSelect.value];
+                     resetTimer();
+                }
             }
         }
         
         loadSelectedWorkoutBtn.addEventListener('click', () => {
             loadSelectedWorkout();
-            alert(`Treino da ${weekSelect.value} carregado!`);
+            // Feedback visual sutil em vez de alert
+            const btnOriginalText = loadSelectedWorkoutBtn.textContent;
+            loadSelectedWorkoutBtn.textContent = "Carregado!";
+            loadSelectedWorkoutBtn.classList.remove('bg-red-500');
+            loadSelectedWorkoutBtn.classList.add('bg-green-600');
+            setTimeout(() => {
+                loadSelectedWorkoutBtn.textContent = btnOriginalText;
+                loadSelectedWorkoutBtn.classList.add('bg-red-500');
+                loadSelectedWorkoutBtn.classList.remove('bg-green-600');
+            }, 1000);
         });
 
-        // --- Wake Lock (Manter a tela acesa) ---
+        // --- Wake Lock ---
         const requestWakeLock = async () => {
             if ('wakeLock' in navigator) {
                 try {
                     wakeLock = await navigator.wakeLock.request('screen');
-                    console.log('Wake Lock ativado!');
                 } catch (err) {
                     console.error(`${err.name}, ${err.message}`);
                 }
@@ -474,20 +512,31 @@
             if (wakeLock !== null) {
                 await wakeLock.release();
                 wakeLock = null;
-                console.log('Wake Lock liberado.');
             }
         };
 
-        // --- Funções do Temporizador ---
+        // --- Timer Engine ---
         function applyTimerColor(intensity) {
             timeLeftDisplay.classList.remove('text-green-500', 'text-yellow-500', 'text-red-500', 'text-gray-200');
             currentPhaseName.classList.remove('text-green-500', 'text-yellow-500', 'text-red-500');
 
             switch (intensity) {
-                case 'Baixa': timeLeftDisplay.classList.add('text-green-500'); currentPhaseName.classList.add('text-green-500'); break;
-                case 'Moderada': timeLeftDisplay.classList.add('text-yellow-500'); currentPhaseName.classList.add('text-yellow-500'); break;
-                case 'Alta': timeLeftDisplay.classList.add('text-red-500'); currentPhaseName.classList.add('text-red-500'); break;
-                default: timeLeftDisplay.classList.add('text-gray-200'); currentPhaseName.classList.add('text-gray-200'); break;
+                case 'Baixa': 
+                    timeLeftDisplay.classList.add('text-green-500'); 
+                    currentPhaseName.classList.add('text-green-500'); 
+                    break;
+                case 'Moderada': 
+                    timeLeftDisplay.classList.add('text-yellow-500'); 
+                    currentPhaseName.classList.add('text-yellow-500'); 
+                    break;
+                case 'Alta': 
+                    timeLeftDisplay.classList.add('text-red-500'); 
+                    currentPhaseName.classList.add('text-red-500'); 
+                    break;
+                default: 
+                    timeLeftDisplay.classList.add('text-gray-200'); 
+                    currentPhaseName.classList.add('text-gray-200'); 
+                    break;
             }
         }
 
@@ -502,7 +551,7 @@
                 phaseInstructions.textContent = currentPhase.description || '';
                 applyTimerColor(currentPhase.intensity);
             } else {
-                currentPhaseName.textContent = "Nenhuma Fase";
+                currentPhaseName.textContent = "Fim";
                 phaseInstructions.textContent = "";
                 applyTimerColor(null);
             }
@@ -520,7 +569,7 @@
                 pauseBtn.classList.add('disabled-style');
                 skipBtn.classList.add('disabled-style');
                 applyTimerColor(null);
-                releaseWakeLock(); // Liberar a tela ao final
+                releaseWakeLock();
                 return;
             }
             timeLeft = workoutConfig[currentPhaseIndex].duration;
@@ -528,11 +577,9 @@
         }
 
         function startTimer() {
-            // Cláusula de guarda: não faz nada se o timer já estiver rodando
             if (timerIntervalId) return; 
             
-            requestWakeLock(); // Ativar bloqueio de tela
-
+            requestWakeLock();
             startBtn.classList.add('disabled-style');
             pauseBtn.classList.remove('disabled-style');
             skipBtn.classList.remove('disabled-style');
@@ -549,7 +596,6 @@
                     timeLeft--;
                     updateDisplay();
                 }
-
                 if (timeLeft <= 0) {
                     nextPhase();
                 }
@@ -557,7 +603,6 @@
         }
 
         function pauseTimer() {
-            // Cláusula de guarda: não faz nada se já estiver pausado
             if (isPaused || !timerIntervalId) return; 
 
             clearInterval(timerIntervalId);
@@ -565,7 +610,7 @@
             isPaused = true;
             startBtn.classList.remove('disabled-style');
             pauseBtn.classList.add('disabled-style');
-            releaseWakeLock(); // Liberar a tela ao pausar
+            releaseWakeLock();
         }
 
         function resetTimer() {
@@ -579,7 +624,7 @@
             pauseBtn.classList.add('disabled-style');
             skipBtn.classList.add('disabled-style');
             applyTimerColor(null);
-            releaseWakeLock(); // Liberar a tela ao reiniciar
+            releaseWakeLock();
         }
         
         function skipPhase() {
@@ -587,31 +632,25 @@
             nextPhase();
         }
 
-        // --- Event Listeners ---
+        // --- Eventos ---
         startBtn.addEventListener('click', startTimer);
         pauseBtn.addEventListener('click', pauseTimer);
         resetBtn.addEventListener('click', resetTimer);
         skipBtn.addEventListener('click', skipPhase);
         
-        // Re-adquirir o wake lock se a aba ficar visível novamente
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible' && timerIntervalId !== null) {
                 requestWakeLock();
             }
         });
 
-        // --- Correção Adicional para Zoom (Duplo Toque no iOS) ---
-        // Adiciona o listener de 'dblclick' diretamente aos botões.
-        // Como não estamos mais usando 'disabled', os botões sempre
-        // poderão capturar o evento e prevenir o zoom.
         document.querySelectorAll('button').forEach(button => {
             button.addEventListener('dblclick', (event) => {
                 event.preventDefault();
             });
         });
 
-
-        // --- Lógica dos Gráficos ---
+        // --- Gráficos ---
         const commonChartOptions = {
             maintainAspectRatio: false,
             responsive: true,
@@ -623,22 +662,20 @@
         };
 
         const runBlockData = {
-            labels: ['Mês 1 (S4)', 'Mês 2 (S8)', 'Mês 3 (S12)', 'Mês 4 (S16)'],
-            datasets: [
-                {
-                    label: 'Bloco máximo de corrida (min)',
-                    data: [4, 12, 22, 40],
-                    backgroundColor: 'rgba(239, 68, 68, 0.7)',
-                    borderColor: '#EF4444',
-                    borderWidth: 1
-                }
-            ]
+            labels: ['Mês 1', 'Mês 2', 'Mês 3', 'Mês 4'],
+            datasets: [{
+                label: 'Bloco máximo (min)',
+                data: [4, 12, 22, 40],
+                backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                borderColor: '#EF4444',
+                borderWidth: 1
+            }]
         };
 
         const totalRunVolumeData = {
-            labels: ['Mês 1 (S4)', 'Mês 2 (S8)', 'Mês 3 (S12)', 'Mês 4 (S16)'],
+            labels: ['Mês 1', 'Mês 2', 'Mês 3', 'Mês 4'],
             datasets: [{
-                label: 'Volume total de corrida (min)',
+                label: 'Volume total (min)',
                 data: [20, 24, 22, 40],
                 borderColor: '#EF4444',
                 backgroundColor: 'rgba(239, 68, 68, 0.2)',
@@ -647,18 +684,18 @@
             }]
         };
 
-        // --- Inicialização ---
+        // --- Init ---
         document.addEventListener('DOMContentLoaded', () => {
             new Chart(document.getElementById('runBlockChart'), {
                 type: 'bar',
                 data: runBlockData,
-                options: { ...commonChartOptions, scales: { ...commonChartOptions.scales, y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Minutos', color: '#9CA3AF' } } } }
+                options: commonChartOptions
             });
             
             new Chart(document.getElementById('totalRunVolumeChart'), {
                 type: 'line',
                 data: totalRunVolumeData,
-                options: { ...commonChartOptions, scales: { ...commonChartOptions.scales, y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Minutos', color: '#9CA3AF' } } } }
+                options: commonChartOptions
             });
 
             populateSelectors();
