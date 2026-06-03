@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HIITS da Michele</title>
+    <title>HIITs da Michele</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -261,6 +261,27 @@
             70% { box-shadow: 0 0 0 15px rgba(244, 63, 94, 0); }
             100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
         }
+
+        /* Seção Expansível (Accordion) */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+        }
+        .accordion-content.open {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-inner {
+            overflow: hidden;
+        }
+        .guide-badge {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 12px;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-rose-500/30">
@@ -313,7 +334,7 @@
                 <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
                     <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">🛡️</div>
                     <h3 class="font-bold text-lg mb-2 text-white">Impacto zero</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">A bicicleta poupa as articulações, permitindo focar todo o esforço no sistema cardiovascular sem gerar dores.</p>
+                    <p class="text-slate-400 text-sm leading-relaxed">A bicicleta poupa as articulações, permitindo focar todo o esforço no sistema cardiovascular minimizando as dores.</p>
                 </div>
                 <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
                     <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">⚡</div>
@@ -323,7 +344,7 @@
                 <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
                     <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">🔥</div>
                     <h3 class="font-bold text-lg mb-2 text-white">Estrutura precisa</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Blocos com 4 minutos para aquecer, estímulos curtos e violentos, e 4 minutos para limpar o lactato.</p>
+                    <p class="text-slate-400 text-sm leading-relaxed">Blocos com 4 minutos para aquecer, estímulos curtos e intensos, e 4 minutos para limpar o lactato.</p>
                 </div>
                 <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
                     <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">⏱️</div>
@@ -369,7 +390,7 @@
                 <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
             </div>
             <p class="text-center max-w-2xl mx-auto mb-16 text-slate-400 font-light">
-                A cada três semanas o estímulo sofre ajustes para evitar o platô, forçando o corpo a gerar novas adaptações cardiometabólicas.
+                A cada três semanas o estímulo sofre ajustes visando uma progressão gradual, forçando o corpo a gerar novas adaptações cardiometabólicas.
             </p>
             
             <!-- Timeline Vertical Premium -->
@@ -503,6 +524,50 @@
             </div>
         </section>
 
+        <!-- NOVO: Seção Expansível PSE e Zonas -->
+        <section class="mb-16 max-w-4xl mx-auto fade-in-up" style="animation-delay: 0.35s;">
+            <button id="toggleGuideBtn" class="w-full flex items-center justify-between premium-card p-5 md:p-6 rounded-2xl text-left hover:border-rose-500/30 transition-colors group">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">🧠</div>
+                    <div>
+                        <h3 class="text-lg md:text-xl font-bold text-white mb-1">Escala de percepção (PSE) e Zonas de treinamento</h3>
+                        <p class="text-slate-400 text-xs md:text-sm font-medium">Clique para entender como medir a intensidade do seu esforço.</p>
+                    </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 transition-transform duration-300" id="guideIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                </div>
+            </button>
+            <div id="guideContent" class="accordion-content mt-3 premium-card rounded-2xl">
+                <div class="accordion-inner p-6 md:p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-white font-bold mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-rose-500"></span>Zonas de treinamento (Fisiologia)</h4>
+                            <p class="text-slate-400 text-sm mb-4 leading-relaxed">Modelo científico de 5 zonas baseado na frequência cardíaca e metabolismo.</p>
+                            <div class="space-y-2 text-sm">
+                                <div class="guide-badge"><span class="font-bold text-slate-300">Z1 (Regenerativa):</span> Esforço muito leve. Limpeza de metabólitos.</div>
+                                <div class="guide-badge"><span class="font-bold text-sky-400">Z2 (Endurance):</span> Esforço leve. Base aeróbica e queima de gordura.</div>
+                                <div class="guide-badge"><span class="font-bold text-amber-400">Z3 (Tempo):</span> Esforço moderado. Limiar aeróbico.</div>
+                                <div class="guide-badge"><span class="font-bold text-rose-400">Z4 (Limiar):</span> Esforço difícil. Tolerância ao lactato (onde o HIIT ocorre).</div>
+                                <div class="guide-badge"><span class="font-bold text-rose-600">Z5 (VO2 Máximo):</span> Esforço máximo. Sprint, potência pura.</div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-rose-500"></span>Escala PSE - Borg CR10</h4>
+                            <p class="text-slate-400 text-sm mb-4 leading-relaxed">Avaliação subjetiva: como você sente o esforço na respiração e fadiga.</p>
+                            <div class="space-y-2 text-sm">
+                                <div class="guide-badge"><span class="font-bold text-slate-300">0 a 2:</span> Extremamente leve a leve (falar normalmente).</div>
+                                <div class="guide-badge"><span class="font-bold text-sky-400">3 a 4:</span> Moderado (falar com ligeira dificuldade).</div>
+                                <div class="guide-badge"><span class="font-bold text-amber-400">5 a 6:</span> Pesado (falar requer fôlego).</div>
+                                <div class="guide-badge"><span class="font-bold text-rose-400">7 a 8:</span> Muito pesado (falar apenas palavras soltas).</div>
+                                <div class="guide-badge"><span class="font-bold text-rose-600">9 a 10:</span> Máximo (incapaz de falar, fadiga extrema).</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <div class="text-center mt-20 mb-8 relative z-10 fade-in-up" style="animation-delay: 0.4s;">
             <button id="goToTimerBtn" class="btn-super">
                 Acessar player de treino
@@ -512,7 +577,7 @@
         </div>
 
         <footer class="text-center mt-24 pt-8 border-t border-white/5 pb-10">
-            <p class="text-slate-600 text-sm font-medium">Sistema exclusivo desenvolvido para alunos DMX © <span id="currentYear"></span></p>
+            <p class="text-slate-600 text-sm font-medium">Sistema desenvolvido exclusivamente para alunos DMX © <span id="currentYear"></span></p>
         </footer>
     </div>
 
@@ -559,17 +624,26 @@
                     </div>
 
                     <!-- Centro: O Anel -->
-                    <div class="timer-container" id="timerCircleBox">
-                        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
-                            <!-- Fundo do anel -->
-                            <circle class="text-slate-800 stroke-current" stroke-width="1.5" cx="50" cy="50" r="47" fill="transparent"></circle>
-                            <!-- Progresso (Dinâmico) -->
-                            <circle id="progressRing" class="text-slate-600 stroke-current progress-ring__circle drop-shadow-lg" stroke-width="2" stroke-linecap="round" cx="50" cy="50" r="47" fill="transparent" stroke-dasharray="295.31" stroke-dashoffset="0"></circle>
-                        </svg>
+                    <div class="flex flex-col items-center">
+                        <div class="timer-container !my-0" id="timerCircleBox">
+                            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                                <!-- Fundo do anel -->
+                                <circle class="text-slate-800 stroke-current" stroke-width="1.5" cx="50" cy="50" r="47" fill="transparent"></circle>
+                                <!-- Progresso (Dinâmico) -->
+                                <circle id="progressRing" class="text-slate-600 stroke-current progress-ring__circle drop-shadow-lg" stroke-width="2" stroke-linecap="round" cx="50" cy="50" r="47" fill="transparent" stroke-dasharray="295.31" stroke-dashoffset="0"></circle>
+                            </svg>
 
-                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
-                            <p class="phase-display text-glow" id="phaseName">CARREGAR TREINO</p>
-                            <p class="timer-display" id="timeDisplay">20:00</p>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
+                                <p class="phase-display text-glow" id="phaseName">CARREGAR TREINO</p>
+                                <p class="timer-display" id="timeDisplay">20:00</p>
+                            </div>
+                        </div>
+                        
+                        <!-- NOVO: Indicador de Zona no Desktop (Centralizado abaixo do relógio) -->
+                        <div class="hidden md:flex mt-6 bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 rounded-full px-6 py-2.5 gap-4 shadow-lg transition-colors" id="targetBadgeDesktop">
+                            <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest">Alvo: <span id="targetZone" class="text-slate-200">--</span></p>
+                            <div class="w-px bg-slate-600"></div>
+                            <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest">PSE: <span id="targetPse" class="text-slate-200">--</span></p>
                         </div>
                     </div>
 
@@ -593,6 +667,13 @@
                         </div>
                         <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Diretriz de pedal</p>
                         <p id="instructionTextMobile" class="text-sm text-slate-300 leading-relaxed font-medium max-w-[300px]">Selecione uma semana e inicie.</p>
+                        
+                        <!-- NOVO: Indicador de Zona no Mobile -->
+                        <div class="flex mt-5 bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 rounded-xl px-4 py-3 gap-4 shadow-lg w-full max-w-[280px] justify-center transition-colors" id="targetBadgeMobile">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Alvo: <span id="targetZoneMobile" class="text-slate-200">--</span></p>
+                            <div class="w-px bg-slate-600"></div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">PSE: <span id="targetPseMobile" class="text-slate-200">--</span></p>
+                        </div>
                     </div>
                 </div>
 
@@ -643,6 +724,13 @@
         const setCounterMobile = document.getElementById('setCounterMobile');
         const instructionText = document.getElementById('instructionText');
         const instructionTextMobile = document.getElementById('instructionTextMobile');
+
+        const targetZone = document.getElementById('targetZone');
+        const targetPse = document.getElementById('targetPse');
+        const targetZoneMobile = document.getElementById('targetZoneMobile');
+        const targetPseMobile = document.getElementById('targetPseMobile');
+        const targetBadgeDesktop = document.getElementById('targetBadgeDesktop');
+        const targetBadgeMobile = document.getElementById('targetBadgeMobile');
 
         const btnStart = document.getElementById('btnStart');
         const btnPause = document.getElementById('btnPause');
@@ -757,7 +845,8 @@
             sequence.push({
                 type: 'warmup', name: 'AQUECIMENTO',
                 duration: 240, set: 0,
-                instruction: 'Giro leve e solto. Vá elevando o giro gradualmente para aquecer o corpo.'
+                instruction: 'Giro leve e solto. Vá elevando o giro gradualmente para aquecer o corpo.',
+                targetZone: 'Z1 a Z2', targetPse: '3-4'
             });
 
             // Tiros (Intervalos)
@@ -767,12 +856,14 @@
                     duration: workSecs, set: i,
                     instruction: isStrength 
                         ? 'Subida pesada! Carga alta, segure firme no guidão (70-80 RPM).' 
-                        : 'Sprint! Carga leve/moderada. Acelere o giro o mais rápido que puder!'
+                        : 'Sprint! Carga leve/moderada. Acelere o giro o mais rápido que puder!',
+                    targetZone: 'Z4 a Z5', targetPse: '8-10'
                 });
                 sequence.push({
                     type: 'rest', name: 'RECUPERAÇÃO',
                     duration: restSecs, set: i,
-                    instruction: 'Tire toda a carga. Respire profundamente e mantenha a perna girando devagar.'
+                    instruction: 'Tire toda a carga. Respire profundamente e mantenha a perna girando devagar.',
+                    targetZone: 'Z1 a Z2', targetPse: '1-3'
                 });
             }
 
@@ -780,7 +871,8 @@
             sequence.push({
                 type: 'cooldown', name: 'DESAQUECIMENTO',
                 duration: 240, set: sets,
-                instruction: 'Treino feito! Apenas gire as pernas bem leve até a frequência cardíaca baixar.'
+                instruction: 'Treino feito! Apenas gire as pernas bem leve até a frequência cardíaca baixar.',
+                targetZone: 'Z1', targetPse: '1-2'
             });
 
             return { sequence, sets };
@@ -853,19 +945,27 @@
                 phaseName.style.textShadow = '0 0 15px rgba(244,63,94,0.6)';
                 txtColor = '#f43f5e';
                 status = 'Alta intensidade';
+                targetBadgeDesktop.style.borderColor = 'rgba(244,63,94,0.3)';
+                targetBadgeMobile.style.borderColor = 'rgba(244,63,94,0.3)';
             } else if (type === 'rest') {
                 ringColor = 'text-sky-400';
                 timerCircleBox.style.borderColor = 'rgba(56,189,248,0.3)';
                 txtColor = '#38bdf8';
                 status = 'Recuperando';
+                targetBadgeDesktop.style.borderColor = 'rgba(56,189,248,0.3)';
+                targetBadgeMobile.style.borderColor = 'rgba(56,189,248,0.3)';
             } else if (type === 'warmup' || type === 'cooldown') {
                 ringColor = 'text-amber-400';
                 txtColor = '#fbbf24';
                 status = type === 'warmup' ? 'Aquecendo' : 'Resfriando';
+                targetBadgeDesktop.style.borderColor = 'rgba(251,191,36,0.3)';
+                targetBadgeMobile.style.borderColor = 'rgba(251,191,36,0.3)';
             } else if (type === 'done') {
                 ringColor = 'text-emerald-400';
                 txtColor = '#10b981';
                 status = 'Concluído';
+                targetBadgeDesktop.style.borderColor = 'var(--border-subtle)';
+                targetBadgeMobile.style.borderColor = 'var(--border-subtle)';
             }
 
             progressRing.classList.add(ringColor);
@@ -874,6 +974,11 @@
             statusText.style.color = txtColor;
             statusTextMobile.textContent = status;
             statusTextMobile.style.color = txtColor;
+            
+            targetZone.style.color = txtColor;
+            targetPse.style.color = txtColor;
+            targetZoneMobile.style.color = txtColor;
+            targetPseMobile.style.color = txtColor;
         }
 
         function updateScreen() {
@@ -889,6 +994,11 @@
                 const setStr = phase.set === 0 ? '--' : `${phase.set}/${totalSetsCount}`;
                 setCounter.textContent = setStr;
                 setCounterMobile.textContent = setStr;
+                
+                targetZone.textContent = phase.targetZone || '--';
+                targetPse.textContent = phase.targetPse || '--';
+                targetZoneMobile.textContent = phase.targetZone || '--';
+                targetPseMobile.textContent = phase.targetPse || '--';
                 
                 applyTheme(phase.type);
 
@@ -1007,6 +1117,22 @@
         };
 
         btnReset.onclick = resetTimerSystem;
+
+        // Lógica do Accordion da Escala PSE
+        const toggleGuideBtn = document.getElementById('toggleGuideBtn');
+        const guideContent = document.getElementById('guideContent');
+        const guideIcon = document.getElementById('guideIcon');
+
+        if(toggleGuideBtn) {
+            toggleGuideBtn.addEventListener('click', () => {
+                guideContent.classList.toggle('open');
+                if (guideContent.classList.contains('open')) {
+                    guideIcon.style.transform = 'rotate(180deg)';
+                } else {
+                    guideIcon.style.transform = 'rotate(0deg)';
+                }
+            });
+        }
 
         // 7. Navegação de Páginas
         goToTimerBtn.onclick = () => {
