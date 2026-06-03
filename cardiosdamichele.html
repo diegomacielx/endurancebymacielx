@@ -3,1427 +3,1119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infográfico: Periodização HIIT de 8 Semanas</title>
+    <title>HIITS da Michele</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --primary: #f43f5e; /* Rose 500 para um vermelho mais sofisticado */
+            --primary-dark: #be123c; /* Rose 700 */
+            --bg-base: #020617; /* Slate 950 ultra escuro */
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(15, 23, 42, 0.6);
+        }
+
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #000000;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(244, 63, 94, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.03) 0%, transparent 50%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
-        .main-title {
-            color: #EF4444;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+
+        /* Estética Premium: Glassmorphism e Sombras suaves */
+        .premium-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .card {
-            background-color: #1F2937;
-            border-left: 4px solid #EF4444;
+        
+        .premium-card:hover {
+            border-color: rgba(244, 63, 94, 0.3);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.7), 0 0 20px rgba(244, 63, 94, 0.1);
+            transform: translateY(-2px);
         }
-        .icon {
-            color: #EF4444;
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(244, 63, 94, 0.5);
         }
+        
+        .title-gradient {
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-        /* Estilos para o botão de navegação */
-        .nav-button {
-            background-color: #EF4444;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 9999px;
-            font-weight: 700;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            display: inline-block;
-            margin-top: 2rem;
-        }
-        .nav-button:hover {
-            background-color: #DC2626;
+            height: 320px;
         }
 
-        /* Estilos para a página do temporizador */
-        .timer-page {
-            display: none; /* Escondido por padrão */
+        /* Botão principal com design de ponta */
+        .btn-super {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 16px 36px;
+            border-radius: 9999px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 30px -5px rgba(244, 63, 94, 0.5), inset 0 2px 4px rgba(255,255,255,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-super:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 15px 35px -5px rgba(244, 63, 94, 0.6), inset 0 2px 4px rgba(255,255,255,0.3);
+        }
+
+        /* Páginas */
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .page.active {
+            display: flex;
+            opacity: 1;
+            flex-direction: column;
+        }
+
+        /* Timer visual ultra limpo */
+        .timer-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 1rem;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-subtle);
+            margin: 2rem auto;
+            transition: all 0.4s ease;
+        }
+        
+        @media (min-width: 768px) {
+            .timer-container {
+                width: 420px;
+                height: 420px;
+            }
         }
 
         .timer-display {
-            font-size: 5rem;
-            font-weight: 900;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
-            margin-bottom: 1rem;
+            font-size: 5.5rem;
+            font-weight: 300; /* Mais fino, estilo smartwatch */
+            letter-spacing: -0.04em;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 0.5rem;
+            color: #fff;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display { font-size: 7.5rem; }
         }
 
         .phase-display {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #D1D5DB;
-            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
         }
 
-        .set-display {
-            font-size: 1.5rem;
-            color: #9CA3AF;
-            margin-bottom: 2rem;
-        }
-
-        .timer-controls button {
-            background-color: #1F2937;
-            color: #EF4444;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 700;
-            margin: 0.5rem;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            border: 2px solid #EF4444;
-        }
-        .timer-controls button:hover:not(:disabled) {
-            background-color: #EF4444;
-            color: white;
-        }
-        .timer-controls button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .config-section {
-            background-color: #1F2937;
-            padding: 1.5rem;
+        /* Controles do player */
+        .controls-wrapper button {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 12px 24px;
             border-radius: 12px;
-            margin-top: 2rem;
-            width: 100%;
-            max-width: 700px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            border: 1px solid #EF4444;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .phase-item {
+        .controls-wrapper button:hover:not(:disabled) {
+            background: rgba(51, 65, 85, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .controls-wrapper button.btn-action {
+            background: var(--primary);
+            border-color: var(--primary-dark);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3);
+        }
+        
+        .controls-wrapper button.btn-action:hover:not(:disabled) {
+            background: var(--primary-dark);
+            box-shadow: 0 8px 25px rgba(244, 63, 94, 0.5);
+        }
+
+        .controls-wrapper button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Select customizado */
+        select {
+            background-color: rgba(15, 23, 42, 0.8);
+            color: white;
+            border: 1px solid var(--border-subtle);
+            padding: 0.875rem 1rem;
+            border-radius: 12px;
+            width: 100%;
+            transition: all 0.2s;
+            font-size: 1rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2em;
+        }
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.2);
+        }
+
+        /* Sistema de Toasts (Notificações) */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-left: 4px solid #10b981;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            z-index: 100;
             display: flex;
-            flex-wrap: wrap;
-            gap: 1rem; /* Espaçamento entre os itens */
-            align-items: flex-end; /* Alinha os itens pela base */
-            margin-bottom: 1rem;
-            padding: 0.75rem;
-            background-color: #2D3748;
-            border-radius: 8px;
-            border: 1px solid #4A5568;
+            align-items: center;
+            gap: 1rem;
+            transform: translateY(150%) scale(0.9);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .phase-item > div { /* Estilo para os divs que envolvem label e input */
-            display: flex;
-            flex-direction: column;
+        .toast.show {
+            transform: translateY(0) scale(1);
+            opacity: 1;
         }
-        .phase-item input[type="text"],
-        .phase-item input[type="number"],
-        .config-section select {
-            background-color: #4A5568;
-            color: white;
-            border: 1px solid #6B7280;
-            padding: 0.5rem;
-            border-radius: 4px;
-            flex-grow: 1; /* Permite que cresçam */
+
+        /* SVG Circle progress */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 1s linear;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
         }
-        .phase-item button {
-            background-color: #EF4444;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
+
+        /* Animações vitais */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
         }
-        .phase-item button:hover {
-            background-color: #DC2626;
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
         }
-        .add-phase-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 700;
-            margin-top: 1rem;
-            transition: background-color 0.3s ease;
+        
+        .pulse-border {
+            animation: pulseGlow 2s infinite;
         }
-        .add-phase-btn:hover {
-            background-color: #45a049;
-        }
-        .save-load-buttons button {
-            background-color: #3B82F6;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 700;
-            margin: 0.5rem;
-            transition: background-color 0.3s ease;
-        }
-        .save-load-buttons button:hover {
-            background-color: #2563EB;
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(244, 63, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
         }
     </style>
 </head>
-<body class="text-gray-200">
+<body class="antialiased selection:bg-rose-500/30">
 
-    <!-- Página do Infográfico Principal -->
-    <div id="main-infographic-page" class="container mx-auto p-4 md:p-8">
+    <div id="toastNotification" class="toast">
+        <span class="text-2xl" id="toastIcon">✅</span>
+        <span class="font-medium text-white text-sm" id="toastMessage">Ação realizada com sucesso.</span>
+    </div>
 
-        <header class="mb-12">
-            <div class="w-full">
-                <div class="mb-12 text-center">
-                    <img id="userLogo" src="https://i.imgur.com/rLLYQ3Z.png" alt="Sua Logo" class="inline-block rounded-lg shadow-md" style="max-width: 150px; height: auto;">
-                    <p class="text-xl font-bold text-white mt-2">Consultoria Esportiva Premium</p>
+    <div id="main-page" class="page active container mx-auto p-4 md:p-8 max-w-6xl">
+
+        <!-- Header -->
+        <header class="mb-16 fade-in-up">
+            <div class="w-full flex flex-col md:flex-row justify-between items-center premium-card p-6 md:p-8 rounded-3xl mb-12">
+                <div class="text-center md:text-left mb-6 md:mb-0 flex flex-col md:flex-row items-center gap-6">
+                    <!-- Logo aumentada e texto alinhado -->
+                    <img id="userLogo" src="https://i.imgur.com/rLLYQ3Z.png" alt="Logo DMX" class="h-20 md:h-24 w-auto object-contain drop-shadow-lg" onerror="this.src='https://placehold.co/150x50/1e293b/f8fafc?text=DMX'">
+                    <div class="mt-2 md:mt-0 flex items-center">
+                        <h2 class="text-lg md:text-xl font-bold text-rose-500 uppercase tracking-widest">DMX PERFORMANCE & FIT</h2>
+                    </div>
                 </div>
-                <div class="text-left mb-10">
-                    <p class="text-md md:text-lg text-gray-400">Aluna: Michele Malfacini Lima</p>
-                    <p class="text-md md:text-lg text-gray-400">Objetivo: Melhoria da capacidade cardiovascular</p>
+                <div class="text-center md:text-right">
+                    <p class="text-lg text-white font-medium mb-2">Aluno(a): <span class="font-bold text-white">Michele Malfacini Lima</span></p>
+                    <div class="flex flex-wrap justify-center md:justify-end gap-2 text-xs font-semibold">
+                        <span class="bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">Nível iniciante a interm.</span>
+                        <span class="bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">2x semana</span>
+                    </div>
                 </div>
             </div>
-            <div class="text-center mt-8">
-                <h1 class="text-4xl md:text-6xl font-black main-title mb-2">SUA JORNADA HIIT DE 8 SEMANAS</h1>
-                <p class="text-lg md:text-xl text-gray-300">Visualize sua evolução e conquiste seu melhor condicionamento físico.</p>
+            
+            <div class="text-center mt-8 space-y-6">
+                <div class="inline-block bg-rose-500/10 text-rose-400 font-bold px-4 py-1.5 rounded-full border border-rose-500/20 text-xs uppercase tracking-widest">
+                    Protocolo científico de resistência
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black title-gradient mb-2 tracking-tight">HIIT Spinning</h1>
+                <p class="text-xl md:text-2xl text-slate-400 font-light max-w-2xl mx-auto leading-relaxed">
+                    Sua jornada otimizada. Duas sessões semanais intensas com a precisão de exatos 20 minutos.
+                </p>
             </div>
         </header>
 
-        <section id="understanding" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">Entendendo Seu Treino</h2>
+        <section class="mb-24 fade-in-up" style="animation-delay: 0.1s;">
+            <div class="flex items-center justify-center gap-4 mb-12">
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+                <h2 class="text-2xl font-bold text-center text-white tracking-wide">A ciência do seu treino</h2>
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+            </div>
+            
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">🔥</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Estímulo</h3>
-                    <p class="text-gray-400">Esforço máximo! Sua respiração fica ofegante e a fala difícil. (PSE 8-9)</p>
+                <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">🛡️</div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Impacto zero</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">A bicicleta poupa as articulações, permitindo focar todo o esforço no sistema cardiovascular sem gerar dores.</p>
                 </div>
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">💧</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Recuperação Ativa</h3>
-                    <p class="text-gray-400">Diminua o ritmo para recuperar o fôlego, mas não pare completamente. (PSE 4-5)</p>
+                <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">⚡</div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Variação metabólica</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Alternância estratégica: cadência rápida às terças e força bruta às quintas para máxima adaptação.</p>
                 </div>
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">🌡️</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Aquecimento</h3>
-                    <p class="text-gray-400">3 minutos de atividade leve para preparar o corpo para o esforço.</p>
+                <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">🔥</div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Estrutura precisa</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Blocos com 4 minutos para aquecer, estímulos curtos e violentos, e 4 minutos para limpar o lactato.</p>
                 </div>
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">🧘</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Desaquecimento</h3>
-                    <p class="text-gray-400">3 minutos de atividade suave para normalizar a frequência cardíaca.</p>
+                <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">⏱️</div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Micro-doses</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Evidências apontam que 20 minutos bem estruturados geram resultados superiores a horas de treino leve.</p>
                 </div>
             </div>
         </section>
         
-        <section id="progression" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">A Progressão da Sua Jornada</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-4 text-center text-white">Evolução da Duração Total do Treino</h3>
+        <section class="mb-24 fade-in-up" style="animation-delay: 0.2s;">
+            <div class="flex items-center justify-center gap-4 mb-12">
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+                <h2 class="text-2xl font-bold text-center text-white tracking-wide">A evolução programada</h2>
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="premium-card p-6 md:p-8 rounded-3xl">
+                    <div class="mb-6">
+                        <h3 class="font-bold text-lg text-white">Tempo de treino fixo</h3>
+                        <p class="text-slate-400 text-sm mt-1">A duração total é ancorada em 20 minutos, alterando apenas a densidade interna.</p>
+                    </div>
                     <div class="chart-container">
                         <canvas id="durationChart"></canvas>
                     </div>
-                     <p class="text-center text-gray-400 mt-4">Seu treino evolui em duração total ao longo das semanas, construindo sua resistência aeróbica de forma gradual e consistente.</p>
                 </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-4 text-center text-white">Intensidade: Estímulo vs. Recuperação</h3>
+                <div class="premium-card p-6 md:p-8 rounded-3xl">
+                     <div class="mb-6">
+                        <h3 class="font-bold text-lg text-white">Estímulo vs. recuperação</h3>
+                        <p class="text-slate-400 text-sm mt-1">O tempo sob tensão aumenta progressivamente a cada nova fase do ciclo.</p>
+                    </div>
                     <div class="chart-container">
                         <canvas id="intensityChart"></canvas>
                     </div>
-                     <p class="text-center text-gray-400 mt-4">Observe como o tempo de estímulo aumenta e a recuperação se torna mais desafiadora ao longo das semanas.</p>
                 </div>
             </div>
         </section>
 
-        <section id="weekly-breakdown" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">Estrutura Semanal do HIIT</h2>
-            <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">Cada semana tem uma estrutura de estímulo e recuperação específica. Alterne os treinos entre <span class="font-bold text-red-500">Esteira</span> e <span class="font-bold text-red-500">Escada</span>, 4 vezes por semana.</p>
+        <section class="mb-24 fade-in-up" style="animation-delay: 0.3s;">
+            <div class="flex items-center justify-center gap-4 mb-6">
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+                <h2 class="text-2xl font-bold text-center text-white tracking-wide">Periodização de 12 semanas</h2>
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+            </div>
+            <p class="text-center max-w-2xl mx-auto mb-16 text-slate-400 font-light">
+                A cada três semanas o estímulo sofre ajustes para evitar o platô, forçando o corpo a gerar novas adaptações cardiometabólicas.
+            </p>
             
-            <div class="space-y-8">
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">🔥</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Semanas 1-2: Fase de Adaptação</h3>
-                    <p class="text-gray-400">
-                        Semana 1: Realize 4 ciclos completos (20s Estímulo / 70s Rec.). Duração total do HIIT: 6 minutos.
-                        <br><br>
-                        Semana 2: Aumente para 5 ciclos completos (20s Estímulo / 60s Rec.). Duração total do HIIT: 6 minutos e 40 segundos.
-                    </p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">📈</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Semanas 3-4: Aumento de Duração</h3>
-                    <p class="text-gray-400">
-                        Semana 3: Realize 6 ciclos completos (30s Estímulo / 60s Rec.). Duração total do HIIT: 9 minutos.
-                        <br><br>
-                        Semana 4: Aumente para 7 ciclos completos (30s Estímulo / 50s Rec.). Duração total do HIIT: 9 minutos e 20 segundos.
-                    </p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">💪</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Semanas 5-6: Intensificação</h3>
-                    <p class="text-gray-400">
-                        Semana 5: Realize 8 ciclos completos (30s Estímulo / 60s Rec.). Duração total do HIIT: 12 minutos.
-                        <br><br>
-                        Semana 6: Diminua para 7 ciclos completos (40s Estímulo / 50s Rec.). Duração total do HIIT: 10 minutos e 30 segundos.
-                    </p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">🚀</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Semanas 7-8: Performance Máxima</h3>
-                    <p class="text-gray-400">
-                        Semana 7: Realize 6 ciclos completos (45s Estímulo / 45s Rec.). Duração total do HIIT: 9 minutos.
-                        <br><br>
-                        Semana 8: Diminua para 5 ciclos completos (60s Estímulo / 60s Rec.). Duração total do HIIT: 10 minutos.
-                    </p>
+            <!-- Timeline Vertical Premium -->
+            <div class="relative max-w-3xl mx-auto">
+                <!-- Linha central conectora -->
+                <div class="absolute left-6 md:left-1/2 top-4 bottom-4 w-px bg-gradient-to-b from-rose-500/10 via-rose-500/40 to-rose-500/10 md:-translate-x-1/2"></div>
+                
+                <div class="space-y-12">
+                    
+                    <!-- Fase 1 -->
+                    <div class="relative flex flex-col md:flex-row items-start md:justify-between w-full">
+                        <div class="hidden md:block w-[45%] text-right pr-8">
+                            <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 1 A 3</span>
+                            <h3 class="font-bold text-xl text-white mb-2">Adaptação fisiológica</h3>
+                            <p class="text-slate-400 text-sm">Preparo da musculatura e condicionamento pulmonar basal para os esforços seguintes.</p>
+                        </div>
+                        
+                        <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-rose-500 border-4 border-slate-900 shadow-[0_0_15px_rgba(244,63,94,0.5)] md:-translate-x-1/2 mt-6 md:mt-2 z-10"></div>
+                        
+                        <div class="w-full pl-16 md:pl-0 md:w-[45%]">
+                            <div class="premium-card p-5 rounded-2xl text-left md:hidden mb-4">
+                                <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 1 A 3</span>
+                                <h3 class="font-bold text-xl text-white mb-1">Adaptação fisiológica</h3>
+                                <p class="text-slate-400 text-sm">Preparo da musculatura e condicionamento pulmonar basal.</p>
+                            </div>
+                            
+                            <div class="premium-card p-5 rounded-2xl bg-slate-800/30">
+                                <p class="text-xs text-rose-400 font-bold uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Estrutura do bloco
+                                </p>
+                                <p class="text-white font-medium mb-4">12 séries: <span class="text-rose-400">20s forte</span> / <span class="text-slate-400">40s leve</span></p>
+                                <ul class="text-sm space-y-2 text-slate-300">
+                                    <li class="flex items-start gap-2"><span class="text-slate-500">▪</span> <strong>Terça:</strong> Velocidade leve, cadência > 100rpm</li>
+                                    <li class="flex items-start gap-2"><span class="text-slate-500">▪</span> <strong>Quinta:</strong> Força moderada, foco no selim</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fase 2 -->
+                    <div class="relative flex flex-col md:flex-row-reverse items-start md:justify-between w-full">
+                        <div class="hidden md:block w-[45%] text-left pl-8">
+                            <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 4 A 6</span>
+                            <h3 class="font-bold text-xl text-white mb-2">Tolerância ao lactato</h3>
+                            <p class="text-slate-400 text-sm">O coração se torna eficiente. Aumentamos o tempo de contração muscular ativa.</p>
+                        </div>
+                        
+                        <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-rose-500 border-4 border-slate-900 shadow-[0_0_15px_rgba(244,63,94,0.5)] md:-translate-x-1/2 mt-6 md:mt-2 z-10"></div>
+                        
+                        <div class="w-full pl-16 md:pl-0 md:w-[45%] md:text-right">
+                             <div class="premium-card p-5 rounded-2xl text-left md:hidden mb-4">
+                                <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 4 A 6</span>
+                                <h3 class="font-bold text-xl text-white mb-1">Tolerância ao lactato</h3>
+                                <p class="text-slate-400 text-sm">O coração se torna eficiente. Maior contração muscular.</p>
+                            </div>
+
+                            <div class="premium-card p-5 rounded-2xl bg-slate-800/30 inline-block w-full md:text-right">
+                                <p class="text-xs text-rose-400 font-bold uppercase tracking-wider mb-3 flex items-center md:justify-end gap-2">
+                                     Estrutura do bloco <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse hidden md:block"></span>
+                                </p>
+                                <p class="text-white font-medium mb-4">10 séries: <span class="text-rose-400">30s forte</span> / <span class="text-slate-400">42s leve</span></p>
+                                <ul class="text-sm space-y-2 text-slate-300">
+                                    <li class="flex items-start md:justify-end gap-2"><strong class="md:order-1">Terça:</strong> <span class="text-slate-500 md:hidden">▪</span> Giro explosivo e fôlego</li>
+                                    <li class="flex items-start md:justify-end gap-2"><strong class="md:order-1">Quinta:</strong> <span class="text-slate-500 md:hidden">▪</span> Subida com trechos em pé</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fase 3 -->
+                    <div class="relative flex flex-col md:flex-row items-start md:justify-between w-full">
+                        <div class="hidden md:block w-[45%] text-right pr-8">
+                            <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 7 A 9</span>
+                            <h3 class="font-bold text-xl text-white mb-2">Zona anaeróbica</h3>
+                            <p class="text-slate-400 text-sm">Redução do ratio de descanso para ativar o metabolismo de queima prolongada (EPOC).</p>
+                        </div>
+                        
+                        <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-rose-500 border-4 border-slate-900 shadow-[0_0_15px_rgba(244,63,94,0.5)] md:-translate-x-1/2 mt-6 md:mt-2 z-10"></div>
+                        
+                        <div class="w-full pl-16 md:pl-0 md:w-[45%]">
+                            <div class="premium-card p-5 rounded-2xl text-left md:hidden mb-4">
+                                <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 7 A 9</span>
+                                <h3 class="font-bold text-xl text-white mb-1">Zona anaeróbica</h3>
+                                <p class="text-slate-400 text-sm">Redução do ratio de descanso para ativar o EPOC.</p>
+                            </div>
+
+                            <div class="premium-card p-5 rounded-2xl bg-slate-800/30">
+                                <p class="text-xs text-rose-400 font-bold uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Estrutura do bloco
+                                </p>
+                                <p class="text-white font-medium mb-4">9 séries: <span class="text-rose-400">35s forte</span> / <span class="text-slate-400">45s leve</span></p>
+                                <ul class="text-sm space-y-2 text-slate-300">
+                                    <li class="flex items-start gap-2"><span class="text-slate-500">▪</span> <strong>Terça:</strong> Sprints segurando a técnica</li>
+                                    <li class="flex items-start gap-2"><span class="text-slate-500">▪</span> <strong>Quinta:</strong> Carga extrema, esforço máximo</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fase 4 -->
+                    <div class="relative flex flex-col md:flex-row-reverse items-start md:justify-between w-full">
+                        <div class="hidden md:block w-[45%] text-left pl-8">
+                            <span class="inline-block bg-rose-900/50 text-rose-400 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2 border border-rose-500/30">SEMANAS 10 A 12</span>
+                            <h3 class="font-bold text-xl text-white mb-2">Pico de performance</h3>
+                            <p class="text-slate-400 text-sm">Fase de lapidação. Sustentação de estímulos longos para a máxima expansão do VO2.</p>
+                        </div>
+                        
+                        <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-rose-500 border-4 border-slate-900 shadow-[0_0_15px_rgba(244,63,94,0.5)] md:-translate-x-1/2 mt-6 md:mt-2 z-10"></div>
+                        
+                        <div class="w-full pl-16 md:pl-0 md:w-[45%] md:text-right">
+                             <div class="premium-card p-5 rounded-2xl text-left md:hidden mb-4">
+                                <span class="inline-block bg-rose-900/50 text-rose-400 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2 border border-rose-500/30">SEMANAS 10 A 12</span>
+                                <h3 class="font-bold text-xl text-white mb-1">Pico de performance</h3>
+                                <p class="text-slate-400 text-sm">Sustentação de estímulos longos para expansão do VO2.</p>
+                            </div>
+
+                            <div class="premium-card p-5 rounded-2xl bg-slate-800/30 inline-block w-full md:text-right border-rose-500/20">
+                                <p class="text-xs text-rose-400 font-bold uppercase tracking-wider mb-3 flex items-center md:justify-end gap-2">
+                                     Estrutura do bloco <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse hidden md:block"></span>
+                                </p>
+                                <p class="text-white font-medium mb-4">8 séries: <span class="text-rose-400">40s forte</span> / <span class="text-slate-400">50s leve</span></p>
+                                <ul class="text-sm space-y-2 text-slate-300">
+                                    <li class="flex items-start md:justify-end gap-2"><strong class="md:order-1">Terça:</strong> <span class="text-slate-500 md:hidden">▪</span> Sprint sustentado, foco total</li>
+                                    <li class="flex items-start md:justify-end gap-2"><strong class="md:order-1">Quinta:</strong> <span class="text-slate-500 md:hidden">▪</span> Simulação de montanha intensa</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </section>
 
-        <section id="reminders" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">Orientações Essenciais</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">❤️</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Saúde Mental</h3>
-                    <p class="text-gray-400">O exercício é seu aliado. Respeite seus limites nos dias difíceis e anote como se sente após cada treino.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">🦵</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Cuidado com os Joelhos</h3>
-                    <p class="text-gray-400">Monitore qualquer dor. Se necessário, reduza a intensidade. A musculação é fundamental para proteger suas articulações.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg text-center">
-                    <div class="icon text-4xl mb-3">🔄</div>
-                    <h3 class="font-bold text-xl mb-2 text-white">Flexibilidade</h3>
-                    <p class="text-gray-400">Este plano é um guia. Sinta-se à vontade para repetir uma semana se a progressão parecer muito rápida. Consistência é a chave.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="rpe-scale" class="mb-16">
-            <h2 class="text-3xl font-bold text-center mb-8 text-white">Escala de Percepção Subjetiva de Esforço (PSE)</h2>
-            <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">Esta escala (Borg CR10) ajuda você a monitorar a intensidade do seu treino de corrida, baseando-se em como você se sente. Use-a para guiar seus esforços.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🟢</span> 0 – Nada de esforço</h3>
-                    <p class="text-gray-400">Sensação: Repouso absoluto. Você está completamente relaxado, sem nenhuma atividade física.<br>Exemplo na corrida: Não aplicável (está em repouso).</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🔵</span> 0.5 – Muito, muito leve</h3>
-                    <p class="text-gray-400">Sensação: Praticamente nenhum esforço. A sensação é quase imperceptível, como se você estivesse parado.<br>Exemplo na corrida: Caminhada extremamente lenta e tranquila.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🔵</span> 1 – Muito leve</h3>
-                    <p class="text-gray-400">Sensação: Esforço mínimo, quase despreocupado. Você pode conversar e cantar com facilidade.<br>Exemplo na corrida: Caminhada suave, aquecimento bem leve.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🌿</span> 2 – Leve</h3>
-                    <p class="text-gray-400">Sensação: Atividade tranquila e confortável. Respiração aumenta levemente, mas ainda há total controle. É possível falar sem esforço.<br>Exemplo na corrida: Trote bem leve ou corrida de recuperação.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🟡</span> 3 – Moderado</h3>
-                    <p class="text-gray-400">Sensação: Um esforço constante, mas sustentável por longos períodos. A respiração fica mais profunda, mas você ainda consegue manter uma conversa sem dificuldade.<br>Exemplo na corrida: Corrida em ritmo conversacional, treino leve.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🟡</span> 4 – Um pouco forte</h3>
-                    <p class="text-gray-400">Sensação: O esforço começa a ser notável. A respiração acelera e falar passa a exigir um pouco de atenção.<br>Exemplo na corrida: Ritmo constante, um pouco mais rápido do que o normal.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">⚠️</span> 5 – Forte</h3>
-                    <p class="text-gray-400">Sensação: Desafiador, mas ainda sustentável. Falar torna-se difícil; você só consegue dizer algumas palavras entre as respirações.<br>Exemplo na corrida: Ritmo próximo ao de maratona ou meia maratona (para corredores experientes).</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">⚠️</span> 6 – Forte (quase muito forte)</h3>
-                    <p class="text-gray-400">Sensação: Esforço intenso. Falar é limitado a uma ou duas palavras por vez. A respiração está pesada e rápida.<br>Exemplo na corrida: Ritmo de 10 km ou trabalho no limiar anaeróbico.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🔴</span> 7 – Muito forte</h3>
-                    <p class="text-gray-400">Sensação: Extremamente desafiador. Você está próximo ao seu limite de fala e consegue apenas emitir sons ou palavras curtas.<br>Exemplo na corrida: Treinos intervalados intensos ou ritmo de 5 km.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">🔥</span> 8 – Muito, muito forte</h3>
-                    <p class="text-gray-400">Sensação: Intensidade elevada, quase insuportável por muito tempo. A respiração é muito ofegante e o corpo pede pausa.<br>Exemplo na corrida: Final de um treino intenso ou esforço de prova curta.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">💥</span> 9 – Quase máximo</h3>
-                    <p class="text-gray-400">Sensação: Você está praticamente no seu limite físico. Consegue manter esse esforço por poucos minutos no máximo.<br>Exemplo na corrida: Sprint final em uma prova, esforço de 400 metros.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="font-bold text-xl mb-2 text-white"><span class="icon mr-2">⚡</span> 10 – Máximo</h3>
-                    <p class="text-gray-400">Sensação: Esforço total. Seu corpo está no seu limite absoluto. É um esforço explosivo e insustentável por mais do que alguns segundos.<br>Exemplo na corrida: Sprint total, como em uma prova de 100 metros.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Botão para aceder à página do temporizador -->
-        <div class="text-center">
-            <button id="goToTimerPageBtn" class="nav-button">Temporizador de Treino</button>
+        <div class="text-center mt-20 mb-8 relative z-10 fade-in-up" style="animation-delay: 0.4s;">
+            <button id="goToTimerBtn" class="btn-super">
+                Acessar player de treino
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </button>
+            <p class="text-slate-500 text-sm mt-6 font-medium">Áudio imersivo integrado. Sincronização automática.</p>
         </div>
 
-        <!-- Rodapé do infográfico -->
-        <footer class="text-center mt-12 pt-8 border-t border-gray-700">
-            <p class="text-gray-400">Só alegria!</p>
+        <footer class="text-center mt-24 pt-8 border-t border-white/5 pb-10">
+            <p class="text-slate-600 text-sm font-medium">Sistema exclusivo desenvolvido para alunos DMX © <span id="currentYear"></span></p>
         </footer>
-
     </div>
 
-    <!-- Página do Temporizador de Treino (inicialmente oculta) -->
-    <div id="timer-app-page" class="timer-page hidden">
-        <h1 class="text-4xl md:text-5xl font-black main-title mb-8 text-center">TEMPORIZADOR DE TREINO</h1>
+    <div id="player-page" class="page min-h-screen px-4 py-8 items-center justify-center">
+        
+        <div class="w-full max-w-5xl">
+            <!-- Header do Player -->
+            <div class="flex justify-between items-center mb-10 pl-2 pr-2">
+                <button id="backBtn" class="text-slate-400 hover:text-white flex items-center gap-2 transition-colors font-medium text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                    Voltar ao painel
+                </button>
+                <img src="https://i.imgur.com/rLLYQ3Z.png" alt="DMX Logo" class="h-8 opacity-60" onerror="this.style.display='none'">
+            </div>
 
-        <!-- Seletores de Semana e Dia -->
-        <div class="config-section mb-8">
-            <h2 class="text-2xl font-bold text-white mb-4 text-center">Selecionar Treino do Plano</h2>
-            <div class="flex flex-col md:flex-row gap-4 mb-4">
-                <div class="flex-1">
-                    <label for="weekSelect" class="block text-gray-300 text-lg mb-2">Semana:</label>
-                    <select id="weekSelect" class="w-full">
-                        <!-- Opções de semana serão preenchidas via JS -->
-                    </select>
+            <!-- Dashboard principal do Player -->
+            <div class="premium-card p-6 md:p-10 rounded-[2rem] w-full max-w-5xl mx-auto flex flex-col items-center">
+                
+                <!-- Seletores simplificados e elegantes -->
+                <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-10 max-w-2xl mx-auto">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Semana atual</label>
+                        <select id="weekSelect"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Foco do dia</label>
+                        <select id="weekDaySelect"></select>
+                    </div>
                 </div>
-                <div class="flex-1">
-                    <label for="daySelect" class="block text-gray-300 text-lg mb-2">Dia da Semana:</label>
-                    <select id="daySelect" class="w-full">
-                        <!-- Opções de dia serão preenchidas via JS -->
-                    </select>
+
+                <!-- Display do Timer -->
+                <div class="w-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+                    
+                    <!-- Lado Esquerdo (Desktop): Info -->
+                    <div class="hidden md:flex flex-col gap-6 w-48 text-right">
+                        <div>
+                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Status</p>
+                            <p id="statusText" class="text-lg font-bold text-slate-300">Pronto</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Série atual</p>
+                            <p id="setCounter" class="text-3xl font-light text-white">--</p>
+                        </div>
+                    </div>
+
+                    <!-- Centro: O Anel -->
+                    <div class="timer-container" id="timerCircleBox">
+                        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                            <!-- Fundo do anel -->
+                            <circle class="text-slate-800 stroke-current" stroke-width="1.5" cx="50" cy="50" r="47" fill="transparent"></circle>
+                            <!-- Progresso (Dinâmico) -->
+                            <circle id="progressRing" class="text-slate-600 stroke-current progress-ring__circle drop-shadow-lg" stroke-width="2" stroke-linecap="round" cx="50" cy="50" r="47" fill="transparent" stroke-dasharray="295.31" stroke-dashoffset="0"></circle>
+                        </svg>
+
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
+                            <p class="phase-display text-glow" id="phaseName">CARREGAR TREINO</p>
+                            <p class="timer-display" id="timeDisplay">20:00</p>
+                        </div>
+                    </div>
+
+                    <!-- Lado Direito (Desktop): Instrução -->
+                    <div class="hidden md:flex flex-col gap-2 w-48 text-left">
+                        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Diretriz</p>
+                        <p id="instructionText" class="text-sm text-slate-300 leading-relaxed font-medium">Selecione uma semana e um dia acima para iniciar sua sessão.</p>
+                    </div>
+
+                    <!-- Infos Mobile -->
+                    <div class="md:hidden flex flex-col items-center w-full mt-4 text-center">
+                        <div class="flex justify-between w-full max-w-[280px] mb-4 pb-4 border-b border-white/10">
+                            <div class="text-left">
+                                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Status</p>
+                                <p id="statusTextMobile" class="text-sm font-bold text-slate-300">Pronto</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Série</p>
+                                <p id="setCounterMobile" class="text-sm font-bold text-white">--</p>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Diretriz de pedal</p>
+                        <p id="instructionTextMobile" class="text-sm text-slate-300 leading-relaxed font-medium max-w-[300px]">Selecione uma semana e inicie.</p>
+                    </div>
                 </div>
-            </div>
-            <button id="loadSelectedWorkoutBtn" class="nav-button w-full">Carregar Treino Selecionado</button>
-        </div>
 
-        <!-- Área de exibição do temporizador -->
-        <div class="text-center mb-8">
-            <p class="phase-display" id="currentPhaseName">Pronto para Iniciar</p>
-            <p class="timer-display text-gray-200" id="timeLeftDisplay">00:00</p>
-            <p class="text-gray-400 text-lg mt-2" id="phaseInstructions"></p>
-            <p class="set-display" id="currentSetDisplay">Série: 0/0</p>
-        </div>
+                <!-- Controles de Ação -->
+                <div class="controls-wrapper flex flex-wrap justify-center gap-4 mt-12 w-full">
+                    <button id="btnStart" class="btn-action pulse-border min-w-[160px] justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
+                        Iniciar treino
+                    </button>
+                    <button id="btnPause" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                        Pausar
+                    </button>
+                    <button id="btnSkip" title="Pular fase atual">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414l2-2a1 1 0 000-1.414l-2-2z" clip-rule="evenodd" /></svg>
+                        Pular
+                    </button>
+                    <button id="btnReset">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" /></svg>
+                        Reiniciar
+                    </button>
+                </div>
 
-        <!-- Controles do temporizador -->
-        <div class="timer-controls flex justify-center flex-wrap">
-            <button id="startBtn">Iniciar</button>
-            <button id="pauseBtn" disabled>Pausar</button>
-            <button id="resetBtn">Reiniciar</button>
-            <button id="skipBtn" disabled>Pular Fase</button>
-            <button id="backToInfographicBtn">Voltar</button>
-        </div>
-
-        <!-- Secção de Configuração de Treino Personalizado -->
-        <div class="config-section mt-8">
-            <h2 class="text-2xl font-bold text-white mb-4 text-center">Ou crie/edite seu treino personalizado</h2>
-            
-            <div id="phasesContainer" class="space-y-4 mb-4">
-                <!-- Fases serão adicionadas aqui via JS -->
-            </div>
-
-            <button id="addPhaseBtn" class="add-phase-btn w-full">Adicionar Fase</button>
-
-            <div class="mt-6">
-                <label for="numSets" class="block text-gray-300 text-lg mb-2">Número de Séries:</label>
-                <input type="number" id="numSets" value="1" min="1" class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600">
-            </div>
-
-            <div class="save-load-buttons flex justify-center mt-6">
-                <button id="saveConfigBtn">Salvar Configuração</button>
-                <button id="loadConfigBtn">Carregar Configuração</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- Funções Auxiliares de Tempo ---
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-        }
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        function parseMMSS(mmssString) {
-            const parts = mmssString.split(':');
-            if (parts.length === 2) {
-                const minutes = parseInt(parts[0]) || 0;
-                const seconds = parseInt(parts[1]) || 0;
-                return (minutes * 60) + seconds;
-            }
-            return 0;
-        }
-
-        // --- Variáveis Globais do Temporizador ---
-        let workoutConfig = [];
-        let currentPhaseIndex = 0;
-        let currentSet = 1;
-        let timeLeft = 0;
-        let timerIntervalId = null;
-        let isPaused = false;
-
-        // --- Referências de Elementos HTML ---
-        const mainInfographicPage = document.getElementById('main-infographic-page');
-        const timerAppPage = document.getElementById('timer-app-page');
-        const goToTimerPageBtn = document.getElementById('goToTimerPageBtn');
-        const backToInfographicBtn = document.getElementById('backToInfographicBtn');
-
-        const currentPhaseName = document.getElementById('currentPhaseName');
-        const timeLeftDisplay = document.getElementById('timeLeftDisplay');
-        const phaseInstructions = document.getElementById('phaseInstructions');
-        const currentSetDisplay = document.getElementById('currentSetDisplay');
-
-        const startBtn = document.getElementById('startBtn');
-        const pauseBtn = document.getElementById('pauseBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const skipBtn = document.getElementById('skipBtn');
-
-        const phasesContainer = document.getElementById('phasesContainer');
-        const addPhaseBtn = document.getElementById('addPhaseBtn');
-        const numSetsInput = document.getElementById('numSets');
-        const saveConfigBtn = document.getElementById('saveConfigBtn');
-        const loadConfigBtn = document.getElementById('loadConfigBtn');
-
+        // 1. Variáveis e Refs DOM
+        const pageMain = document.getElementById('main-page');
+        const pagePlayer = document.getElementById('player-page');
+        
+        const goToTimerBtn = document.getElementById('goToTimerBtn');
+        const backBtn = document.getElementById('backBtn');
+        
         const weekSelect = document.getElementById('weekSelect');
-        const daySelect = document.getElementById('daySelect');
-        const loadSelectedWorkoutBtn = document.getElementById('loadSelectedWorkoutBtn');
+        const weekDaySelect = document.getElementById('weekDaySelect');
 
-        // --- Definição do Plano de Treino da Michele (8 Semanas) ---
-        const fullTrainingPlan = {
-            'Semana 1': {
-                'Dia 1': [ // Esteira - Total 12 min (3 aquecimento + 6 HIIT + 3 desaquecimento)
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 70, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 70, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 70, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 70, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 2': [ // Escada - Total 12 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 70, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 70, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 70, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 70, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ],
-                'Dia 3': [ // Esteira - Total 12 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 70, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 70, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 70, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 70, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 4': [ // Escada - Total 12 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 70, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 70, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 70, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 70, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ]
+        const timerCircleBox = document.getElementById('timerCircleBox');
+        const progressRing = document.getElementById('progressRing');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const phaseName = document.getElementById('phaseName');
+        const statusText = document.getElementById('statusText');
+        const statusTextMobile = document.getElementById('statusTextMobile');
+        const setCounter = document.getElementById('setCounter');
+        const setCounterMobile = document.getElementById('setCounterMobile');
+        const instructionText = document.getElementById('instructionText');
+        const instructionTextMobile = document.getElementById('instructionTextMobile');
+
+        const btnStart = document.getElementById('btnStart');
+        const btnPause = document.getElementById('btnPause');
+        const btnSkip = document.getElementById('btnSkip');
+        const btnReset = document.getElementById('btnReset');
+
+        // Estado central do Treino
+        let currentWorkoutPlan = [];
+        let totalSetsCount = 0;
+        
+        let phaseIndex = 0;
+        let setIndex = 0; 
+        
+        let timeLeft = 0;
+        let phaseTotalSeconds = 0;
+        let timerInterval = null;
+        let isRunning = false;
+        
+        const circlePerimeter = 2 * Math.PI * 47; // r=47 baseado no SVG
+        progressRing.style.strokeDasharray = `${circlePerimeter} ${circlePerimeter}`;
+        progressRing.style.strokeDashoffset = circlePerimeter;
+
+        // 2. Sistema de Som Premium (Sintetizador Web Audio API)
+        let audioCtx = null;
+        
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playPremiumTone(type) {
+            if (!audioCtx) initAudio();
+            const now = audioCtx.currentTime;
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            // Controle suave (Envelope de som profissional)
+            if (type === 'countdown') {
+                // Bipe curto e abafado
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(600, now);
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.2, now + 0.02);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } 
+            else if (type === 'go') {
+                // Tom agudo, forte e motivador para o sprint
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, now); // Nota A5
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.4, now + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
+                osc.start(now);
+                osc.stop(now + 1.0);
+            }
+            else if (type === 'rest') {
+                // Tom grave e profundo, relaxante
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now); 
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.3, now + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+                osc.start(now);
+                osc.stop(now + 1.5);
+            }
+            else if (type === 'finish') {
+                // Acorde duplo (Triumphant finish)
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, now); // A4
+                osc.frequency.setValueAtTime(660, now + 0.3); // E5
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.3, now + 0.1);
+                gainNode.gain.setValueAtTime(0.3, now + 0.3);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+                osc.start(now);
+                osc.stop(now + 2.0);
+            }
+        }
+
+        // 3. Sistema de Notificações
+        function showToast(msg, icon = '✅', success = true) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').textContent = msg;
+            document.getElementById('toastIcon').textContent = icon;
+            toast.style.borderLeftColor = success ? '#10b981' : '#f43f5e';
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // 4. Estruturação do Treino (Lógica de montagem)
+        function secToMin(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function buildWorkout(workSecs, restSecs, sets, isStrength) {
+            let sequence = [];
+            
+            // Aquecimento
+            sequence.push({
+                type: 'warmup', name: 'AQUECIMENTO',
+                duration: 240, set: 0,
+                instruction: 'Giro leve e solto. Vá elevando o giro gradualmente para aquecer o corpo.'
+            });
+
+            // Tiros (Intervalos)
+            for (let i = 1; i <= sets; i++) {
+                sequence.push({
+                    type: 'work', name: 'ESTÍMULO MÁXIMO',
+                    duration: workSecs, set: i,
+                    instruction: isStrength 
+                        ? 'Subida pesada! Carga alta, segure firme no guidão (70-80 RPM).' 
+                        : 'Sprint! Carga leve/moderada. Acelere o giro o mais rápido que puder!'
+                });
+                sequence.push({
+                    type: 'rest', name: 'RECUPERAÇÃO',
+                    duration: restSecs, set: i,
+                    instruction: 'Tire toda a carga. Respire profundamente e mantenha a perna girando devagar.'
+                });
+            }
+
+            // Desaquecimento
+            sequence.push({
+                type: 'cooldown', name: 'DESAQUECIMENTO',
+                duration: 240, set: sets,
+                instruction: 'Treino feito! Apenas gire as pernas bem leve até a frequência cardíaca baixar.'
+            });
+
+            return { sequence, sets };
+        }
+
+        // Base de dados exata para os 20 minutos
+        const db = {
+            'Semanas 1 a 3': {
+                'Terça-feira (Velocidade)': buildWorkout(20, 40, 12, false),
+                'Quinta-feira (Força)': buildWorkout(20, 40, 12, true)
             },
-            'Semana 2': {
-                'Dia 1': [ // Esteira - Total 12 min 40s (3 aquecimento + 6min40s HIIT + 3 desaquecimento)
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 2': [ // Escada - Total 12 min 40s
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ],
-                'Dia 3': [ // Esteira - Total 12 min 40s
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 20, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 4': [ // Escada - Total 12 min 40s
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 20, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ]
+            'Semanas 4 a 6': {
+                'Terça-feira (Velocidade)': buildWorkout(30, 42, 10, false),
+                'Quinta-feira (Força)': buildWorkout(30, 42, 10, true)
             },
-            'Semana 3': {
-                'Dia 1': [ // Esteira - Total 15 min (3 aquecimento + 9 HIIT + 3 desaquecimento)
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 6', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 2': [ // Escada - Total 15 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 6', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ],
-                'Dia 3': [ // Esteira - Total 15 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 6', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 4': [ // Escada - Total 15 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 6', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ]
+            'Semanas 7 a 9': {
+                'Terça-feira (Velocidade)': buildWorkout(35, 45, 9, false),
+                'Quinta-feira (Força)': buildWorkout(35, 45, 9, true)
             },
-            'Semana 4': {
-                'Dia 1': [ // Esteira - Total 15 min 20s (3 aquecimento + 9min20s HIIT + 3 desaquecimento)
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 6', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 7', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 7', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 2': [ // Escada - Total 15 min 20s
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 6', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 7', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 7', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ],
-                'Dia 3': [ // Esteira - Total 15 min 20s
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 6', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 7', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 7', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 4': [ // Escada - Total 15 min 20s
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 6', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 7', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 7', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ]
-            },
-            'Semana 5': {
-                'Dia 1': [ // Esteira - Total 18 min (3 aquecimento + 12 HIIT + 3 desaquecimento)
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 6', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 7', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 7', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 8', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 8', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 2': [ // Escada - Total 18 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 6', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 7', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 7', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 8', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 8', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ],
-                'Dia 3': [ // Esteira - Total 18 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 6', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 7', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 7', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 8', duration: 30, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 8', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 4': [ // Escada - Total 18 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 6', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 6', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 7', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 7', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 8', duration: 30, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 8', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ]
-            },
-            'Semana 6': {
-                'Dia 1': [ // Esteira - Total 16 min 30s (3 aquecimento + 10min30s HIIT + 3 desaquecimento)
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 6', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 6', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 7', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 7', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 2': [ // Escada - Total 16 min 30s
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 6', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 6', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 7', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 7', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ],
-                'Dia 3': [ // Esteira - Total 16 min 30s
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 6', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 6', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 7', duration: 40, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 7', duration: 50, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 4': [ // Escada - Total 16 min 30s
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 6', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 6', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 7', duration: 40, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 7', duration: 50, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ]
-            },
-            'Semana 7': {
-                'Dia 1': [ // Esteira - Total 15 min (3 aquecimento + 9 HIIT + 3 desaquecimento)
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 6', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 6', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 2': [ // Escada - Total 15 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 6', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 6', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ],
-                'Dia 3': [ // Esteira - Total 15 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 6', duration: 45, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 6', duration: 45, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 4': [ // Escada - Total 15 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 6', duration: 45, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 6', duration: 45, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ]
-            },
-            'Semana 8': {
-                'Dia 1': [ // Esteira - Total 16 min (3 aquecimento + 10 HIIT + 3 desaquecimento)
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 2': [ // Escada - Total 16 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ],
-                'Dia 3': [ // Esteira - Total 16 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada leve na esteira para aquecer.' },
-                    { name: 'Estímulo 1', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 2', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 3', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 4', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Estímulo 5', duration: 60, intensity: 'Alta', description: 'Esforço máximo na esteira.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Caminhada leve para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Caminhada suave para desaquecer.' }
-                ],
-                'Dia 4': [ // Escada - Total 16 min
-                    { name: 'Aquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Subida em ritmo confortável na escada para aquecer.' },
-                    { name: 'Estímulo 1', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 1', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 2', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 2', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 3', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 3', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 4', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 4', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Estímulo 5', duration: 60, intensity: 'Alta', description: 'Esforço máximo na escada.' },
-                    { name: 'Recuperação 5', duration: 60, intensity: 'Baixa', description: 'Ritmo confortável para recuperar.' },
-                    { name: 'Desaquecimento', duration: 3 * 60, intensity: 'Baixa', description: 'Ritmo suave para desaquecer.' }
-                ]
+            'Semanas 10 a 12': {
+                'Terça-feira (Velocidade)': buildWorkout(40, 50, 8, false),
+                'Quinta-feira (Força)': buildWorkout(40, 50, 8, true)
             }
         };
 
-
-        // --- Funções de Navegação de Página ---
-        goToTimerPageBtn.addEventListener('click', () => {
-            mainInfographicPage.classList.add('hidden');
-            timerAppPage.classList.remove('hidden');
-            timerAppPage.style.display = 'flex';
-            populateWeekAndDaySelects();
-            loadWorkoutConfig();
-            updateDisplay();
-        });
-
-        backToInfographicBtn.addEventListener('click', () => {
-            pauseTimer();
-            mainInfographicPage.classList.remove('hidden');
-            timerAppPage.classList.add('hidden');
-            timerAppPage.style.display = 'none';
-        });
-
-        // --- Funções de Configuração do Treino ---
-
-        // Preenche os seletores de semana e dia
-        function populateWeekAndDaySelects() {
+        // 5. Interface do Player
+        function initSelectors() {
             weekSelect.innerHTML = '';
-            for (const week in fullTrainingPlan) {
-                const option = document.createElement('option');
-                option.value = week;
-                option.textContent = week;
-                weekSelect.appendChild(option);
-            }
-
-            // Preenche os dias da primeira semana por padrão
-            updateDaySelectOptions();
-            weekSelect.addEventListener('change', updateDaySelectOptions);
+            Object.keys(db).forEach(w => weekSelect.add(new Option(w, w)));
+            
+            weekSelect.onchange = () => {
+                weekDaySelect.innerHTML = '';
+                Object.keys(db[weekSelect.value]).forEach(d => weekDaySelect.add(new Option(d, d)));
+                loadWorkout();
+            };
+            
+            weekDaySelect.onchange = loadWorkout;
+            weekSelect.onchange(); // Trigger initial load
         }
 
-        function updateDaySelectOptions() {
-            daySelect.innerHTML = '';
-            const selectedWeek = weekSelect.value;
-            if (fullTrainingPlan[selectedWeek]) {
-                for (const day in fullTrainingPlan[selectedWeek]) {
-                    const option = document.createElement('option');
-                    option.value = day;
-                    option.textContent = day;
-                    daySelect.appendChild(option);
+        function loadWorkout() {
+            const w = weekSelect.value;
+            const d = weekDaySelect.value;
+            
+            if(db[w] && db[w][d]) {
+                const plan = db[w][d];
+                currentWorkoutPlan = plan.sequence;
+                totalSetsCount = plan.sets;
+                
+                resetTimerSystem();
+                showToast(`Treino carregado: ${w}`, '🚴');
+            }
+        }
+
+        function applyTheme(type) {
+            // Remove classes antigas
+            progressRing.classList.remove('text-rose-500', 'text-sky-400', 'text-amber-400', 'text-slate-600', 'text-emerald-400');
+            timerCircleBox.style.boxShadow = 'inset 0 0 40px rgba(0,0,0,0.8), 0 20px 40px rgba(0,0,0,0.5)';
+            timerCircleBox.style.borderColor = 'var(--border-subtle)';
+            phaseName.style.textShadow = 'none';
+
+            let ringColor = 'text-slate-600';
+            let txtColor = '#f8fafc';
+            let status = 'Pronto';
+
+            if(type === 'work') {
+                ringColor = 'text-rose-500';
+                timerCircleBox.style.boxShadow = 'inset 0 0 50px rgba(244,63,94,0.1), 0 20px 50px rgba(244,63,94,0.3)';
+                timerCircleBox.style.borderColor = 'rgba(244,63,94,0.4)';
+                phaseName.style.textShadow = '0 0 15px rgba(244,63,94,0.6)';
+                txtColor = '#f43f5e';
+                status = 'Alta intensidade';
+            } else if (type === 'rest') {
+                ringColor = 'text-sky-400';
+                timerCircleBox.style.borderColor = 'rgba(56,189,248,0.3)';
+                txtColor = '#38bdf8';
+                status = 'Recuperando';
+            } else if (type === 'warmup' || type === 'cooldown') {
+                ringColor = 'text-amber-400';
+                txtColor = '#fbbf24';
+                status = type === 'warmup' ? 'Aquecendo' : 'Resfriando';
+            } else if (type === 'done') {
+                ringColor = 'text-emerald-400';
+                txtColor = '#10b981';
+                status = 'Concluído';
+            }
+
+            progressRing.classList.add(ringColor);
+            phaseName.style.color = txtColor;
+            statusText.textContent = status;
+            statusText.style.color = txtColor;
+            statusTextMobile.textContent = status;
+            statusTextMobile.style.color = txtColor;
+        }
+
+        function updateScreen() {
+            timeDisplay.textContent = secToMin(timeLeft);
+
+            if(currentWorkoutPlan.length > 0 && phaseIndex < currentWorkoutPlan.length) {
+                const phase = currentWorkoutPlan[phaseIndex];
+                
+                phaseName.textContent = phase.name;
+                instructionText.textContent = phase.instruction;
+                instructionTextMobile.textContent = phase.instruction;
+                
+                const setStr = phase.set === 0 ? '--' : `${phase.set}/${totalSetsCount}`;
+                setCounter.textContent = setStr;
+                setCounterMobile.textContent = setStr;
+                
+                applyTheme(phase.type);
+
+                if(phaseTotalSeconds > 0) {
+                    const pct = ((phaseTotalSeconds - timeLeft) / phaseTotalSeconds);
+                    progressRing.style.strokeDashoffset = circlePerimeter - (pct * circlePerimeter);
+                } else {
+                    progressRing.style.strokeDashoffset = circlePerimeter;
                 }
             }
         }
 
-        // Adiciona uma nova linha de fase na configuração
-        function addPhaseRow(phase = { name: '', duration: 0, description: '', intensity: 'Baixa' }) {
-            const phaseItem = document.createElement('div');
-            phaseItem.className = 'phase-item';
-            phaseItem.innerHTML = `
-                <div class="flex-1 min-w-[100px]">
-                    <label class="block text-gray-400 text-sm mb-1">Nome da Fase</label>
-                    <input type="text" placeholder="Nome da Fase" value="${phase.name}" class="phase-name-input w-full">
-                </div>
-                <div class="w-24">
-                    <label class="block text-gray-400 text-sm mb-1">Tempo (MM:SS)</label>
-                    <input type="text" placeholder="MM:SS" value="${formatTime(phase.duration)}" class="phase-duration-input w-full" pattern="\\d{2}:\\d{2}">
-                </div>
-                <div class="flex-1 min-w-[80px]">
-                    <label class="block text-gray-400 text-sm mb-1">Intensidade</label>
-                    <select class="phase-intensity-select w-full">
-                        <option value="Baixa" ${phase.intensity === 'Baixa' ? 'selected' : ''}>Baixa</option>
-                        <option value="Moderada" ${phase.intensity === 'Moderada' ? 'selected' : ''}>Moderada</option>
-                        <option value="Alta" ${phase.intensity === 'Alta' ? 'selected' : ''}>Alta</option>
-                    </select>
-                </div>
-                <div class="flex-1 min-w-[150px]">
-                    <label class="block text-gray-400 text-sm mb-1">Descrição da Fase</label>
-                    <input type="text" placeholder="Descrição da Fase" value="${phase.description}" class="phase-description-input w-full">
-                </div>
-                <button class="remove-phase-btn bg-red-500 hover:bg-red-700">Remover</button>
-            `;
-            phasesContainer.appendChild(phaseItem);
-
-            phaseItem.querySelector('.remove-phase-btn').addEventListener('click', () => {
-                phasesContainer.removeChild(phaseItem);
-                updateWorkoutConfigFromUI();
-            });
-
-            phaseItem.querySelectorAll('input, select').forEach(input => {
-                input.addEventListener('input', updateWorkoutConfigFromUI);
-                input.addEventListener('change', updateWorkoutConfigFromUI);
-            });
-
-            updateWorkoutConfigFromUI();
-        }
-
-        // Atualiza o array workoutConfig com os valores atuais da UI
-        function updateWorkoutConfigFromUI() {
-            workoutConfig = [];
-            phasesContainer.querySelectorAll('.phase-item').forEach(phaseItem => {
-                const name = phaseItem.querySelector('.phase-name-input').value;
-                const durationMMSS = phaseItem.querySelector('.phase-duration-input').value;
-                const duration = parseMMSS(durationMMSS);
-                const intensity = phaseItem.querySelector('.phase-intensity-select').value;
-                const description = phaseItem.querySelector('.phase-description-input').value;
-                workoutConfig.push({ name, duration, description, intensity });
-            });
-        }
-
-        // Renderiza as fases na UI a partir do workoutConfig
-        function renderPhasesConfig() {
-            phasesContainer.innerHTML = ``; // Remove o cabeçalho fixo
-            if (workoutConfig.length === 0) {
-                addPhaseRow({ name: 'Aquecimento', duration: 30, description: 'Prepare o corpo para o exercício.', intensity: 'Baixa' });
-                addPhaseRow({ name: 'Estímulo', duration: 45, description: 'Momento de esforço intenso.', intensity: 'Alta' });
-                addPhaseRow({ name: 'Recuperação', duration: 15, description: 'Recupere o fôlego ativamente.', intensity: 'Baixa' });
-                addPhaseRow({ name: 'Descanso', duration: 60, description: 'Pausa completa antes da próxima série.', intensity: 'Baixa' });
-            } else {
-                workoutConfig.forEach(phase => addPhaseRow(phase));
-            }
-        }
-
-        // Salva a configuração no localStorage
-        saveConfigBtn.addEventListener('click', () => {
-            updateWorkoutConfigFromUI();
-            localStorage.setItem('customWorkoutConfigMichele', JSON.stringify(workoutConfig));
-            localStorage.setItem('customNumSetsMichele', numSetsInput.value);
-            alert('Configuração salva com sucesso!');
-        });
-
-        // Carrega a configuração do localStorage (personalizada)
-        function loadWorkoutConfig() {
-            const savedConfig = localStorage.getItem('customWorkoutConfigMichele');
-            const savedNumSets = localStorage.getItem('customNumSetsMichele');
-            if (savedConfig) {
-                workoutConfig = JSON.parse(savedConfig);
-                numSetsInput.value = savedNumSets || 1;
-                renderPhasesConfig();
-                resetTimer();
-            }
-        }
-
-        loadConfigBtn.addEventListener('click', () => {
-            loadWorkoutConfig();
-            alert('Configuração personalizada carregada!');
-        });
-
-        // Carrega o treino do plano completo com base na seleção
-        loadSelectedWorkoutBtn.addEventListener('click', () => {
-            const selectedWeek = weekSelect.value;
-            const selectedDay = daySelect.value;
+        function finishWorkout() {
+            clearInterval(timerInterval);
+            isRunning = false;
             
-            if (fullTrainingPlan[selectedWeek] && fullTrainingPlan[selectedWeek][selectedDay]) {
-                workoutConfig = fullTrainingPlan[selectedWeek][selectedDay];
-                numSetsInput.value = 1;
-                renderPhasesConfig();
-                alert(`Treino de ${selectedDay} da ${selectedWeek} carregado!`);
-                resetTimer();
-            } else {
-                alert('Treino não encontrado para a seleção. Por favor, verifique o plano.');
-            }
-        });
-
-        // Adiciona fase ao clicar no botão
-        addPhaseBtn.addEventListener('click', () => addPhaseRow());
-
-        // --- Funções do Temporizador ---
-
-        // Aplica a cor ao display do temporizador com base na intensidade
-        function applyTimerColor(intensity) {
-            const displayElement = timeLeftDisplay;
-            const phaseNameElement = currentPhaseName;
-
-            displayElement.classList.remove('text-green-500', 'text-yellow-500', 'text-red-500', 'text-gray-200');
-            phaseNameElement.classList.remove('text-green-500', 'text-yellow-500', 'text-red-500');
-
-            switch (intensity) {
-                case 'Baixa':
-                    displayElement.classList.add('text-green-500');
-                    phaseNameElement.classList.add('text-green-500');
-                    break;
-                case 'Moderada':
-                    displayElement.classList.add('text-yellow-500');
-                    phaseNameElement.classList.add('text-yellow-500');
-                    break;
-                case 'Alta':
-                    displayElement.classList.add('text-red-500');
-                    phaseNameElement.classList.add('text-red-500');
-                    break;
-                default:
-                    displayElement.classList.add('text-gray-200');
-                    phaseNameElement.classList.add('text-gray-200');
-                    break;
-            }
+            phaseName.textContent = "SESSÃO FINALIZADA";
+            timeDisplay.textContent = "00:00";
+            instructionText.textContent = "Excelente! Missão cumprida por hoje. Beba água e descanse.";
+            instructionTextMobile.textContent = "Missão cumprida! Excelente trabalho.";
+            setCounter.textContent = "✔";
+            setCounterMobile.textContent = "✔";
+            
+            applyTheme('done');
+            progressRing.style.strokeDashoffset = 0; // Círculo completo
+            
+            btnStart.disabled = true;
+            btnPause.disabled = true;
+            btnStart.classList.remove('pulse-border');
+            
+            playPremiumTone('finish');
+            showToast('Sessão finalizada com sucesso!', '🏆');
         }
 
-        function updateDisplay() {
-            const totalSets = parseInt(numSetsInput.value);
-            currentSetDisplay.textContent = `Série: ${currentSet}/${totalSets}`;
-            timeLeftDisplay.textContent = formatTime(timeLeft);
-
-            if (workoutConfig.length > 0) {
-                const currentPhase = workoutConfig[currentPhaseIndex];
-                currentPhaseName.textContent = currentPhase.name;
-                phaseInstructions.textContent = currentPhase.description || '';
-                applyTimerColor(currentPhase.intensity);
-            } else {
-                currentPhaseName.textContent = "Nenhuma Fase Configurada";
-                phaseInstructions.textContent = "";
-                applyTimerColor(null);
-            }
-        }
-
-        function nextPhase() {
-            currentPhaseIndex++;
-            if (currentPhaseIndex >= workoutConfig.length) {
-                currentPhaseIndex = 0;
-                currentSet++;
-            }
-
-            const totalSets = parseInt(numSetsInput.value);
-            if (currentSet > totalSets) {
-                clearInterval(timerIntervalId);
-                timerIntervalId = null;
-                currentPhaseName.textContent = "Treino Concluído!";
-                timeLeftDisplay.textContent = "00:00";
-                currentSetDisplay.textContent = `Parabéns! ${totalSets} Séries Completas.`;
-                startBtn.disabled = true;
-                pauseBtn.disabled = true;
-                skipBtn.disabled = true;
-                applyTimerColor(null);
+        function handlePhaseTransition() {
+            phaseIndex++;
+            
+            if (phaseIndex >= currentWorkoutPlan.length) {
+                finishWorkout();
                 return;
             }
 
-            timeLeft = workoutConfig[currentPhaseIndex].duration;
-            updateDisplay();
+            const next = currentWorkoutPlan[phaseIndex];
+            timeLeft = next.duration;
+            phaseTotalSeconds = next.duration;
+            
+            // Lógica de áudio para início de fase
+            if(next.type === 'work') playPremiumTone('go');
+            else if(next.type === 'rest') playPremiumTone('rest');
+            
+            updateScreen();
         }
 
-        function startTimer() {
-            if (timerIntervalId) return;
-            if (workoutConfig.length === 0 || workoutConfig.every(phase => phase.duration === 0)) {
-                alert("Por favor, configure pelo menos uma fase de treino com duração válida.");
-                return;
-            }
-
-            startBtn.disabled = false;
-            pauseBtn.disabled = false;
-            resetBtn.disabled = false;
-            skipBtn.disabled = false;
-            isPaused = false;
-
-            if (timeLeft === 0 && currentSet === 1 && currentPhaseIndex === 0) {
-                timeLeft = workoutConfig[currentPhaseIndex].duration;
+        function runTimer() {
+            timeLeft--;
+            
+            // Beep de contagem regressiva nos 3 últimos segundos
+            if(timeLeft <= 3 && timeLeft > 0) {
+                playPremiumTone('countdown');
             }
             
-            updateDisplay();
-
-            timerIntervalId = setInterval(() => {
-                timeLeft--;
-                updateDisplay();
-
-                if (timeLeft <= 0) {
-                    nextPhase();
-                }
-            }, 1000);
-        }
-
-        function pauseTimer() {
-            clearInterval(timerIntervalId);
-            timerIntervalId = null;
-            isPaused = true;
-            startBtn.disabled = false;
-            pauseBtn.disabled = true;
-        }
-
-        function resetTimer() {
-            clearInterval(timerIntervalId);
-            timerIntervalId = null;
-            currentPhaseIndex = 0;
-            currentSet = 1;
-            timeLeft = 0;
-            isPaused = false;
-            updateDisplay();
-            startBtn.disabled = false;
-            pauseBtn.disabled = true;
-            resetBtn.disabled = false;
-            skipBtn.disabled = true;
-            applyTimerColor(null);
-        }
-
-        function skipPhase() {
-            clearInterval(timerIntervalId);
-            timerIntervalId = null;
-            nextPhase();
-            if (currentSet <= parseInt(numSetsInput.value)) {
-                startTimer();
+            updateScreen();
+            
+            if (timeLeft <= 0) {
+                handlePhaseTransition();
             }
         }
 
-        // --- Event Listeners dos Botões de Controle ---
-        startBtn.addEventListener('click', startTimer);
-        pauseBtn.addEventListener('click', pauseTimer);
-        resetBtn.addEventListener('click', resetTimer);
-        skipBtn.addEventListener('click', skipPhase);
+        // 6. Controles de Botão
+        function resetTimerSystem() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            phaseIndex = 0;
+            
+            if(currentWorkoutPlan.length > 0) {
+                timeLeft = currentWorkoutPlan[0].duration;
+                phaseTotalSeconds = timeLeft;
+            }
+            
+            btnStart.disabled = false;
+            btnPause.disabled = true;
+            btnStart.classList.add('pulse-border');
+            
+            updateScreen();
+            progressRing.style.strokeDashoffset = circlePerimeter; // Zera anel
+        }
 
-        // --- Lógica dos Gráficos (Mantida do Infográfico da Michele) ---
-        const durationData = {
-            labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Semana 6', 'Semana 7', 'Semana 8'],
-            datasets: [{
-                label: 'Duração Total (min)',
-                data: [12, 12.67, 15, 15.33, 18, 16.5, 15, 16], // Atualizado com as novas durações totais
-                borderColor: '#EF4444',
-                backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                fill: true,
-                tension: 0.3
-            }]
+        btnStart.onclick = () => {
+            if(isRunning || currentWorkoutPlan.length === 0) return;
+            initAudio(); // Exigência dos browsers modernos ativar som via clique
+            
+            isRunning = true;
+            btnStart.disabled = true;
+            btnPause.disabled = false;
+            btnStart.classList.remove('pulse-border');
+            
+            timerInterval = setInterval(runTimer, 1000);
         };
 
-        const intensityData = {
-            labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'],
-            datasets: [
-                {
-                    label: 'Estímulo (s)',
-                    data: [20, 20, 30, 30, 30, 40, 45, 60],
-                    backgroundColor: '#EF4444',
-                    borderColor: '#F87171',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Recuperação (s)',
-                    data: [70, 60, 60, 50, 60, 50, 45, 60],
-                    backgroundColor: '#6B7280',
-                    borderColor: '#9CA3AF',
-                    borderWidth: 1
-                }
-            ]
+        btnPause.onclick = () => {
+            if(!isRunning) return;
+            clearInterval(timerInterval);
+            isRunning = false;
+            
+            btnStart.disabled = false;
+            btnPause.disabled = true;
+            
+            statusText.textContent = "PAUSADO";
+            statusTextMobile.textContent = "PAUSADO";
+            statusText.style.color = "#94a3b8";
         };
 
-        const commonChartOptions = {
-            maintainAspectRatio: false,
+        btnSkip.onclick = () => {
+            if(currentWorkoutPlan.length === 0 || phaseIndex >= currentWorkoutPlan.length) return;
+            handlePhaseTransition();
+        };
+
+        btnReset.onclick = resetTimerSystem;
+
+        // 7. Navegação de Páginas
+        goToTimerBtn.onclick = () => {
+            pageMain.classList.remove('active');
+            setTimeout(() => {
+                pageMain.style.display = 'none';
+                pagePlayer.style.display = 'flex';
+                // force reflow
+                void pagePlayer.offsetWidth;
+                pagePlayer.classList.add('active');
+                window.scrollTo(0,0);
+                
+                if(currentWorkoutPlan.length === 0) initSelectors();
+            }, 300);
+        };
+
+        backBtn.onclick = () => {
+            if(isRunning) btnPause.onclick();
+            pagePlayer.classList.remove('active');
+            setTimeout(() => {
+                pagePlayer.style.display = 'none';
+                pageMain.style.display = 'flex';
+                void pageMain.offsetWidth;
+                pageMain.classList.add('active');
+                window.scrollTo(0,0);
+            }, 300);
+        };
+
+        // 8. Gráficos (Chart.js) Ultra Premium Styling
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#94a3b8';
+        
+        const chartOptions = {
             responsive: true,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#D1D5DB'
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        title: (tooltipItems) => {
-                            const item = tooltipItems[0];
-                            let label = item.chart.data.labels[item.dataIndex];
-                            return Array.isArray(label) ? label.join(' ') : label;
-                        }
-                    }
-                }
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { display: false } 
             },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { color: '#9CA3AF' },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                y: { 
+                    grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
+                    border: { display: false }
                 },
-                x: {
-                    ticks: { color: '#9CA3AF' },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                x: { 
+                    grid: { display: false },
+                    border: { display: false }
                 }
             }
         };
 
-        // Inicializa os gráficos ao carregar o DOM
-        document.addEventListener('DOMContentLoaded', () => {
-            new Chart(document.getElementById('durationChart'), {
-                type: 'line',
-                data: durationData,
-                options: {
-                    ...commonChartOptions,
-                    scales: {
-                        y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Minutos', color: '#9CA3AF' } },
-                        x: { ...commonChartOptions.scales.x }
-                    }
-                }
-            });
-            
-            new Chart(document.getElementById('intensityChart'), {
-                type: 'bar',
-                data: intensityData,
-                options: {
-                    ...commonChartOptions,
-                    scales: {
-                        y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Segundos', color: '#9CA3AF' } },
-                        x: { ...commonChartOptions.scales.x }
-                    }
-                }
-            });
+        const ctxDur = document.getElementById('durationChart').getContext('2d');
+        new Chart(ctxDur, {
+            type: 'bar',
+            data: {
+                labels: ['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4'],
+                datasets: [{
+                    label: 'Minutos',
+                    data: [20, 20, 20, 20],
+                    backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                    borderColor: '#38bdf8',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, max: 25 } } }
+        });
 
-            // Inicializa a configuração das fases ao carregar a página do temporizador
-            if (timerAppPage.classList.contains('hidden')) {
-                // Se a página do temporizador estiver oculta, não renderize as fases ainda
-                // Elas serão renderizadas quando o botão "Temporizador de Treino" for clicado
-            } else {
-                renderPhasesConfig();
+        const ctxInt = document.getElementById('intensityChart').getContext('2d');
+        // Gradiente para linha de estímulo
+        let gradientRed = ctxInt.createLinearGradient(0, 0, 0, 400);
+        gradientRed.addColorStop(0, 'rgba(244, 63, 94, 0.4)');
+        gradientRed.addColorStop(1, 'rgba(244, 63, 94, 0.0)');
+
+        new Chart(ctxInt, {
+            type: 'line',
+            data: {
+                labels: ['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4'],
+                datasets: [
+                    {
+                        label: 'Estímulo (s)',
+                        data: [20, 30, 35, 40],
+                        borderColor: '#f43f5e',
+                        backgroundColor: gradientRed,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        fill: true,
+                        pointBackgroundColor: '#0f172a',
+                        pointBorderColor: '#f43f5e',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Recuperação (s)',
+                        data: [40, 42, 45, 50],
+                        borderColor: '#38bdf8',
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#0f172a',
+                        pointBorderColor: '#38bdf8'
+                    }
+                ]
+            },
+            options: {
+                ...chartOptions,
+                plugins: { legend: { display: true, position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } } }
             }
         });
+
     </script>
 </body>
 </html>
