@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infográfico: Periodização HIIT de 12 semanas - Michele</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #f43f5e; /* Rose 500 para um vermelho mais sofisticado */
+            --primary-dark: #be123c; /* Rose 700 */
+            --bg-base: #020617; /* Slate 950 ultra escuro */
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(15, 23, 42, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(244, 63, 94, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.03) 0%, transparent 50%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Estética Premium: Glassmorphism e Sombras suaves */
+        .premium-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .premium-card:hover {
+            border-color: rgba(244, 63, 94, 0.3);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.7), 0 0 20px rgba(244, 63, 94, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(244, 63, 94, 0.5);
+        }
+        
+        .title-gradient {
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 320px;
+        }
+
+        /* Botão principal com design de ponta */
+        .btn-super {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 16px 36px;
+            border-radius: 9999px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 30px -5px rgba(244, 63, 94, 0.5), inset 0 2px 4px rgba(255,255,255,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-super:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 15px 35px -5px rgba(244, 63, 94, 0.6), inset 0 2px 4px rgba(255,255,255,0.3);
+        }
+
+        /* Páginas */
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .page.active {
+            display: flex;
+            opacity: 1;
+            flex-direction: column;
+        }
+
+        /* Timer visual ultra limpo */
+        .timer-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-subtle);
+            margin: 2rem auto;
+            transition: all 0.4s ease;
+        }
+        
+        @media (min-width: 768px) {
+            .timer-container {
+                width: 420px;
+                height: 420px;
+            }
+        }
+
+        .timer-display {
+            font-size: 5.5rem;
+            font-weight: 300; /* Mais fino, estilo smartwatch */
+            letter-spacing: -0.04em;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 0.5rem;
+            color: #fff;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        
+        @media (min-width: 768px) {
+            .timer-display { font-size: 7.5rem; }
+        }
+
+        .phase-display {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        /* Controles do player */
+        .controls-wrapper button {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controls-wrapper button:hover:not(:disabled) {
+            background: rgba(51, 65, 85, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .controls-wrapper button.btn-action {
+            background: var(--primary);
+            border-color: var(--primary-dark);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3);
+        }
+        
+        .controls-wrapper button.btn-action:hover:not(:disabled) {
+            background: var(--primary-dark);
+            box-shadow: 0 8px 25px rgba(244, 63, 94, 0.5);
+        }
+
+        .controls-wrapper button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Select customizado */
+        select {
+            background-color: rgba(15, 23, 42, 0.8);
+            color: white;
+            border: 1px solid var(--border-subtle);
+            padding: 0.875rem 1rem;
+            border-radius: 12px;
+            width: 100%;
+            transition: all 0.2s;
+            font-size: 1rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2em;
+        }
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.2);
+        }
+
+        /* Sistema de Toasts (Notificações) */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-left: 4px solid #10b981;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateY(150%) scale(0.9);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .toast.show {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        /* SVG Circle progress */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 1s linear;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Animações vitais */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-border {
+            animation: pulseGlow 2s infinite;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(244, 63, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-rose-500/30">
+
+    <div id="toastNotification" class="toast">
+        <span class="text-2xl" id="toastIcon">✅</span>
+        <span class="font-medium text-white text-sm" id="toastMessage">Ação realizada com sucesso.</span>
+    </div>
+
+    <div id="main-page" class="page active container mx-auto p-4 md:p-8 max-w-6xl">
+
+        <!-- Header -->
+        <header class="mb-16 fade-in-up">
+            <div class="w-full flex flex-col md:flex-row justify-between items-center premium-card p-6 md:p-8 rounded-3xl mb-12">
+                <div class="text-center md:text-left mb-6 md:mb-0 flex flex-col md:flex-row items-center gap-6">
+                    <!-- Logo aumentada e texto alinhado -->
+                    <img id="userLogo" src="https://i.imgur.com/rLLYQ3Z.png" alt="Logo DMX" class="h-20 md:h-24 w-auto object-contain drop-shadow-lg" onerror="this.src='https://placehold.co/150x50/1e293b/f8fafc?text=DMX'">
+                    <div class="mt-2 md:mt-0 flex items-center">
+                        <h2 class="text-lg md:text-xl font-bold text-rose-500 uppercase tracking-widest">DMX PERFORMANCE & FIT</h2>
+                    </div>
+                </div>
+                <div class="text-center md:text-right">
+                    <p class="text-lg text-white font-medium mb-2">Aluno(a): <span class="font-bold text-white">Michele Malfacini Lima</span></p>
+                    <div class="flex flex-wrap justify-center md:justify-end gap-2 text-xs font-semibold">
+                        <span class="bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">Nível iniciante a interm.</span>
+                        <span class="bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700">2x semana</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-8 space-y-6">
+                <div class="inline-block bg-rose-500/10 text-rose-400 font-bold px-4 py-1.5 rounded-full border border-rose-500/20 text-xs uppercase tracking-widest">
+                    Protocolo científico de resistência
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black title-gradient mb-2 tracking-tight">HIIT Spinning</h1>
+                <p class="text-xl md:text-2xl text-slate-400 font-light max-w-2xl mx-auto leading-relaxed">
+                    Sua jornada otimizada. Duas sessões semanais intensas com a precisão de exatos 20 minutos.
+                </p>
+            </div>
+        </header>
+
+        <section class="mb-24 fade-in-up" style="animation-delay: 0.1s;">
+            <div class="flex items-center justify-center gap-4 mb-12">
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+                <h2 class="text-2xl font-bold text-center text-white tracking-wide">A ciência do seu treino</h2>
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">🛡️</div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Impacto zero</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">A bicicleta poupa as articulações, permitindo focar todo o esforço no sistema cardiovascular sem gerar dores.</p>
+                </div>
+                <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">⚡</div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Variação metabólica</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Alternância estratégica: cadência rápida às terças e força bruta às quintas para máxima adaptação.</p>
+                </div>
+                <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">🔥</div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Estrutura precisa</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Blocos com 4 minutos para aquecer, estímulos curtos e violentos, e 4 minutos para limpar o lactato.</p>
+                </div>
+                <div class="premium-card p-6 rounded-3xl flex flex-col items-center text-center group">
+                    <div class="w-14 h-14 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-rose-500/20 group-hover:scale-110 transition-transform">⏱️</div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Micro-doses</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Evidências apontam que 20 minutos bem estruturados geram resultados superiores a horas de treino leve.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="mb-24 fade-in-up" style="animation-delay: 0.2s;">
+            <div class="flex items-center justify-center gap-4 mb-12">
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+                <h2 class="text-2xl font-bold text-center text-white tracking-wide">A evolução programada</h2>
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="premium-card p-6 md:p-8 rounded-3xl">
+                    <div class="mb-6">
+                        <h3 class="font-bold text-lg text-white">Tempo de treino fixo</h3>
+                        <p class="text-slate-400 text-sm mt-1">A duração total é ancorada em 20 minutos, alterando apenas a densidade interna.</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="durationChart"></canvas>
+                    </div>
+                </div>
+                <div class="premium-card p-6 md:p-8 rounded-3xl">
+                     <div class="mb-6">
+                        <h3 class="font-bold text-lg text-white">Estímulo vs. recuperação</h3>
+                        <p class="text-slate-400 text-sm mt-1">O tempo sob tensão aumenta progressivamente a cada nova fase do ciclo.</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="intensityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-24 fade-in-up" style="animation-delay: 0.3s;">
+            <div class="flex items-center justify-center gap-4 mb-6">
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+                <h2 class="text-2xl font-bold text-center text-white tracking-wide">Periodização de 12 semanas</h2>
+                <div class="h-px bg-slate-800 flex-1 max-w-[80px]"></div>
+            </div>
+            <p class="text-center max-w-2xl mx-auto mb-16 text-slate-400 font-light">
+                A cada três semanas o estímulo sofre ajustes para evitar o platô, forçando o corpo a gerar novas adaptações cardiometabólicas.
+            </p>
+            
+            <!-- Timeline Vertical Premium -->
+            <div class="relative max-w-3xl mx-auto">
+                <!-- Linha central conectora -->
+                <div class="absolute left-6 md:left-1/2 top-4 bottom-4 w-px bg-gradient-to-b from-rose-500/10 via-rose-500/40 to-rose-500/10 md:-translate-x-1/2"></div>
+                
+                <div class="space-y-12">
+                    
+                    <!-- Fase 1 -->
+                    <div class="relative flex flex-col md:flex-row items-start md:justify-between w-full">
+                        <div class="hidden md:block w-[45%] text-right pr-8">
+                            <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 1 A 3</span>
+                            <h3 class="font-bold text-xl text-white mb-2">Adaptação fisiológica</h3>
+                            <p class="text-slate-400 text-sm">Preparo da musculatura e condicionamento pulmonar basal para os esforços seguintes.</p>
+                        </div>
+                        
+                        <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-rose-500 border-4 border-slate-900 shadow-[0_0_15px_rgba(244,63,94,0.5)] md:-translate-x-1/2 mt-6 md:mt-2 z-10"></div>
+                        
+                        <div class="w-full pl-16 md:pl-0 md:w-[45%]">
+                            <div class="premium-card p-5 rounded-2xl text-left md:hidden mb-4">
+                                <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 1 A 3</span>
+                                <h3 class="font-bold text-xl text-white mb-1">Adaptação fisiológica</h3>
+                                <p class="text-slate-400 text-sm">Preparo da musculatura e condicionamento pulmonar basal.</p>
+                            </div>
+                            
+                            <div class="premium-card p-5 rounded-2xl bg-slate-800/30">
+                                <p class="text-xs text-rose-400 font-bold uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Estrutura do bloco
+                                </p>
+                                <p class="text-white font-medium mb-4">12 séries: <span class="text-rose-400">20s forte</span> / <span class="text-slate-400">40s leve</span></p>
+                                <ul class="text-sm space-y-2 text-slate-300">
+                                    <li class="flex items-start gap-2"><span class="text-slate-500">▪</span> <strong>Terça:</strong> Velocidade leve, cadência > 100rpm</li>
+                                    <li class="flex items-start gap-2"><span class="text-slate-500">▪</span> <strong>Quinta:</strong> Força moderada, foco no selim</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fase 2 -->
+                    <div class="relative flex flex-col md:flex-row-reverse items-start md:justify-between w-full">
+                        <div class="hidden md:block w-[45%] text-left pl-8">
+                            <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 4 A 6</span>
+                            <h3 class="font-bold text-xl text-white mb-2">Tolerância ao lactato</h3>
+                            <p class="text-slate-400 text-sm">O coração se torna eficiente. Aumentamos o tempo de contração muscular ativa.</p>
+                        </div>
+                        
+                        <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-rose-500 border-4 border-slate-900 shadow-[0_0_15px_rgba(244,63,94,0.5)] md:-translate-x-1/2 mt-6 md:mt-2 z-10"></div>
+                        
+                        <div class="w-full pl-16 md:pl-0 md:w-[45%] md:text-right">
+                             <div class="premium-card p-5 rounded-2xl text-left md:hidden mb-4">
+                                <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 4 A 6</span>
+                                <h3 class="font-bold text-xl text-white mb-1">Tolerância ao lactato</h3>
+                                <p class="text-slate-400 text-sm">O coração se torna eficiente. Maior contração muscular.</p>
+                            </div>
+
+                            <div class="premium-card p-5 rounded-2xl bg-slate-800/30 inline-block w-full md:text-right">
+                                <p class="text-xs text-rose-400 font-bold uppercase tracking-wider mb-3 flex items-center md:justify-end gap-2">
+                                     Estrutura do bloco <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse hidden md:block"></span>
+                                </p>
+                                <p class="text-white font-medium mb-4">10 séries: <span class="text-rose-400">30s forte</span> / <span class="text-slate-400">42s leve</span></p>
+                                <ul class="text-sm space-y-2 text-slate-300">
+                                    <li class="flex items-start md:justify-end gap-2"><strong class="md:order-1">Terça:</strong> <span class="text-slate-500 md:hidden">▪</span> Giro explosivo e fôlego</li>
+                                    <li class="flex items-start md:justify-end gap-2"><strong class="md:order-1">Quinta:</strong> <span class="text-slate-500 md:hidden">▪</span> Subida com trechos em pé</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fase 3 -->
+                    <div class="relative flex flex-col md:flex-row items-start md:justify-between w-full">
+                        <div class="hidden md:block w-[45%] text-right pr-8">
+                            <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 7 A 9</span>
+                            <h3 class="font-bold text-xl text-white mb-2">Zona anaeróbica</h3>
+                            <p class="text-slate-400 text-sm">Redução do ratio de descanso para ativar o metabolismo de queima prolongada (EPOC).</p>
+                        </div>
+                        
+                        <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-rose-500 border-4 border-slate-900 shadow-[0_0_15px_rgba(244,63,94,0.5)] md:-translate-x-1/2 mt-6 md:mt-2 z-10"></div>
+                        
+                        <div class="w-full pl-16 md:pl-0 md:w-[45%]">
+                            <div class="premium-card p-5 rounded-2xl text-left md:hidden mb-4">
+                                <span class="inline-block bg-slate-800 text-slate-300 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2">SEMANAS 7 A 9</span>
+                                <h3 class="font-bold text-xl text-white mb-1">Zona anaeróbica</h3>
+                                <p class="text-slate-400 text-sm">Redução do ratio de descanso para ativar o EPOC.</p>
+                            </div>
+
+                            <div class="premium-card p-5 rounded-2xl bg-slate-800/30">
+                                <p class="text-xs text-rose-400 font-bold uppercase tracking-wider mb-3 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Estrutura do bloco
+                                </p>
+                                <p class="text-white font-medium mb-4">9 séries: <span class="text-rose-400">35s forte</span> / <span class="text-slate-400">45s leve</span></p>
+                                <ul class="text-sm space-y-2 text-slate-300">
+                                    <li class="flex items-start gap-2"><span class="text-slate-500">▪</span> <strong>Terça:</strong> Sprints segurando a técnica</li>
+                                    <li class="flex items-start gap-2"><span class="text-slate-500">▪</span> <strong>Quinta:</strong> Carga extrema, esforço máximo</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fase 4 -->
+                    <div class="relative flex flex-col md:flex-row-reverse items-start md:justify-between w-full">
+                        <div class="hidden md:block w-[45%] text-left pl-8">
+                            <span class="inline-block bg-rose-900/50 text-rose-400 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2 border border-rose-500/30">SEMANAS 10 A 12</span>
+                            <h3 class="font-bold text-xl text-white mb-2">Pico de performance</h3>
+                            <p class="text-slate-400 text-sm">Fase de lapidação. Sustentação de estímulos longos para a máxima expansão do VO2.</p>
+                        </div>
+                        
+                        <div class="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-rose-500 border-4 border-slate-900 shadow-[0_0_15px_rgba(244,63,94,0.5)] md:-translate-x-1/2 mt-6 md:mt-2 z-10"></div>
+                        
+                        <div class="w-full pl-16 md:pl-0 md:w-[45%] md:text-right">
+                             <div class="premium-card p-5 rounded-2xl text-left md:hidden mb-4">
+                                <span class="inline-block bg-rose-900/50 text-rose-400 px-3 py-1 rounded text-xs font-bold tracking-wider mb-2 border border-rose-500/30">SEMANAS 10 A 12</span>
+                                <h3 class="font-bold text-xl text-white mb-1">Pico de performance</h3>
+                                <p class="text-slate-400 text-sm">Sustentação de estímulos longos para expansão do VO2.</p>
+                            </div>
+
+                            <div class="premium-card p-5 rounded-2xl bg-slate-800/30 inline-block w-full md:text-right border-rose-500/20">
+                                <p class="text-xs text-rose-400 font-bold uppercase tracking-wider mb-3 flex items-center md:justify-end gap-2">
+                                     Estrutura do bloco <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse hidden md:block"></span>
+                                </p>
+                                <p class="text-white font-medium mb-4">8 séries: <span class="text-rose-400">40s forte</span> / <span class="text-slate-400">50s leve</span></p>
+                                <ul class="text-sm space-y-2 text-slate-300">
+                                    <li class="flex items-start md:justify-end gap-2"><strong class="md:order-1">Terça:</strong> <span class="text-slate-500 md:hidden">▪</span> Sprint sustentado, foco total</li>
+                                    <li class="flex items-start md:justify-end gap-2"><strong class="md:order-1">Quinta:</strong> <span class="text-slate-500 md:hidden">▪</span> Simulação de montanha intensa</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <div class="text-center mt-20 mb-8 relative z-10 fade-in-up" style="animation-delay: 0.4s;">
+            <button id="goToTimerBtn" class="btn-super">
+                Acessar player de treino
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </button>
+            <p class="text-slate-500 text-sm mt-6 font-medium">Áudio imersivo integrado. Sincronização automática.</p>
+        </div>
+
+        <footer class="text-center mt-24 pt-8 border-t border-white/5 pb-10">
+            <p class="text-slate-600 text-sm font-medium">Sistema exclusivo desenvolvido para alunos DMX © <span id="currentYear"></span></p>
+        </footer>
+    </div>
+
+    <div id="player-page" class="page min-h-screen px-4 py-8 items-center justify-center">
+        
+        <div class="w-full max-w-5xl">
+            <!-- Header do Player -->
+            <div class="flex justify-between items-center mb-10 pl-2 pr-2">
+                <button id="backBtn" class="text-slate-400 hover:text-white flex items-center gap-2 transition-colors font-medium text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                    Voltar ao painel
+                </button>
+                <img src="https://i.imgur.com/rLLYQ3Z.png" alt="DMX Logo" class="h-8 opacity-60" onerror="this.style.display='none'">
+            </div>
+
+            <!-- Dashboard principal do Player -->
+            <div class="premium-card p-6 md:p-10 rounded-[2rem] w-full max-w-5xl mx-auto flex flex-col items-center">
+                
+                <!-- Seletores simplificados e elegantes -->
+                <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-10 max-w-2xl mx-auto">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Semana atual</label>
+                        <select id="weekSelect"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Foco do dia</label>
+                        <select id="weekDaySelect"></select>
+                    </div>
+                </div>
+
+                <!-- Display do Timer -->
+                <div class="w-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+                    
+                    <!-- Lado Esquerdo (Desktop): Info -->
+                    <div class="hidden md:flex flex-col gap-6 w-48 text-right">
+                        <div>
+                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Status</p>
+                            <p id="statusText" class="text-lg font-bold text-slate-300">Pronto</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Série atual</p>
+                            <p id="setCounter" class="text-3xl font-light text-white">--</p>
+                        </div>
+                    </div>
+
+                    <!-- Centro: O Anel -->
+                    <div class="timer-container" id="timerCircleBox">
+                        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                            <!-- Fundo do anel -->
+                            <circle class="text-slate-800 stroke-current" stroke-width="1.5" cx="50" cy="50" r="47" fill="transparent"></circle>
+                            <!-- Progresso (Dinâmico) -->
+                            <circle id="progressRing" class="text-slate-600 stroke-current progress-ring__circle drop-shadow-lg" stroke-width="2" stroke-linecap="round" cx="50" cy="50" r="47" fill="transparent" stroke-dasharray="295.31" stroke-dashoffset="0"></circle>
+                        </svg>
+
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10">
+                            <p class="phase-display text-glow" id="phaseName">CARREGAR TREINO</p>
+                            <p class="timer-display" id="timeDisplay">20:00</p>
+                        </div>
+                    </div>
+
+                    <!-- Lado Direito (Desktop): Instrução -->
+                    <div class="hidden md:flex flex-col gap-2 w-48 text-left">
+                        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Diretriz</p>
+                        <p id="instructionText" class="text-sm text-slate-300 leading-relaxed font-medium">Selecione uma semana e um dia acima para iniciar sua sessão.</p>
+                    </div>
+
+                    <!-- Infos Mobile -->
+                    <div class="md:hidden flex flex-col items-center w-full mt-4 text-center">
+                        <div class="flex justify-between w-full max-w-[280px] mb-4 pb-4 border-b border-white/10">
+                            <div class="text-left">
+                                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Status</p>
+                                <p id="statusTextMobile" class="text-sm font-bold text-slate-300">Pronto</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Série</p>
+                                <p id="setCounterMobile" class="text-sm font-bold text-white">--</p>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Diretriz de pedal</p>
+                        <p id="instructionTextMobile" class="text-sm text-slate-300 leading-relaxed font-medium max-w-[300px]">Selecione uma semana e inicie.</p>
+                    </div>
+                </div>
+
+                <!-- Controles de Ação -->
+                <div class="controls-wrapper flex flex-wrap justify-center gap-4 mt-12 w-full">
+                    <button id="btnStart" class="btn-action pulse-border min-w-[160px] justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
+                        Iniciar treino
+                    </button>
+                    <button id="btnPause" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                        Pausar
+                    </button>
+                    <button id="btnSkip" title="Pular fase atual">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414l2-2a1 1 0 000-1.414l-2-2z" clip-rule="evenodd" /></svg>
+                        Pular
+                    </button>
+                    <button id="btnReset">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" /></svg>
+                        Reiniciar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // 1. Variáveis e Refs DOM
+        const pageMain = document.getElementById('main-page');
+        const pagePlayer = document.getElementById('player-page');
+        
+        const goToTimerBtn = document.getElementById('goToTimerBtn');
+        const backBtn = document.getElementById('backBtn');
+        
+        const weekSelect = document.getElementById('weekSelect');
+        const weekDaySelect = document.getElementById('weekDaySelect');
+
+        const timerCircleBox = document.getElementById('timerCircleBox');
+        const progressRing = document.getElementById('progressRing');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const phaseName = document.getElementById('phaseName');
+        const statusText = document.getElementById('statusText');
+        const statusTextMobile = document.getElementById('statusTextMobile');
+        const setCounter = document.getElementById('setCounter');
+        const setCounterMobile = document.getElementById('setCounterMobile');
+        const instructionText = document.getElementById('instructionText');
+        const instructionTextMobile = document.getElementById('instructionTextMobile');
+
+        const btnStart = document.getElementById('btnStart');
+        const btnPause = document.getElementById('btnPause');
+        const btnSkip = document.getElementById('btnSkip');
+        const btnReset = document.getElementById('btnReset');
+
+        // Estado central do Treino
+        let currentWorkoutPlan = [];
+        let totalSetsCount = 0;
+        
+        let phaseIndex = 0;
+        let setIndex = 0; 
+        
+        let timeLeft = 0;
+        let phaseTotalSeconds = 0;
+        let timerInterval = null;
+        let isRunning = false;
+        
+        const circlePerimeter = 2 * Math.PI * 47; // r=47 baseado no SVG
+        progressRing.style.strokeDasharray = `${circlePerimeter} ${circlePerimeter}`;
+        progressRing.style.strokeDashoffset = circlePerimeter;
+
+        // 2. Sistema de Som Premium (Sintetizador Web Audio API)
+        let audioCtx = null;
+        
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playPremiumTone(type) {
+            if (!audioCtx) initAudio();
+            const now = audioCtx.currentTime;
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            // Controle suave (Envelope de som profissional)
+            if (type === 'countdown') {
+                // Bipe curto e abafado
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(600, now);
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.2, now + 0.02);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } 
+            else if (type === 'go') {
+                // Tom agudo, forte e motivador para o sprint
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, now); // Nota A5
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.4, now + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
+                osc.start(now);
+                osc.stop(now + 1.0);
+            }
+            else if (type === 'rest') {
+                // Tom grave e profundo, relaxante
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now); 
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.3, now + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+                osc.start(now);
+                osc.stop(now + 1.5);
+            }
+            else if (type === 'finish') {
+                // Acorde duplo (Triumphant finish)
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, now); // A4
+                osc.frequency.setValueAtTime(660, now + 0.3); // E5
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.3, now + 0.1);
+                gainNode.gain.setValueAtTime(0.3, now + 0.3);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+                osc.start(now);
+                osc.stop(now + 2.0);
+            }
+        }
+
+        // 3. Sistema de Notificações
+        function showToast(msg, icon = '✅', success = true) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').textContent = msg;
+            document.getElementById('toastIcon').textContent = icon;
+            toast.style.borderLeftColor = success ? '#10b981' : '#f43f5e';
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // 4. Estruturação do Treino (Lógica de montagem)
+        function secToMin(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function buildWorkout(workSecs, restSecs, sets, isStrength) {
+            let sequence = [];
+            
+            // Aquecimento
+            sequence.push({
+                type: 'warmup', name: 'AQUECIMENTO',
+                duration: 240, set: 0,
+                instruction: 'Giro leve e solto. Vá elevando o giro gradualmente para aquecer o corpo.'
+            });
+
+            // Tiros (Intervalos)
+            for (let i = 1; i <= sets; i++) {
+                sequence.push({
+                    type: 'work', name: 'ESTÍMULO MÁXIMO',
+                    duration: workSecs, set: i,
+                    instruction: isStrength 
+                        ? 'Subida pesada! Carga alta, segure firme no guidão (70-80 RPM).' 
+                        : 'Sprint! Carga leve/moderada. Acelere o giro o mais rápido que puder!'
+                });
+                sequence.push({
+                    type: 'rest', name: 'RECUPERAÇÃO',
+                    duration: restSecs, set: i,
+                    instruction: 'Tire toda a carga. Respire profundamente e mantenha a perna girando devagar.'
+                });
+            }
+
+            // Desaquecimento
+            sequence.push({
+                type: 'cooldown', name: 'DESAQUECIMENTO',
+                duration: 240, set: sets,
+                instruction: 'Treino feito! Apenas gire as pernas bem leve até a frequência cardíaca baixar.'
+            });
+
+            return { sequence, sets };
+        }
+
+        // Base de dados exata para os 20 minutos
+        const db = {
+            'Semanas 1 a 3': {
+                'Terça-feira (Velocidade)': buildWorkout(20, 40, 12, false),
+                'Quinta-feira (Força)': buildWorkout(20, 40, 12, true)
+            },
+            'Semanas 4 a 6': {
+                'Terça-feira (Velocidade)': buildWorkout(30, 42, 10, false),
+                'Quinta-feira (Força)': buildWorkout(30, 42, 10, true)
+            },
+            'Semanas 7 a 9': {
+                'Terça-feira (Velocidade)': buildWorkout(35, 45, 9, false),
+                'Quinta-feira (Força)': buildWorkout(35, 45, 9, true)
+            },
+            'Semanas 10 a 12': {
+                'Terça-feira (Velocidade)': buildWorkout(40, 50, 8, false),
+                'Quinta-feira (Força)': buildWorkout(40, 50, 8, true)
+            }
+        };
+
+        // 5. Interface do Player
+        function initSelectors() {
+            weekSelect.innerHTML = '';
+            Object.keys(db).forEach(w => weekSelect.add(new Option(w, w)));
+            
+            weekSelect.onchange = () => {
+                weekDaySelect.innerHTML = '';
+                Object.keys(db[weekSelect.value]).forEach(d => weekDaySelect.add(new Option(d, d)));
+                loadWorkout();
+            };
+            
+            weekDaySelect.onchange = loadWorkout;
+            weekSelect.onchange(); // Trigger initial load
+        }
+
+        function loadWorkout() {
+            const w = weekSelect.value;
+            const d = weekDaySelect.value;
+            
+            if(db[w] && db[w][d]) {
+                const plan = db[w][d];
+                currentWorkoutPlan = plan.sequence;
+                totalSetsCount = plan.sets;
+                
+                resetTimerSystem();
+                showToast(`Treino carregado: ${w}`, '🚴');
+            }
+        }
+
+        function applyTheme(type) {
+            // Remove classes antigas
+            progressRing.classList.remove('text-rose-500', 'text-sky-400', 'text-amber-400', 'text-slate-600', 'text-emerald-400');
+            timerCircleBox.style.boxShadow = 'inset 0 0 40px rgba(0,0,0,0.8), 0 20px 40px rgba(0,0,0,0.5)';
+            timerCircleBox.style.borderColor = 'var(--border-subtle)';
+            phaseName.style.textShadow = 'none';
+
+            let ringColor = 'text-slate-600';
+            let txtColor = '#f8fafc';
+            let status = 'Pronto';
+
+            if(type === 'work') {
+                ringColor = 'text-rose-500';
+                timerCircleBox.style.boxShadow = 'inset 0 0 50px rgba(244,63,94,0.1), 0 20px 50px rgba(244,63,94,0.3)';
+                timerCircleBox.style.borderColor = 'rgba(244,63,94,0.4)';
+                phaseName.style.textShadow = '0 0 15px rgba(244,63,94,0.6)';
+                txtColor = '#f43f5e';
+                status = 'Alta intensidade';
+            } else if (type === 'rest') {
+                ringColor = 'text-sky-400';
+                timerCircleBox.style.borderColor = 'rgba(56,189,248,0.3)';
+                txtColor = '#38bdf8';
+                status = 'Recuperando';
+            } else if (type === 'warmup' || type === 'cooldown') {
+                ringColor = 'text-amber-400';
+                txtColor = '#fbbf24';
+                status = type === 'warmup' ? 'Aquecendo' : 'Resfriando';
+            } else if (type === 'done') {
+                ringColor = 'text-emerald-400';
+                txtColor = '#10b981';
+                status = 'Concluído';
+            }
+
+            progressRing.classList.add(ringColor);
+            phaseName.style.color = txtColor;
+            statusText.textContent = status;
+            statusText.style.color = txtColor;
+            statusTextMobile.textContent = status;
+            statusTextMobile.style.color = txtColor;
+        }
+
+        function updateScreen() {
+            timeDisplay.textContent = secToMin(timeLeft);
+
+            if(currentWorkoutPlan.length > 0 && phaseIndex < currentWorkoutPlan.length) {
+                const phase = currentWorkoutPlan[phaseIndex];
+                
+                phaseName.textContent = phase.name;
+                instructionText.textContent = phase.instruction;
+                instructionTextMobile.textContent = phase.instruction;
+                
+                const setStr = phase.set === 0 ? '--' : `${phase.set}/${totalSetsCount}`;
+                setCounter.textContent = setStr;
+                setCounterMobile.textContent = setStr;
+                
+                applyTheme(phase.type);
+
+                if(phaseTotalSeconds > 0) {
+                    const pct = ((phaseTotalSeconds - timeLeft) / phaseTotalSeconds);
+                    progressRing.style.strokeDashoffset = circlePerimeter - (pct * circlePerimeter);
+                } else {
+                    progressRing.style.strokeDashoffset = circlePerimeter;
+                }
+            }
+        }
+
+        function finishWorkout() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            
+            phaseName.textContent = "SESSÃO FINALIZADA";
+            timeDisplay.textContent = "00:00";
+            instructionText.textContent = "Excelente! Missão cumprida por hoje. Beba água e descanse.";
+            instructionTextMobile.textContent = "Missão cumprida! Excelente trabalho.";
+            setCounter.textContent = "✔";
+            setCounterMobile.textContent = "✔";
+            
+            applyTheme('done');
+            progressRing.style.strokeDashoffset = 0; // Círculo completo
+            
+            btnStart.disabled = true;
+            btnPause.disabled = true;
+            btnStart.classList.remove('pulse-border');
+            
+            playPremiumTone('finish');
+            showToast('Sessão finalizada com sucesso!', '🏆');
+        }
+
+        function handlePhaseTransition() {
+            phaseIndex++;
+            
+            if (phaseIndex >= currentWorkoutPlan.length) {
+                finishWorkout();
+                return;
+            }
+
+            const next = currentWorkoutPlan[phaseIndex];
+            timeLeft = next.duration;
+            phaseTotalSeconds = next.duration;
+            
+            // Lógica de áudio para início de fase
+            if(next.type === 'work') playPremiumTone('go');
+            else if(next.type === 'rest') playPremiumTone('rest');
+            
+            updateScreen();
+        }
+
+        function runTimer() {
+            timeLeft--;
+            
+            // Beep de contagem regressiva nos 3 últimos segundos
+            if(timeLeft <= 3 && timeLeft > 0) {
+                playPremiumTone('countdown');
+            }
+            
+            updateScreen();
+            
+            if (timeLeft <= 0) {
+                handlePhaseTransition();
+            }
+        }
+
+        // 6. Controles de Botão
+        function resetTimerSystem() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            phaseIndex = 0;
+            
+            if(currentWorkoutPlan.length > 0) {
+                timeLeft = currentWorkoutPlan[0].duration;
+                phaseTotalSeconds = timeLeft;
+            }
+            
+            btnStart.disabled = false;
+            btnPause.disabled = true;
+            btnStart.classList.add('pulse-border');
+            
+            updateScreen();
+            progressRing.style.strokeDashoffset = circlePerimeter; // Zera anel
+        }
+
+        btnStart.onclick = () => {
+            if(isRunning || currentWorkoutPlan.length === 0) return;
+            initAudio(); // Exigência dos browsers modernos ativar som via clique
+            
+            isRunning = true;
+            btnStart.disabled = true;
+            btnPause.disabled = false;
+            btnStart.classList.remove('pulse-border');
+            
+            timerInterval = setInterval(runTimer, 1000);
+        };
+
+        btnPause.onclick = () => {
+            if(!isRunning) return;
+            clearInterval(timerInterval);
+            isRunning = false;
+            
+            btnStart.disabled = false;
+            btnPause.disabled = true;
+            
+            statusText.textContent = "PAUSADO";
+            statusTextMobile.textContent = "PAUSADO";
+            statusText.style.color = "#94a3b8";
+        };
+
+        btnSkip.onclick = () => {
+            if(currentWorkoutPlan.length === 0 || phaseIndex >= currentWorkoutPlan.length) return;
+            handlePhaseTransition();
+        };
+
+        btnReset.onclick = resetTimerSystem;
+
+        // 7. Navegação de Páginas
+        goToTimerBtn.onclick = () => {
+            pageMain.classList.remove('active');
+            setTimeout(() => {
+                pageMain.style.display = 'none';
+                pagePlayer.style.display = 'flex';
+                // force reflow
+                void pagePlayer.offsetWidth;
+                pagePlayer.classList.add('active');
+                window.scrollTo(0,0);
+                
+                if(currentWorkoutPlan.length === 0) initSelectors();
+            }, 300);
+        };
+
+        backBtn.onclick = () => {
+            if(isRunning) btnPause.onclick();
+            pagePlayer.classList.remove('active');
+            setTimeout(() => {
+                pagePlayer.style.display = 'none';
+                pageMain.style.display = 'flex';
+                void pageMain.offsetWidth;
+                pageMain.classList.add('active');
+                window.scrollTo(0,0);
+            }, 300);
+        };
+
+        // 8. Gráficos (Chart.js) Ultra Premium Styling
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#94a3b8';
+        
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { display: false } 
+            },
+            scales: {
+                y: { 
+                    grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
+                    border: { display: false }
+                },
+                x: { 
+                    grid: { display: false },
+                    border: { display: false }
+                }
+            }
+        };
+
+        const ctxDur = document.getElementById('durationChart').getContext('2d');
+        new Chart(ctxDur, {
+            type: 'bar',
+            data: {
+                labels: ['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4'],
+                datasets: [{
+                    label: 'Minutos',
+                    data: [20, 20, 20, 20],
+                    backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                    borderColor: '#38bdf8',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: { ...chartOptions, scales: { ...chartOptions.scales, y: { ...chartOptions.scales.y, max: 25 } } }
+        });
+
+        const ctxInt = document.getElementById('intensityChart').getContext('2d');
+        // Gradiente para linha de estímulo
+        let gradientRed = ctxInt.createLinearGradient(0, 0, 0, 400);
+        gradientRed.addColorStop(0, 'rgba(244, 63, 94, 0.4)');
+        gradientRed.addColorStop(1, 'rgba(244, 63, 94, 0.0)');
+
+        new Chart(ctxInt, {
+            type: 'line',
+            data: {
+                labels: ['Fase 1', 'Fase 2', 'Fase 3', 'Fase 4'],
+                datasets: [
+                    {
+                        label: 'Estímulo (s)',
+                        data: [20, 30, 35, 40],
+                        borderColor: '#f43f5e',
+                        backgroundColor: gradientRed,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        fill: true,
+                        pointBackgroundColor: '#0f172a',
+                        pointBorderColor: '#f43f5e',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Recuperação (s)',
+                        data: [40, 42, 45, 50],
+                        borderColor: '#38bdf8',
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#0f172a',
+                        pointBorderColor: '#38bdf8'
+                    }
+                ]
+            },
+            options: {
+                ...chartOptions,
+                plugins: { legend: { display: true, position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } } }
+            }
+        });
+
+    </script>
+</body>
+</html>
