@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cardios da Manu</title>
+<title>Cardios do Manu</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,6 @@
   --ink:#050507;--ink-2:#0d0509;--ink-3:#1a0d14;
   --magenta:#c2185b;--magenta-deep:#880e4f;
   --gold:#d4af37;--gold-deep:#8b7220;
-  --emerald:#10b981;
   --bone:#fdf6f0;--ash:#a89a94;
   --line:rgba(253,246,240,0.08);--line-strong:rgba(253,246,240,0.18);
 }
@@ -132,23 +131,16 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
 @keyframes pulseRing{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.15);opacity:0}}
 
 .theme-work .timer-display{background:linear-gradient(180deg,#fff 0%,var(--magenta) 100%);-webkit-background-clip:text;background-clip:text}
-.theme-rest .timer-display{background:linear-gradient(180deg,#fff 0%,var(--ash) 100%);-webkit-background-clip:text;background-clip:text}
+.theme-rest .timer-display{background:linear-gradient(180deg,#fff 0%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text}
 .theme-warm .timer-display{background:linear-gradient(180deg,#fff 0%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text}
-.theme-done .timer-display{background:linear-gradient(180deg,#fff 0%,var(--emerald) 100%);-webkit-background-clip:text;background-clip:text}
+.theme-done .timer-display{background:linear-gradient(180deg,#fff 0%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text}
 
 .divider-line{height:1px;background:linear-gradient(90deg,transparent,var(--line-strong),transparent)}
 
-.modality-icon{width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;border-radius:2px;flex-shrink:0;background:rgba(194,24,91,.1);border:1px solid rgba(194,24,91,.3);color:var(--magenta)}
-.rest-icon{background:rgba(168,154,148,.1);border:1px solid rgba(168,154,148,.3);color:var(--ash)}
+.rest-indicator{background:rgba(212,175,55,.08);border:1px dashed var(--gold);padding:14px 20px;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:8px}
 
 .social-link{display:inline-flex;align-items:center;gap:8px;color:var(--ash);transition:color .3s;font-size:.85rem;padding:8px 14px;border:1px solid var(--line);border-radius:2px}
 .social-link:hover{color:var(--bone);border-color:var(--magenta)}
-
-.rest-indicator{background:rgba(168,154,148,.08);border:1px dashed var(--ash);padding:14px 20px;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ash);display:inline-flex;align-items:center;gap:8px}
-
-.day-card{display:flex;align-items:center;gap:16px;padding:16px 20px;border:1px solid var(--line);border-radius:2px;background:var(--ink-2);transition:all .3s}
-.day-card.rest{border-style:dashed}
-.day-card.train{border-left:3px solid var(--magenta)}
 
 ::selection{background:var(--magenta);color:var(--bone)}
 
@@ -184,11 +176,11 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
         <span class="mono text-xs tracking-[0.25em] text-[color:var(--bone)]">DMX / PERFORMANCE & FIT</span>
       </div>
       <div class="hidden md:flex items-center gap-8 text-xs tracking-[0.2em] uppercase text-[color:var(--ash)]">
-        <span>Protocolo · <span class="text-[color:var(--gold)]">HIIT BIKE</span></span>
+        <span>Protocolo · <span class="text-[color:var(--gold)]">HIIT ESCADA</span></span>
         <span>3 sessões · <span class="text-[color:var(--bone)]">15 MIN</span></span>
         <span>Ciclo · <span class="text-[color:var(--bone)]">12 SEM</span></span>
       </div>
-      <div class="hidden md:block mono text-xs text-[color:var(--ash)]">v2.3 · <span class="text-[color:var(--magenta)]">LIVE</span></div>
+      <div class="hidden md:block mono text-xs text-[color:var(--ash)]">v2.4 · <span class="text-[color:var(--magenta)]">LIVE</span></div>
     </div>
   </nav>
 
@@ -197,22 +189,21 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
     <div class="container mx-auto relative z-10">
       <div class="max-w-6xl">
         <div class="mb-8 reveal">
-          <span class="badge-tag"><span class="dot"></span>Protocolo iniciante / intermediário · 12 semanas · 3 sessões semanais</span>
+          <span class="badge-tag"><span class="dot"></span>Protocolo de HIIT na escada · 3 sessões semanais</span>
         </div>
 
         <div class="hero-title-wrap mb-8 reveal">
           <div class="hero-title-bg"></div>
           <h1 class="display text-[clamp(3.5rem,12vw,11rem)] uppercase">
-            <span class="text-[color:var(--bone)]">HIIT</span>
-            <span class="text-[color:var(--magenta)] italic">bike</span>
+            <span class="text-[color:var(--bone)]">HIIT</span><span class="text-[color:var(--magenta)] italic">Escada</span>
           </h1>
           <div class="mono text-sm md:text-base text-[color:var(--ash)] mt-4 tracking-wider">
-            Sprints máximos curtos com descanso total. Feito para quem está começando.
+            Sprint interval training vertical · Descanso ativo entre tiros
           </div>
         </div>
 
         <p class="text-lg md:text-2xl text-[color:var(--ash)] max-w-2xl leading-relaxed mb-12 reveal" style="font-weight:300">
-          Doze semanas para construir sua base de VO₂max com segurança. Três sessões por semana na bike, tiros de <span class="text-[color:var(--bone)]">15 a 25 segundos</span> em esforço máximo, seguidos de <span class="text-[color:var(--gold)]">descanso total</span> (parar de pedalar). Progressão de 5 segundos por mês.
+          Doze semanas de treinamento estruturado em <span class="text-[color:var(--bone)]">três fases progressivas</span>, com tiros curtos e intensos na escada. Três minutos de aquecimento, estímulo all-out, três minutos de volta à calma. Progressão segura de +5s por mês.
         </p>
 
         <div class="panel p-6 md:p-8 max-w-3xl reveal">
@@ -248,18 +239,18 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
 
   <div class="marquee">
     <div class="marquee-track">
-      <span>SIT · SPRINT INTERVAL</span><span class="accent">◆</span>
-      <span>ALL-OUT Z5</span><span class="accent">◆</span>
-      <span>DESCANSO TOTAL</span><span class="accent">◆</span>
-      <span>15s → 20s → 25s</span><span class="accent">◆</span>
-      <span>3× SEMANA</span><span class="accent">◆</span>
-      <span>INICIANTE</span><span class="accent">◆</span>
-      <span>SIT · SPRINT INTERVAL</span><span class="accent">◆</span>
-      <span>ALL-OUT Z5</span><span class="accent">◆</span>
-      <span>DESCANSO TOTAL</span><span class="accent">◆</span>
-      <span>15s → 20s → 25s</span><span class="accent">◆</span>
-      <span>3× SEMANA</span><span class="accent">◆</span>
-      <span>INICIANTE</span><span class="accent">◆</span>
+      <span>HIIT ESCADA</span><span class="accent">◆</span>
+      <span>ALL-OUT VERTICAL</span><span class="accent">◆</span>
+      <span>DESCANSO ATIVO</span><span class="accent">◆</span>
+      <span>PROGRESSÃO +5S/MÊS</span><span class="accent">◆</span>
+      <span>FORÇA + CARDIO</span><span class="accent">◆</span>
+      <span>GLÚTEOS · QUADRÍCEPS</span><span class="accent">◆</span>
+      <span>HIIT ESCADA</span><span class="accent">◆</span>
+      <span>ALL-OUT VERTICAL</span><span class="accent">◆</span>
+      <span>DESCANSO ATIVO</span><span class="accent">◆</span>
+      <span>PROGRESSÃO +5S/MÊS</span><span class="accent">◆</span>
+      <span>FORÇA + CARDIO</span><span class="accent">◆</span>
+      <span>GLÚTEOS · QUADRÍCEPS</span><span class="accent">◆</span>
     </div>
   </div>
 
@@ -283,8 +274,8 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
           <div class="stat-label">Semanas de ciclo</div>
         </div>
         <div class="panel p-8 md:p-10 bg-[color:var(--ink)]">
-          <div class="stat-number" data-target="5">0</div>
-          <div class="stat-label">Segundos de progressão/mês</div>
+          <div class="stat-number" data-target="3">0</div>
+          <div class="stat-label">Fases progressivas</div>
         </div>
       </div>
     </div>
@@ -293,56 +284,34 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
   <section class="py-24 px-6 md:px-10">
     <div class="container mx-auto">
       <div class="mb-16 reveal">
-        <div class="mono text-xs tracking-[0.3em] text-[color:var(--magenta)] uppercase mb-4">02 · Metodologia</div>
-        <h2 class="display text-4xl md:text-6xl uppercase max-w-4xl">Por que <span class="italic text-[color:var(--gold)]">3 sessões</span> vencem 6.</h2>
-        <p class="text-[color:var(--ash)] mt-6 max-w-2xl">Para iniciantes fazendo all-out verdadeiro (Z5), a literatura é clara: o corpo precisa de 48h entre sessões máximas para reconstruir. Mais do que isso é sinal de que você não está em Z5 de verdade.</p>
+        <div class="mono text-xs tracking-[0.3em] text-[color:var(--magenta)] uppercase mb-4">02 · Por que a escada funciona</div>
+        <h2 class="display text-4xl md:text-6xl uppercase max-w-4xl">Cardio e força <span class="italic text-[color:var(--gold)]">no mesmo movimento.</span></h2>
+        <p class="text-[color:var(--ash)] mt-6 max-w-2xl">A escada é uma das ferramentas mais subestimadas do treino. Combina potência cardiovascular com recrutamento massivo de glúteos, quadríceps e panturrilha. Para iniciantes, gera adaptação rápida com baixo impacto articular.</p>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-6 mb-6">
+      <div class="grid md:grid-cols-3 gap-6">
         <div class="panel p-8 reveal">
-          <div class="flex items-center gap-4 mb-6">
-            <div class="modality-icon">🚴</div>
-            <div>
-              <h3 class="text-xl font-bold text-[color:var(--bone)]">Dias de treino</h3>
-              <p class="text-xs text-[color:var(--magenta)] mono tracking-widest uppercase">Terça · Quinta · Domingo</p>
-            </div>
-          </div>
-          <p class="text-sm text-[color:var(--ash)] leading-relaxed mb-4">HIIT na bike em Z5. Tiros all-out muito curtos (15 a 25s) seguidos de <span class="text-[color:var(--bone)]">descanso total</span>: você para de pedalar completamente e respira fundo.</p>
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-[color:var(--ash)]">Duração</span>
-            <span class="mono text-[color:var(--bone)]">15 min</span>
-          </div>
-          <div class="flex items-center justify-between text-xs mt-2">
-            <span class="text-[color:var(--ash)]">Zona</span>
-            <span class="mono text-[color:var(--magenta)]">Z5 · all-out</span>
-          </div>
+          <div class="mono text-xs text-[color:var(--magenta)] mb-6">01</div>
+          <h3 class="text-xl font-bold mb-3 text-[color:var(--bone)]">Recrutamento muscular</h3>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed">Cada subida é uma extensão de quadril e joelho. Glúteos, quadríceps e panturrilha trabalham a cada passo.</p>
         </div>
-
         <div class="panel p-8 reveal">
-          <div class="flex items-center gap-4 mb-6">
-            <div class="modality-icon rest-icon">💤</div>
-            <div>
-              <h3 class="text-xl font-bold text-[color:var(--bone)]">Dias de descanso</h3>
-              <p class="text-xs text-[color:var(--gold)] mono tracking-widest uppercase">Seg · Qua · Sex · Sáb</p>
-            </div>
-          </div>
-          <p class="text-sm text-[color:var(--ash)] leading-relaxed mb-4">Sem treino. É aqui que a adaptação acontece. Opcional: caminhada leve ou alongamentos. Sono de qualidade é parte do protocolo.</p>
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-[color:var(--ash)]">Função</span>
-            <span class="mono text-[color:var(--bone)]">Reconstrução</span>
-          </div>
-          <div class="flex items-center justify-between text-xs mt-2">
-            <span class="text-[color:var(--ash)]">Intervalo</span>
-            <span class="mono text-[color:var(--gold)]">≥ 48h entre sessões</span>
-          </div>
+          <div class="mono text-xs text-[color:var(--magenta)] mb-6">02</div>
+          <h3 class="text-xl font-bold mb-3 text-[color:var(--bone)]">Cardio vertical</h3>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed">Vencer a gravidade exige mais do sistema cardiovascular do que exercícios horizontais na mesma intensidade.</p>
+        </div>
+        <div class="panel p-8 reveal">
+          <div class="mono text-xs text-[color:var(--magenta)] mb-6">03</div>
+          <h3 class="text-xl font-bold mb-3 text-[color:var(--bone)]">Baixo impacto</h3>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed">Diferente da corrida, a escada não gera impacto de aterrissagem. Joelhos e tornozelos são preservados.</p>
         </div>
       </div>
 
-      <div class="panel p-6 reveal flex items-start gap-4">
-        <div class="text-2xl">⚡</div>
+      <div class="panel p-6 mt-6 reveal flex items-center gap-4">
+        <div class="w-12 h-12 rounded-sm bg-[color:var(--ink-3)] border border-[color:var(--line-strong)] flex items-center justify-center text-xl">⚠️</div>
         <div>
-          <p class="text-sm font-bold text-[color:var(--bone)] mb-1">Por que descanso total (parar de pedalar)?</p>
-          <p class="text-xs text-[color:var(--ash)] leading-relaxed">Para iniciantes, o SIT funciona apenas se o próximo tiro for <span class="text-[color:var(--bone)]">100% máximo</span>. Girar leve entre tiros acumula lactato e impede que você atinja Z5 de novo. Parar de pedalar permite ressíntese de fosfocreatina e é isso que garante que cada tiro seja realmente all-out (Gibala 2006).</p>
+          <p class="text-sm font-bold text-[color:var(--bone)]">Importante para iniciantes</p>
+          <p class="text-xs text-[color:var(--ash)]">Se sentir tontura, falta de ar excessiva ou dor aguda, reduza a intensidade. All-out é intenso, mas não deve machucar. Evite se apoiar no corrimão durante os tiros.</p>
         </div>
       </div>
     </div>
@@ -352,18 +321,30 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
     <div class="container mx-auto">
       <div class="mb-16 reveal">
         <div class="mono text-xs tracking-[0.3em] text-[color:var(--magenta)] uppercase mb-4">03 · Evolução programada</div>
-        <h2 class="display text-4xl md:text-6xl uppercase">+5 segundos por mês. <span class="italic text-[color:var(--gold)]">Só isso.</span></h2>
-        <p class="text-[color:var(--ash)] mt-6 max-w-2xl">Progressão conservadora e realista. Quando o tiro aumenta, o número de séries diminui, assim o volume total se ajusta e você não entra em colapso.</p>
+        <h2 class="display text-4xl md:text-6xl uppercase">Progressão de <span class="italic text-[color:var(--gold)]">+5s por mês.</span></h2>
+        <p class="text-[color:var(--ash)] mt-6 max-w-2xl">Cada fase aumenta 5 segundos no tiro all-out e 15 segundos no descanso ativo. O volume total se mantém em 15 minutos.</p>
       </div>
-      <div class="panel p-8 reveal">
-        <div class="flex items-start justify-between mb-6">
-          <div>
-            <div class="mono text-xs text-[color:var(--ash)] tracking-[0.2em] uppercase">Tiro all-out e séries</div>
-            <div class="text-2xl font-bold text-[color:var(--bone)] mt-1">Progressão mensal</div>
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="panel p-8 reveal">
+          <div class="flex items-start justify-between mb-6">
+            <div>
+              <div class="mono text-xs text-[color:var(--ash)] tracking-[0.2em] uppercase">Duração do tiro all-out</div>
+              <div class="text-2xl font-bold text-[color:var(--bone)] mt-1">Progressão conservadora</div>
+            </div>
+            <span class="badge-tag"><span class="dot"></span>+5S/MÊS</span>
           </div>
-          <span class="badge-tag"><span class="dot"></span>VARIÁVEL</span>
+          <div class="chart-container"><canvas id="intensityChart"></canvas></div>
         </div>
-        <div class="chart-container"><canvas id="intensityChart"></canvas></div>
+        <div class="panel p-8 reveal">
+          <div class="flex items-start justify-between mb-6">
+            <div>
+              <div class="mono text-xs text-[color:var(--ash)] tracking-[0.2em] uppercase">Ratio trabalho/descanso</div>
+              <div class="text-2xl font-bold text-[color:var(--bone)] mt-1">Sempre 1:3</div>
+            </div>
+            <span class="badge-tag">FIXO</span>
+          </div>
+          <div class="chart-container"><canvas id="ratioChart"></canvas></div>
+        </div>
       </div>
     </div>
   </section>
@@ -372,7 +353,7 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
     <div class="container mx-auto px-6 md:px-10 mb-12 reveal">
       <div class="mono text-xs tracking-[0.3em] text-[color:var(--magenta)] uppercase mb-4">04 · Periodização</div>
       <h2 class="display text-4xl md:text-6xl uppercase">Doze semanas. <span class="italic text-[color:var(--gold)]">Três fases.</span></h2>
-      <p class="text-[color:var(--ash)] mt-6 max-w-2xl">Role horizontalmente. A cada quatro semanas, o tiro fica 5 segundos mais longo. As séries diminuem proporcionalmente para manter o estímulo efetivo sem fadiga acumulada.</p>
+      <p class="text-[color:var(--ash)] mt-6 max-w-2xl">Role horizontalmente. A cada quatro semanas, o estímulo aumenta 5s no tiro e 15s no descanso ativo, mantendo a segurança para iniciantes.</p>
     </div>
 
     <div class="timeline-track">
@@ -382,14 +363,17 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
         <div class="phase-number">01</div>
         <div class="panel p-8 h-full">
           <div class="mono text-xs text-[color:var(--magenta)] tracking-[0.3em] uppercase mb-3">Semanas 01 a 04</div>
-          <h3 class="text-2xl font-bold mb-2 text-[color:var(--bone)]">Adaptação inicial</h3>
-          <p class="text-sm text-[color:var(--ash)] mb-6 leading-relaxed">Ensinar o corpo a fazer all-out de verdade. Tiros muito curtos para garantir que cada um seja máximo.</p>
+          <h3 class="text-2xl font-bold mb-2 text-[color:var(--bone)]">Adaptação ao all-out vertical</h3>
+          <p class="text-sm text-[color:var(--ash)] mb-6 leading-relaxed">Ensinar o corpo a recrutar fibras rápidas em esforço máximo curto na escada. Descanso ativo entre tiros.</p>
           <div class="divider-line mb-6"></div>
           <div class="space-y-3 text-sm">
-            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Tiro</span><span class="text-[color:var(--magenta)] font-bold mono">15s</span></div>
-            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Descanso total</span><span class="text-[color:var(--gold)] font-bold mono">45s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Tiro all-out</span><span class="text-[color:var(--bone)] font-bold mono">15s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Descanso ativo</span><span class="text-[color:var(--bone)] font-bold mono">45s</span></div>
             <div class="flex justify-between"><span class="text-[color:var(--ash)]">Séries</span><span class="text-[color:var(--bone)] font-bold">9</span></div>
             <div class="flex justify-between"><span class="text-[color:var(--ash)]">Ratio</span><span class="text-[color:var(--bone)] font-bold">1:3</span></div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[color:var(--line)] text-xs text-[color:var(--ash)]">
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[color:var(--magenta)]"></span> Descanso: reduza ao mínimo, mas continue subindo.</div>
           </div>
         </div>
       </div>
@@ -398,14 +382,17 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
         <div class="phase-number">02</div>
         <div class="panel p-8 h-full">
           <div class="mono text-xs text-[color:var(--magenta)] tracking-[0.3em] uppercase mb-3">Semanas 05 a 08</div>
-          <h3 class="text-2xl font-bold mb-2 text-[color:var(--bone)]">Consolidação</h3>
-          <p class="text-sm text-[color:var(--ash)] mb-6 leading-relaxed">O corpo já tolera all-out por mais tempo. Aumentamos o tiro em 5s e reduzimos séries para manter a qualidade.</p>
+          <h3 class="text-2xl font-bold mb-2 text-[color:var(--bone)]">Consolidação da potência</h3>
+          <p class="text-sm text-[color:var(--ash)] mb-6 leading-relaxed">O corpo já tolera o all-out vertical. Aumentamos 5s no tiro e 15s no descanso ativo, mantendo o ratio 1:3.</p>
           <div class="divider-line mb-6"></div>
           <div class="space-y-3 text-sm">
-            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Tiro</span><span class="text-[color:var(--magenta)] font-bold mono">20s</span></div>
-            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Descanso total</span><span class="text-[color:var(--gold)] font-bold mono">60s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Tiro all-out</span><span class="text-[color:var(--bone)] font-bold mono">20s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Descanso ativo</span><span class="text-[color:var(--bone)] font-bold mono">60s</span></div>
             <div class="flex justify-between"><span class="text-[color:var(--ash)]">Séries</span><span class="text-[color:var(--bone)] font-bold">7</span></div>
             <div class="flex justify-between"><span class="text-[color:var(--ash)]">Ratio</span><span class="text-[color:var(--bone)] font-bold">1:3</span></div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[color:var(--line)] text-xs text-[color:var(--ash)]">
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[color:var(--magenta)]"></span> Mantenha postura firme, não apoie no corrimão.</div>
           </div>
         </div>
       </div>
@@ -414,14 +401,17 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
         <div class="phase-number">03</div>
         <div class="panel p-8 h-full" style="border-color:var(--gold)">
           <div class="mono text-xs text-[color:var(--gold)] tracking-[0.3em] uppercase mb-3">Semanas 09 a 12 · Pico</div>
-          <h3 class="text-2xl font-bold mb-2 text-[color:var(--bone)]">Performance</h3>
-          <p class="text-sm text-[color:var(--ash)] mb-6 leading-relaxed">Tiros de 25s sustentados em Z5. Menos séries, mas cada uma com qualidade máxima. Taper na semana 12.</p>
+          <h3 class="text-2xl font-bold mb-2 text-[color:var(--bone)]">Performance máxima</h3>
+          <p class="text-sm text-[color:var(--ash)] mb-6 leading-relaxed">Último salto: 25s all-out com 75s de descanso ativo. Taper na semana 12 para consolidar o ganho.</p>
           <div class="divider-line mb-6" style="background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
           <div class="space-y-3 text-sm">
-            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Tiro</span><span class="text-[color:var(--magenta)] font-bold mono">25s</span></div>
-            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Descanso total</span><span class="text-[color:var(--gold)] font-bold mono">75s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Tiro all-out</span><span class="text-[color:var(--bone)] font-bold mono">25s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Descanso ativo</span><span class="text-[color:var(--bone)] font-bold mono">75s</span></div>
             <div class="flex justify-between"><span class="text-[color:var(--ash)]">Séries</span><span class="text-[color:var(--bone)] font-bold">6</span></div>
             <div class="flex justify-between"><span class="text-[color:var(--ash)]">Ratio</span><span class="text-[color:var(--bone)] font-bold">1:3</span></div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[color:var(--line)] text-xs text-[color:var(--ash)]">
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[color:var(--gold)]"></span> Último esforço. Controle a técnica até o fim.</div>
           </div>
         </div>
       </div>
@@ -433,80 +423,16 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
   <section class="py-24 px-6 md:px-10">
     <div class="container mx-auto max-w-5xl">
       <div class="mb-12 reveal">
-        <div class="mono text-xs tracking-[0.3em] text-[color:var(--magenta)] uppercase mb-4">05 · Semana típica</div>
-        <h2 class="display text-4xl md:text-6xl uppercase">Como é <span class="italic text-[color:var(--gold)]">uma semana</span> real.</h2>
-      </div>
-
-      <div class="space-y-3 reveal">
-        <div class="day-card rest">
-          <div class="modality-icon rest-icon" style="width:40px;height:40px;font-size:1.2rem">💤</div>
-          <div class="flex-1">
-            <div class="font-bold text-[color:var(--bone)]">Segunda</div>
-            <div class="text-xs text-[color:var(--ash)]">Descanso total</div>
-          </div>
-        </div>
-        <div class="day-card train">
-          <div class="modality-icon" style="width:40px;height:40px;font-size:1.2rem">🚴</div>
-          <div class="flex-1">
-            <div class="font-bold text-[color:var(--bone)]">Terça</div>
-            <div class="text-xs text-[color:var(--ash)]">HIIT bike · 15 min</div>
-          </div>
-          <span class="mono text-xs text-[color:var(--magenta)]">TREINO</span>
-        </div>
-        <div class="day-card rest">
-          <div class="modality-icon rest-icon" style="width:40px;height:40px;font-size:1.2rem">💤</div>
-          <div class="flex-1">
-            <div class="font-bold text-[color:var(--bone)]">Quarta</div>
-            <div class="text-xs text-[color:var(--ash)]">Descanso total</div>
-          </div>
-        </div>
-        <div class="day-card train">
-          <div class="modality-icon" style="width:40px;height:40px;font-size:1.2rem">🚴</div>
-          <div class="flex-1">
-            <div class="font-bold text-[color:var(--bone)]">Quinta</div>
-            <div class="text-xs text-[color:var(--ash)]">HIIT bike · 15 min</div>
-          </div>
-          <span class="mono text-xs text-[color:var(--magenta)]">TREINO</span>
-        </div>
-        <div class="day-card rest">
-          <div class="modality-icon rest-icon" style="width:40px;height:40px;font-size:1.2rem">💤</div>
-          <div class="flex-1">
-            <div class="font-bold text-[color:var(--bone)]">Sexta</div>
-            <div class="text-xs text-[color:var(--ash)]">Descanso total</div>
-          </div>
-        </div>
-        <div class="day-card rest">
-          <div class="modality-icon rest-icon" style="width:40px;height:40px;font-size:1.2rem">💤</div>
-          <div class="flex-1">
-            <div class="font-bold text-[color:var(--bone)]">Sábado</div>
-            <div class="text-xs text-[color:var(--ash)]">Descanso · caminhada leve opcional</div>
-          </div>
-        </div>
-        <div class="day-card train">
-          <div class="modality-icon" style="width:40px;height:40px;font-size:1.2rem">🚴</div>
-          <div class="flex-1">
-            <div class="font-bold text-[color:var(--bone)]">Domingo</div>
-            <div class="text-xs text-[color:var(--ash)]">HIIT bike · 15 min</div>
-          </div>
-          <span class="mono text-xs text-[color:var(--magenta)]">TREINO</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-24 px-6 md:px-10">
-    <div class="container mx-auto max-w-5xl">
-      <div class="mb-12 reveal">
-        <div class="mono text-xs tracking-[0.3em] text-[color:var(--magenta)] uppercase mb-4">06 · Auto-regulação</div>
-        <h2 class="display text-4xl md:text-6xl uppercase">Meça sua <span class="italic text-[color:var(--gold)]">intensidade real.</span></h2>
+        <div class="mono text-xs tracking-[0.3em] text-[color:var(--magenta)] uppercase mb-4">05 · Como medir a intensidade</div>
+        <h2 class="display text-4xl md:text-6xl uppercase">All-out vertical <span class="italic text-[color:var(--gold)]">de verdade.</span></h2>
       </div>
 
       <button id="toggleGuideBtn" class="w-full panel p-6 md:p-8 flex items-center justify-between text-left reveal">
         <div class="flex items-center gap-5">
           <div class="w-14 h-14 rounded-sm bg-[color:var(--ink-3)] border border-[color:var(--line-strong)] flex items-center justify-center text-2xl">⚡</div>
           <div>
-            <h3 class="text-lg md:text-xl font-bold text-[color:var(--bone)]">Escala PSE · Borg CR10 e zonas de FC</h3>
-            <p class="text-sm text-[color:var(--ash)] mt-1">Como saber se você está realmente em Z5 durante o all-out.</p>
+            <h3 class="text-lg md:text-xl font-bold text-[color:var(--bone)]">Escala PSE · Borg CR10 e dicas de execução</h3>
+            <p class="text-sm text-[color:var(--ash)] mt-1">Como saber se está fazendo all-out de verdade na escada.</p>
           </div>
         </div>
         <svg id="guideIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300 text-[color:var(--gold)]"><path d="M6 9l6 6 6-6"/></svg>
@@ -517,23 +443,23 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
           <div class="panel p-6 md:p-10">
             <div class="grid md:grid-cols-2 gap-10">
               <div>
-                <div class="mono text-xs text-[color:var(--magenta)] tracking-[0.3em] uppercase mb-6">Zonas de FC</div>
+                <div class="mono text-xs text-[color:var(--magenta)] tracking-[0.3em] uppercase mb-6">Borg CR10 · Subjetivo</div>
                 <div class="space-y-3">
-                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">Z1 · Regenerativa</span><div class="text-xs text-[color:var(--ash)] mt-1">Abaixo de 60% FCmáx. Onde você fica no descanso.</div></div>
-                  <div class="guide-pill"><span class="font-bold text-[color:var(--emerald)]">Z2 · Endurance</span><div class="text-xs text-[color:var(--ash)] mt-1">60-70%. Ritmo conversacional.</div></div>
-                  <div class="guide-pill"><span class="font-bold text-[color:var(--gold)]">Z3 · Tempo</span><div class="text-xs text-[color:var(--ash)] mt-1">70-80%. Moderado-alto.</div></div>
-                  <div class="guide-pill"><span class="font-bold text-[color:var(--magenta)]">Z4 · Limiar</span><div class="text-xs text-[color:var(--ash)] mt-1">80-90%. Difícil.</div></div>
-                  <div class="guide-pill"><span class="font-bold text-[color:var(--magenta)]">Z5 · VO₂max</span><div class="text-xs text-[color:var(--ash)] mt-1">90-100%. Máximo. É aqui que o tiro acontece.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">0 a 2 · Leve</span><div class="text-xs text-[color:var(--ash)] mt-1">Conversa fluida. Sem fadiga.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">3 a 4 · Moderado</span><div class="text-xs text-[color:var(--ash)] mt-1">Fala com leve dificuldade.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--gold)]">5 a 6 · Pesado</span><div class="text-xs text-[color:var(--ash)] mt-1">Frases curtas possíveis.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--magenta)]">7 a 8 · Muito pesado</span><div class="text-xs text-[color:var(--ash)] mt-1">Palavras soltas apenas.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--magenta)]">9 a 10 · All-out</span><div class="text-xs text-[color:var(--ash)] mt-1">Incapaz de falar. Esforço máximo.</div></div>
                 </div>
               </div>
               <div>
-                <div class="mono text-xs text-[color:var(--magenta)] tracking-[0.3em] uppercase mb-6">Borg CR10 · Subjetivo</div>
+                <div class="mono text-xs text-[color:var(--magenta)] tracking-[0.3em] uppercase mb-6">Dicas para escada</div>
                 <div class="space-y-3">
-                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">0 a 2 · Leve</span><div class="text-xs text-[color:var(--ash)] mt-1">Conversa fluida. Descanso entre tiros.</div></div>
-                  <div class="guide-pill"><span class="font-bold text-[color:var(--emerald)]">3 a 4 · Moderado</span><div class="text-xs text-[color:var(--ash)] mt-1">Fala com leve dificuldade.</div></div>
-                  <div class="guide-pill"><span class="font-bold text-[color:var(--gold)]">5 a 6 · Pesado</span><div class="text-xs text-[color:var(--ash)] mt-1">Frases curtas possíveis.</div></div>
-                  <div class="guide-pill"><span class="font-bold text-[color:var(--magenta)]">7 a 8 · Muito pesado</span><div class="text-xs text-[color:var(--ash)] mt-1">Palavras soltas apenas.</div></div>
-                  <div class="guide-pill"><span class="font-bold text-[color:var(--magenta)]">9 a 10 · Máximo</span><div class="text-xs text-[color:var(--ash)] mt-1">Incapaz de falar. É o all-out verdadeiro.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">Postura</span><div class="text-xs text-[color:var(--ash)] mt-1">Tronco levemente inclinado à frente. Core ativado. Olhar para frente, não para os pés.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">Passada</span><div class="text-xs text-[color:var(--ash)] mt-1">Pise com o pé inteiro no degrau, empurrando forte com o calcanhar. Ative glúteo.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">Braços</span><div class="text-xs text-[color:var(--ash)] mt-1">Balance os braços naturalmente. Não segure no corrimão durante o all-out.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">Descanso ativo</span><div class="text-xs text-[color:var(--ash)] mt-1">Reduza a velocidade ao mínimo, mas continue subindo. Não pare.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">Segurança</span><div class="text-xs text-[color:var(--ash)] mt-1">Se sentir tontura, use o corrimão e reduza. All-out é intenso, não perigoso.</div></div>
                 </div>
               </div>
             </div>
@@ -545,11 +471,11 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
 
   <section class="py-32 px-6 md:px-10 relative">
     <div class="container mx-auto text-center reveal">
-      <div class="mono text-xs tracking-[0.3em] text-[color:var(--magenta)] uppercase mb-6">07 · Execução</div>
+      <div class="mono text-xs tracking-[0.3em] text-[color:var(--magenta)] uppercase mb-6">06 · Execução</div>
       <h2 class="display text-5xl md:text-8xl uppercase mb-8 leading-none">
         O protocolo <span class="italic text-[color:var(--gold)]">espera</span>.
       </h2>
-      <p class="text-lg text-[color:var(--ash)] max-w-xl mx-auto mb-12">Áudio imersivo. Timer visual. Instruções claras sobre quando pedalar e quando parar. Você só precisa dar o máximo nos 15 a 25 segundos do tiro.</p>
+      <p class="text-lg text-[color:var(--ash)] max-w-xl mx-auto mb-12">Áudio imersivo. Timer visual. Instruções claras para cada fase. Você só precisa subir.</p>
       <button id="goToTimerBtn2" class="btn-primary">
         <span>Abrir player</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -562,7 +488,7 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
       <div class="grid md:grid-cols-3 gap-8 mb-12">
         <div>
           <div class="mono text-xs tracking-[0.3em] text-[color:var(--magenta)] uppercase mb-4">Sobre o protocolo</div>
-          <p class="text-sm text-[color:var(--ash)] leading-relaxed">Sistema desenvolvido exclusivamente para alunas DMX. Periodização baseada em evidências (Gibala 2006, Buchheit 2013) adaptada para iniciantes.</p>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed">Sistema desenvolvido exclusivamente para alunas DMX. Periodização baseada em evidências científicas sobre sprint interval training para iniciantes.</p>
         </div>
         <div>
           <div class="mono text-xs tracking-[0.3em] text-[color:var(--magenta)] uppercase mb-4">Aluna</div>
@@ -592,7 +518,7 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
         </div>
       </div>
       <div class="pt-8 border-t border-[color:var(--line)] flex flex-col md:flex-row justify-between items-center gap-4 text-xs mono tracking-[0.2em] text-[color:var(--ash)] uppercase">
-        <div>DMX performance & fit · © <span id="currentYear"></span></div>
+        <div>DMX PERFORMANCE & FIT · © <span id="currentYear"></span></div>
         <div>Built with precision</div>
       </div>
     </div>
@@ -661,8 +587,8 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
               <stop offset="100%" stop-color="#d4af37"/>
             </linearGradient>
             <linearGradient id="ringGradientRest" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#a89a94"/>
-              <stop offset="100%" stop-color="#5a524e"/>
+              <stop offset="0%" stop-color="#d4af37"/>
+              <stop offset="100%" stop-color="#fbbf24"/>
             </linearGradient>
             <linearGradient id="ringGradientWarm" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#d4af37"/>
@@ -679,7 +605,7 @@ select:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(
         <div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-4">
           <div class="timer-display" id="timeDisplay">15:00</div>
           <div class="mono text-xs tracking-[0.3em] uppercase text-[color:var(--ash)] mt-4" id="targetLabel">
-            Alvo · <span id="targetZone" class="text-[color:var(--bone)]">—</span> · PSE <span id="targetPse" class="text-[color:var(--gold)]">—</span>
+            Alvo · <span id="targetZone" class="text-[color:var(--bone)]">Z5</span> · PSE <span id="targetPse" class="text-[color:var(--gold)]">9-10</span>
           </div>
         </div>
       </div>
@@ -853,8 +779,8 @@ const baseScales = {
 };
 
 const ctxInt = document.getElementById('intensityChart').getContext('2d');
-const gradWork = ctxInt.createLinearGradient(0, 0, 0, 280);
-gradWork.addColorStop(0, 'rgba(194,24,91,0.4)'); gradWork.addColorStop(1, 'rgba(194,24,91,0)');
+const grad = ctxInt.createLinearGradient(0, 0, 0, 280);
+grad.addColorStop(0, 'rgba(194,24,91,0.4)'); grad.addColorStop(1, 'rgba(194,24,91,0)');
 
 new Chart(ctxInt, {
   type: 'line',
@@ -864,36 +790,33 @@ new Chart(ctxInt, {
       {
         label: 'Tiro all-out (s)',
         data: [15, 20, 25],
-        borderColor: '#c2185b', backgroundColor: gradWork,
+        borderColor: '#c2185b', backgroundColor: grad,
         tension: 0.4, borderWidth: 2, fill: true,
         pointBackgroundColor: '#050507', pointBorderColor: '#c2185b',
         pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 7
-      },
-      {
-        label: 'Séries por sessão',
-        data: [9, 7, 6],
-        borderColor: '#d4af37',
-        tension: 0.4, borderWidth: 2,
-        pointBackgroundColor: '#050507', pointBorderColor: '#d4af37',
-        pointBorderWidth: 2, pointRadius: 5,
-        yAxisID: 'y1'
       }
     ]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
     plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, padding: 20, font: { size: 10 } } } },
-    scales: {
-      ...baseScales,
-      y: { ...baseScales.y, title: { display: true, text: 'Segundos', color: '#c2185b' } },
-      y1: {
-        position: 'right',
-        grid: { display: false },
-        border: { display: false },
-        ticks: { font: { size: 10 }, color: '#d4af37' },
-        title: { display: true, text: 'Séries', color: '#d4af37' }
-      }
-    }
+    scales: { ...baseScales, y: { ...baseScales.y, max: 35, title: { display: true, text: 'Segundos' } } }
+  }
+});
+
+new Chart(document.getElementById('ratioChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Mês 1', 'Mês 2', 'Mês 3'],
+    datasets: [
+      { label: 'Trabalho', data: [15, 20, 25], backgroundColor: '#c2185b' },
+      { label: 'Descanso ativo', data: [45, 60, 75], backgroundColor: '#d4af37' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, padding: 20, font: { size: 10 } } } },
+    scales: { ...baseScales, y: { ...baseScales.y, max: 90, title: { display: true, text: 'Segundos' } } }
   }
 });
 
@@ -932,7 +855,7 @@ document.getElementById('backBtn').onclick = () => {
 document.getElementById('currentYear').textContent = new Date().getFullYear();
 
 /* ============================================================
-   WORKOUT ENGINE
+   WORKOUT ENGINE — HIIT ESCADA
 ============================================================ */
 const weekSelect = document.getElementById('weekSelect');
 const weekDaySelect = document.getElementById('weekDaySelect');
@@ -990,11 +913,11 @@ function playTone(type) {
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
     osc.start(now); osc.stop(now + 0.8);
   } else if (type === 'rest') {
-    osc.type = 'sine'; osc.frequency.setValueAtTime(220, now);
+    osc.type = 'sine'; osc.frequency.setValueAtTime(330, now);
     gain.gain.setValueAtTime(0, now);
     gain.gain.linearRampToValueAtTime(0.2, now + 0.1);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
-    osc.start(now); osc.stop(now + 1.5);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+    osc.start(now); osc.stop(now + 1.2);
   } else if (type === 'finish') {
     osc.type = 'sine';
     osc.frequency.setValueAtTime(440, now);
@@ -1022,68 +945,74 @@ function secToMin(s) {
 }
 
 /* ============================================================
-   GERADOR DE TREINO HIIT BIKE
+   GERADOR DE TREINO HIIT ESCADA
+   Matemática: 3min warmup + bloco HIIT + 3min cooldown = 15min (900s)
+   Descanso ATIVO = reduzir intensidade, continuar subindo devagar
 ============================================================ */
-// Matemática fixa: 180s (3min) aquecimento + bloco HIIT + cooldown
-// Total sempre = 900s (15min)
-
-function buildBikeHIIT(workSec, restSec, sets) {
+function buildEscadaHIIT(workSec, restSec, sets) {
   const seq = [];
+  // Warmup: 3min = 180s
   seq.push({ type: 'warmup', name: 'AQUECIMENTO', duration: 180, set: 0,
-    instruction: 'Giro muito leve e progressivo. Aqueça bem as pernas. Nos últimos 30 segundos, faça 2 acelerações curtas (5s) para preparar o corpo.',
+    instruction: 'Suba em ritmo leve e progressivo. Aqueça as pernas e o cardio. Postura ereta, pise com o pé inteiro no degrau.',
     targetZone: 'Z1→Z3', targetPse: '3-5' });
+  
+  // Blocos HIIT
   for (let i = 1; i <= sets; i++) {
     seq.push({ type: 'work', name: 'ALL-OUT Z5', duration: workSec, set: i,
-      instruction: 'AGORA. Dê o seu máximo absoluto. Carga pesada ou média, cadência alta. Pedale como se sua vida dependesse desses segundos. Postura firme.',
+      instruction: 'SUBIDA EXPLOSIVA. Suba o mais rápido que conseguir, empurrando forte com o calcanhar. Não segure no corrimão. Postura firme, tronco levemente inclinado. Dê o máximo.',
       targetZone: 'Z5', targetPse: '9-10' });
     if (i < sets) {
-      seq.push({ type: 'rest', name: 'DESCANSO TOTAL', duration: restSec, set: i,
-        instruction: 'PARE DE PEDALAR. Coloque os pés no chão ou fique imóvel no selim. Respire fundo pelo nariz, solte pela boca. Recuperação passiva total.',
-        targetZone: 'Z1 (passivo)', targetPse: '1-2' });
+      seq.push({ type: 'rest', name: 'DESCANSO ATIVO', duration: restSec, set: i,
+        instruction: 'REDUZA A VELOCIDADE AO MÍNIMO. Continue subindo bem devagar, quase parando. Respire fundo pelo nariz, solte pela boca. Não pare completamente. Recupere para o próximo tiro.',
+        targetZone: 'Z1 (ativo)', targetPse: '2-3' });
     }
   }
-  // Cooldown ajusta para fechar 15min
+  
+  // Calcula cooldown para fechar em 900s (15min)
   const elapsed = 180 + sets*workSec + (sets-1)*restSec;
-  const cooldown = 900 - elapsed;
-  seq.push({ type: 'cooldown', name: 'DESAQUECIMENTO', duration: Math.max(60, cooldown), set: sets,
-    instruction: 'Excelente. Giro muito leve agora. Frequência voltando ao normal. Respire fundo e se hidrate.',
+  const cooldown = Math.max(120, 900 - elapsed);
+  seq.push({ type: 'cooldown', name: 'DESAQUECIMENTO', duration: cooldown, set: sets,
+    instruction: 'Excelente, Emanuelly. Suba em ritmo bem leve agora. Frequência voltando ao baseline. Respire fundo. Alongue as pernas depois.',
     targetZone: 'Z1', targetPse: '1-2' });
-  return { sequence: seq, sets, kind: 'bike-hiit' };
+  
+  return { sequence: seq, sets, kind: 'escada-hiit' };
 }
 
 /* ============================================================
-   BANCO DE DADOS — 12 SEMANAS × 3 DIAS DE TREINO = 36 TREINOS
+   BANCO DE DADOS — 12 SEMANAS × 3 DIAS = 36 TREINOS
 ============================================================ */
 const db = {};
 
 for (let w = 1; w <= 12; w++) {
   const phase = w <= 4 ? 1 : w <= 8 ? 2 : 3;
+  const weekInPhase = w - (phase - 1) * 4;
   const isTaper = w === 12;
   
   let ter, qui, dom;
   
   if (phase === 1) {
-    // Mês 1: 15s / 45s / 9 séries
-    ter = buildBikeHIIT(15, 45, 9);
-    qui = buildBikeHIIT(15, 45, 9);
-    dom = buildBikeHIIT(15, 45, 9);
+    // Fase 1: 15s all-out / 45s descanso ativo = 9 séries
+    ter = buildEscadaHIIT(15, 45, 9);
+    qui = buildEscadaHIIT(15, 45, 9);
+    dom = buildEscadaHIIT(15, 45, 9);
   } else if (phase === 2) {
-    // Mês 2: 20s / 60s / 7 séries
-    ter = buildBikeHIIT(20, 60, 7);
-    qui = buildBikeHIIT(20, 60, 7);
-    dom = buildBikeHIIT(20, 60, 7);
+    // Fase 2: 20s all-out / 60s descanso ativo = 7 séries
+    ter = buildEscadaHIIT(20, 60, 7);
+    qui = buildEscadaHIIT(20, 60, 7);
+    dom = buildEscadaHIIT(20, 60, 7);
   } else {
-    // Mês 3: 25s / 75s / 6 séries (taper na semana 12: 5 séries)
+    // Fase 3: 25s all-out / 75s descanso ativo = 6 séries
+    // Taper na semana 12: reduz para 5 séries
     const sets = isTaper ? 5 : 6;
-    ter = buildBikeHIIT(25, 75, sets);
-    qui = buildBikeHIIT(25, 75, sets);
-    dom = buildBikeHIIT(25, 75, sets);
+    ter = buildEscadaHIIT(25, 75, sets);
+    qui = buildEscadaHIIT(25, 75, sets);
+    dom = buildEscadaHIIT(25, 75, sets);
   }
   
   db[`Semana ${w}`] = {
-    "Terça · HIIT bike": ter,
-    "Quinta · HIIT bike": qui,
-    "Domingo · HIIT bike": dom
+    "Terça · HIIT Escada": ter,
+    "Quinta · HIIT Escada": qui,
+    "Domingo · HIIT Escada": dom
   };
 }
 
@@ -1107,29 +1036,29 @@ function loadWorkout() {
   currentWorkoutPlan = plan.sequence;
   totalSetsCount = plan.sets;
   
-  // Progressão
+  // Calcula progressão em relação à semana anterior
   const weekNum = parseInt(w.split(' ')[1]);
   if (weekNum > 1) {
     const prevWeek = `Semana ${weekNum - 1}`;
     const prevPlan = db[prevWeek]?.[d];
     if (prevPlan) {
-      const prevSets = prevPlan.sets;
-      const currSets = plan.sets;
       const prevWork = prevPlan.sequence.find(s => s.type === 'work');
       const currWork = plan.sequence.find(s => s.type === 'work');
-      let progressMsg = '';
       if (prevWork && currWork) {
         const diffSec = currWork.duration - prevWork.duration;
-        if (diffSec > 0) progressMsg = `+${diffSec}s no tiro · fase nova`;
-        else if (currSets !== prevSets) progressMsg = `${currSets} séries (era ${prevSets})`;
-      }
-      if (weekNum === 12) progressMsg = 'Taper · consolidando o ganho';
-      
-      if (progressMsg) {
-        progressTextEl.textContent = progressMsg;
-        progressInner.style.display = 'inline-flex';
-      } else {
-        progressInner.style.display = 'none';
+        const diffSets = plan.sets - prevPlan.sets;
+        let progressMsg = '';
+        if (diffSec > 0) progressMsg = `Tiro +${diffSec}s em relação à semana passada`;
+        else if (diffSets > 0) progressMsg = `+${diffSets} série em relação à semana passada`;
+        else if (diffSec < 0) progressMsg = `Taper: tiro ${Math.abs(diffSec)}s mais curto (consolidação)`;
+        else if (diffSets < 0) progressMsg = `Taper: ${Math.abs(diffSets)} série a menos`;
+        
+        if (progressMsg) {
+          progressTextEl.textContent = progressMsg;
+          progressInner.style.display = 'inline-flex';
+        } else {
+          progressInner.style.display = 'none';
+        }
       }
     }
   } else {
@@ -1137,7 +1066,7 @@ function loadWorkout() {
   }
   
   resetTimerSystem();
-  showToast(`Sessão carregada · ${d}`, '◆');
+  showToast(`Sessão carregada · ${d}`, '🪜');
 }
 
 function applyTheme(type) {
@@ -1145,15 +1074,15 @@ function applyTheme(type) {
   let status = 'Pronto', ringGrad = 'url(#ringGradient)';
   if (type === 'work') {
     timerThemeWrap.classList.add('theme-work');
-    status = 'All-out · máximo';
+    status = 'All-out vertical · Z5';
     ringGrad = 'url(#ringGradient)';
     ecgPath.style.animationDuration = '0.7s';
     pulseRing.style.display = 'block';
   } else if (type === 'rest') {
     timerThemeWrap.classList.add('theme-rest');
-    status = 'Descanso total · pare';
+    status = 'Descanso ativo · ritmo leve';
     ringGrad = 'url(#ringGradientRest)';
-    ecgPath.style.animationDuration = '3s';
+    ecgPath.style.animationDuration = '2.5s';
     pulseRing.style.display = 'none';
   } else if (type === 'warmup' || type === 'cooldown') {
     timerThemeWrap.classList.add('theme-warm');
@@ -1180,12 +1109,12 @@ function updateScreen() {
     phaseName.textContent = p.name;
     phaseNameMobile.textContent = p.name;
     instructionText.textContent = p.instruction;
-    directiveLabel.textContent = p.type === 'rest' ? 'Descanso passivo' : 'Diretriz';
+    directiveLabel.textContent = p.type === 'rest' ? 'Recuperação ativa' : 'Diretriz';
     const setStr = p.set === 0 ? '—' : `${p.set}/${totalSetsCount}`;
     setCounter.textContent = setStr;
     setCounterMobile.textContent = setStr;
-    targetZone.textContent = p.targetZone || '—';
-    targetPse.textContent = p.targetPse || '—';
+    targetZone.textContent = p.targetZone || 'Z5';
+    targetPse.textContent = p.targetPse || '9-10';
     applyTheme(p.type);
     if (phaseTotalSeconds > 0) {
       const pct = (phaseTotalSeconds - timeLeft) / phaseTotalSeconds;
@@ -1200,7 +1129,7 @@ function finishWorkout() {
   phaseName.textContent = 'SESSÃO FINALIZADA';
   phaseNameMobile.textContent = 'FINALIZADO';
   timeDisplay.textContent = '00:00';
-  instructionText.textContent = 'Excelente trabalho, Emanuelly. Você deu o máximo. Hidrate-se e descanse.';
+  instructionText.textContent = 'Excelente trabalho, Emanuelly. Hidrate-se e alongue as pernas.';
   setCounter.textContent = '✓'; setCounterMobile.textContent = '✓';
   applyTheme('done');
   progressRing.style.strokeDashoffset = 0;
