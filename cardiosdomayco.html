@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocolo HIIT VO₂max — Mayco Castro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#050507;--ink-2:#0a0a0f;--ink-3:#12121a;
+  --volt:#2563eb;--volt-deep:#1e3a8a;--volt-soft:#93c5fd;
+  --ember:#f59e0b;--ember-deep:#b45309;
+  --bone:#f5f1e8;--ash:#8a8680;
+  --line:rgba(245,241,232,0.08);--line-strong:rgba(245,241,232,0.18);
+}
+*{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{background:var(--ink);color:var(--bone);font-family:'Inter',sans-serif;cursor:none;overflow-x:hidden;scroll-behavior:smooth}
+@media(max-width:768px){html,body{cursor:auto}}
+
+.cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transition:transform .15s,width .3s,height .3s,background .3s;transform:translate(-50%,-50%)}
+.cursor-dot{width:6px;height:6px;background:var(--bone)}
+.cursor-ring{width:36px;height:36px;border:1px solid rgba(245,241,232,.4)}
+.cursor-ring.hover{width:64px;height:64px;border-color:var(--volt);background:rgba(37,99,235,.08);mix-blend-mode:difference}
+
+.grain::before{content:'';position:fixed;inset:0;z-index:100;pointer-events:none;opacity:.04;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+.mesh-bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:var(--ink)}
+.mesh-bg::before,.mesh-bg::after{content:'';position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(120px);opacity:.25}
+.mesh-bg::before{background:radial-gradient(circle,var(--volt) 0%,transparent 70%);top:-20%;left:-15%;animation:drift 20s ease-in-out infinite alternate}
+.mesh-bg::after{background:radial-gradient(circle,var(--ember) 0%,transparent 70%);bottom:-30%;right:-20%;animation:drift 25s ease-in-out infinite alternate-reverse;opacity:.1}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(10vmax,5vmax) scale(1.2)}}
+
+#heroCanvas{position:absolute;inset:0;z-index:0;opacity:.7}
+
+.display{font-family:'Archivo Black',sans-serif;letter-spacing:-.04em;line-height:.9}
+.mono{font-family:'JetBrains Mono',monospace}
+
+.panel{background:linear-gradient(135deg,rgba(18,18,26,.7) 0%,rgba(10,10,15,.5) 100%);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);border:1px solid var(--line);transition:border-color .4s,transform .4s,box-shadow .4s;position:relative;overflow:hidden}
+.panel::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 0%,rgba(37,99,235,.05) 100%);opacity:0;transition:opacity .4s;pointer-events:none}
+.panel:hover{border-color:var(--line-strong)}
+.panel:hover::before{opacity:1}
+
+.btn-primary{position:relative;overflow:hidden;background:var(--volt);color:var(--bone);padding:20px 48px;border-radius:2px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;font-size:.85rem;transition:all .4s cubic-bezier(.2,.9,.3,1);border:1px solid var(--volt);display:inline-flex;align-items:center;gap:16px;cursor:none}
+.btn-primary::before{content:'';position:absolute;inset:0;background:var(--ink);transform:translateY(101%);transition:transform .4s cubic-bezier(.2,.9,.3,1);z-index:0}
+.btn-primary>*{position:relative;z-index:1}
+.btn-primary:hover{color:var(--bone);border-color:var(--ember)}
+.btn-primary:hover::before{transform:translateY(0)}
+
+#loader{position:fixed;inset:0;z-index:10000;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:32px;transition:opacity .8s,visibility .8s}
+#loader.hide{opacity:0;visibility:hidden}
+.loader-mark{font-family:'Archivo Black';font-size:3.5rem;letter-spacing:-.05em;color:var(--bone);position:relative;overflow:hidden}
+.loader-mark::after{content:'';position:absolute;inset:0;background:var(--volt);animation:reveal 2s cubic-bezier(.77,0,.175,1) forwards}
+@keyframes reveal{0%{transform:translateX(-100%)}40%{transform:translateX(0)}60%{transform:translateX(0)}100%{transform:translateX(100%)}}
+.loader-bar{width:200px;height:1px;background:var(--line);position:relative;overflow:hidden}
+.loader-bar::after{content:'';position:absolute;inset:0;background:var(--volt);animation:fill 2s ease-out forwards}
+@keyframes fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.page{display:none;opacity:0;transition:opacity .6s}
+.page.active{display:flex;opacity:1}
+
+.page-transition{position:fixed;inset:0;z-index:9000;background:var(--volt);transform:translateY(100%);transition:transform .7s cubic-bezier(.77,0,.175,1);pointer-events:none}
+.page-transition.in{transform:translateY(0)}
+.page-transition.out{transform:translateY(-100%)}
+
+.timeline-track{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding:40px 24px 80px;scrollbar-width:none}
+.timeline-track::-webkit-scrollbar{display:none}
+.timeline-card{flex:0 0 380px;scroll-snap-align:center;position:relative}
+@media(max-width:768px){.timeline-card{flex:0 0 300px}}
+
+.phase-number{font-family:'Archivo Black';font-size:clamp(8rem,18vw,14rem);line-height:.8;color:transparent;-webkit-text-stroke:1px rgba(245,241,232,.1);position:absolute;top:-30px;right:-10px;pointer-events:none;user-select:none;transition:-webkit-text-stroke-color .6s}
+.timeline-card:hover .phase-number{-webkit-text-stroke-color:var(--volt)}
+
+.timer-ring-wrap{position:relative;width:min(80vmin,480px);height:min(80vmin,480px)}
+.timer-display{font-family:'Archivo Black';font-size:clamp(5rem,14vmin,8rem);letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums;background:linear-gradient(180deg,var(--bone) 0%,var(--ash) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+.ecg-line{stroke:var(--volt);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 8px rgba(37,99,235,.6))}
+.ecg-path{stroke-dasharray:2000;stroke-dashoffset:2000;animation:ecgDraw 2s linear infinite}
+@keyframes ecgDraw{to{stroke-dashoffset:0}}
+
+.progress-ring__circle{transition:stroke-dashoffset 1s linear;transform:rotate(-90deg);transform-origin:50% 50%}
+
+.ctrl-btn{background:transparent;border:1px solid var(--line-strong);color:var(--bone);padding:14px 24px;border-radius:2px;font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;transition:all .3s;display:flex;align-items:center;gap:10px;backdrop-filter:blur(10px);cursor:none}
+.ctrl-btn:hover:not(:disabled){background:var(--bone);color:var(--ink);border-color:var(--bone)}
+.ctrl-btn.primary{background:var(--volt);border-color:var(--volt)}
+.ctrl-btn.primary:hover:not(:disabled){background:var(--ink);color:var(--bone)}
+.ctrl-btn:disabled{opacity:.3;cursor:not-allowed}
+
+select{background:var(--ink-2);color:var(--bone);border:1px solid var(--line-strong);padding:16px 20px;border-radius:2px;width:100%;font-size:.9rem;font-weight:500;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;background-size:1.2em;transition:all .3s;cursor:none}
+select:focus{outline:none;border-color:var(--volt);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--ink-3);backdrop-filter:blur(20px);border:1px solid var(--line-strong);border-left:3px solid var(--volt);padding:1.25rem 1.5rem;border-radius:2px;z-index:200;display:flex;align-items:center;gap:1rem;transform:translateY(200%);opacity:0;transition:all .5s cubic-bezier(.175,.885,.32,1.275);max-width:380px}
+.toast.show{transform:translateY(0);opacity:1}
+
+.stat-number{font-family:'Archivo Black';font-size:clamp(3rem,7vw,5rem);line-height:1;color:var(--bone)}
+.stat-label{font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--ash);margin-top:8px}
+
+.marquee{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:24px 0;background:var(--ink-2)}
+.marquee-track{display:inline-block;animation:scroll 40s linear infinite}
+.marquee span{font-family:'Archivo Black';font-size:2rem;color:var(--bone);margin:0 40px;letter-spacing:-.02em}
+.marquee span.accent{color:var(--volt)}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+.accordion-content{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.4,0,.2,1)}
+.accordion-content.open{grid-template-rows:1fr}
+.accordion-inner{overflow:hidden}
+
+.guide-pill{background:var(--ink-2);border:1px solid var(--line);border-left:2px solid var(--volt);padding:14px 18px;border-radius:2px;font-size:.9rem}
+
+.hero-title-wrap{position:relative;display:inline-block}
+.hero-title-bg{position:absolute;inset:-10%;background:radial-gradient(circle,rgba(37,99,235,.25) 0%,transparent 60%);filter:blur(40px);z-index:-1;animation:pulseGlow 4s ease-in-out infinite}
+@keyframes pulseGlow{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+
+.badge-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:var(--ink-2);border:1px solid var(--line-strong);border-radius:2px;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ash)}
+.badge-tag .dot{width:6px;height:6px;background:var(--volt);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{50%{opacity:.3}}
+
+.chart-container{position:relative;width:100%;height:280px}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 1s cubic-bezier(.2,.9,.3,1),transform 1s cubic-bezier(.2,.9,.3,1)}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--volt)}
+
+.pulse-ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(--volt);animation:pulseRing 2s infinite;pointer-events:none}
+@keyframes pulseRing{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.15);opacity:0}}
+
+.theme-work .timer-display{background:linear-gradient(180deg,#fff 0%,var(--volt) 100%);-webkit-background-clip:text;background-clip:text}
+.theme-rest .timer-display{background:linear-gradient(180deg,#fff 0%,var(--ash) 100%);-webkit-background-clip:text;background-clip:text}
+.theme-warm .timer-display{background:linear-gradient(180deg,#fff 0%,var(--ember) 100%);-webkit-background-clip:text;background-clip:text}
+.theme-done .timer-display{background:linear-gradient(180deg,#fff 0%,var(--ember) 100%);-webkit-background-clip:text;background-clip:text}
+
+.divider-line{height:1px;background:linear-gradient(90deg,transparent,var(--line-strong),transparent)}
+
+.rest-indicator{background:rgba(138,134,128,.08);border:1px dashed var(--ash);padding:14px 20px;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ash);display:inline-flex;align-items:center;gap:8px}
+
+.social-link{display:inline-flex;align-items:center;gap:8px;color:var(--ash);transition:color .3s;font-size:.85rem;padding:8px 14px;border:1px solid var(--line);border-radius:2px}
+.social-link:hover{color:var(--bone);border-color:var(--volt)}
+
+.modality-selector{display:flex;gap:8px;margin-bottom:16px}
+.modality-option{flex:1;padding:12px;border:1px solid var(--line-strong);border-radius:2px;text-align:center;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:all .3s;background:transparent;color:var(--ash)}
+.modality-option.selected{background:var(--volt);border-color:var(--volt);color:var(--bone)}
+.modality-option:hover:not(.selected){border-color:var(--volt);color:var(--bone)}
+
+::selection{background:var(--volt);color:var(--bone)}
+
+@media(max-width:768px){.display{letter-spacing:-.03em}}
+</style>
+</head>
+<body class="grain antialiased">
+
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+<div class="mesh-bg"></div>
+
+<div id="loader">
+  <div class="loader-mark">HIIT</div>
+  <div class="loader-bar"></div>
+  <div class="mono text-xs tracking-[0.3em] text-[color:var(--ash)]">PERFORMANCE LAB · LOADING PROTOCOL</div>
+</div>
+
+<div class="page-transition"></div>
+
+<div id="toastNotification" class="toast">
+  <span class="text-xl" id="toastIcon">✓</span>
+  <span class="font-medium text-sm" id="toastMessage">Ação realizada.</span>
+</div>
+
+<!-- ================= MAIN PAGE ================= -->
+<div id="main-page" class="page active flex-col">
+
+  <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[color:var(--ink)]/60 border-b border-[color:var(--line)]">
+    <div class="container mx-auto px-6 md:px-10 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-2 h-2 bg-[color:var(--volt)] rounded-full animate-pulse"></div>
+        <span class="mono text-xs tracking-[0.25em] text-[color:var(--bone)]">DMX / PERFORMANCE LAB</span>
+      </div>
+      <div class="hidden md:flex items-center gap-8 text-xs tracking-[0.2em] uppercase text-[color:var(--ash)]">
+        <span>Protocolo · <span class="text-[color:var(--ember)]">VO₂MAX</span></span>
+        <span>3 sessões · <span class="text-[color:var(--bone)]">15 MIN</span></span>
+        <span>Ciclo · <span class="text-[color:var(--bone)]">12 SEM</span></span>
+      </div>
+      <div class="hidden md:block mono text-xs text-[color:var(--ash)]">v2.5 · <span class="text-[color:var(--volt)]">LIVE</span></div>
+    </div>
+  </nav>
+
+  <section class="relative min-h-screen flex items-center pt-24 pb-16 px-6 md:px-10 overflow-hidden">
+    <canvas id="heroCanvas"></canvas>
+    <div class="container mx-auto relative z-10">
+      <div class="max-w-6xl">
+        <div class="mb-8 reveal">
+          <span class="badge-tag"><span class="dot"></span>Protocolo de HIIT para iniciantes · 3 sessões semanais</span>
+        </div>
+
+        <div class="hero-title-wrap mb-8 reveal">
+          <div class="hero-title-bg"></div>
+          <h1 class="display text-[clamp(3.5rem,12vw,11rem)] uppercase">
+            <span class="text-[color:var(--bone)]">HIIT</span><span class="text-[color:var(--volt)] italic">VO₂max</span>
+          </h1>
+          <div class="mono text-sm md:text-base text-[color:var(--ash)] mt-4 tracking-wider">
+            Sprint interval training progressivo · Descanso total entre tiros
+          </div>
+        </div>
+
+        <p class="text-lg md:text-2xl text-[color:var(--ash)] max-w-2xl leading-relaxed mb-12 reveal" style="font-weight:300">
+          Doze semanas de treinamento estruturado em <span class="text-[color:var(--bone)]">três fases progressivas</span>, com tiros curtos e intensos. Três minutos de aquecimento, estímulo all-out, dois minutos de volta à calma. Progressão segura para iniciantes.
+        </p>
+
+        <div class="panel p-6 md:p-8 max-w-3xl reveal">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex items-center gap-5">
+              <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[color:var(--volt)] to-[color:var(--volt-deep)] flex items-center justify-center font-black text-xl text-[color:var(--bone)]">MC</div>
+              <div>
+                <p class="mono text-[10px] tracking-[0.3em] text-[color:var(--ash)] uppercase">Aluno</p>
+                <p class="text-xl md:text-2xl font-bold text-[color:var(--bone)] mt-1">Mayco Castro</p>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <span class="badge-tag">Iniciante</span>
+              <span class="badge-tag">3× / semana</span>
+              <span class="badge-tag"><span class="dot"></span>Em progresso</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-16 reveal flex flex-wrap items-center gap-6">
+          <button id="goToTimerBtn" class="btn-primary">
+            <span>Iniciar player</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <div class="mono text-xs text-[color:var(--ash)] tracking-[0.2em]">
+            <div>SCROLL ↓</div>
+            <div class="text-[color:var(--ember)]">EXPLORAR PROTOCOLO</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>HIIT VO₂MAX</span><span class="accent">◆</span>
+      <span>ALL-OUT CONTROLADO</span><span class="accent">◆</span>
+      <span>DESCANSO TOTAL</span><span class="accent">◆</span>
+      <span>PROGRESSÃO SEGURA</span><span class="accent">◆</span>
+      <span>Z5 · POTÊNCIA</span><span class="accent">◆</span>
+      <span>RECUPERAÇÃO PASSIVA</span><span class="accent">◆</span>
+      <span>HIIT VO₂MAX</span><span class="accent">◆</span>
+      <span>ALL-OUT CONTROLADO</span><span class="accent">◆</span>
+      <span>DESCANSO TOTAL</span><span class="accent">◆</span>
+      <span>PROGRESSÃO SEGURA</span><span class="accent">◆</span>
+      <span>Z5 · POTÊNCIA</span><span class="accent">◆</span>
+      <span>RECUPERAÇÃO PASSIVA</span><span class="accent">◆</span>
+    </div>
+  </div>
+
+  <section class="py-24 px-6 md:px-10">
+    <div class="container mx-auto">
+      <div class="mb-16 reveal">
+        <div class="mono text-xs tracking-[0.3em] text-[color:var(--volt)] uppercase mb-4">01 · Números do protocolo</div>
+        <h2 class="display text-4xl md:text-6xl uppercase">A ciência em dados.</h2>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-[color:var(--line)]">
+        <div class="panel p-8 md:p-10 bg-[color:var(--ink)]">
+          <div class="stat-number" data-target="15">0</div>
+          <div class="stat-label">Minutos por sessão</div>
+        </div>
+        <div class="panel p-8 md:p-10 bg-[color:var(--ink)]">
+          <div class="stat-number" data-target="3">0</div>
+          <div class="stat-label">Sessões semanais</div>
+        </div>
+        <div class="panel p-8 md:p-10 bg-[color:var(--ink)]">
+          <div class="stat-number" data-target="12">0</div>
+          <div class="stat-label">Semanas de ciclo</div>
+        </div>
+        <div class="panel p-8 md:p-10 bg-[color:var(--ink)]">
+          <div class="stat-number" data-target="3">0</div>
+          <div class="stat-label">Fases progressivas</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-10">
+    <div class="container mx-auto">
+      <div class="mb-16 reveal">
+        <div class="mono text-xs tracking-[0.3em] text-[color:var(--volt)] uppercase mb-4">02 · Por que HIIT curto funciona</div>
+        <h2 class="display text-4xl md:text-6xl uppercase max-w-4xl">Menos é mais, <span class="italic text-[color:var(--ember)]">quando é intenso.</span></h2>
+        <p class="text-[color:var(--ash)] mt-6 max-w-2xl">Para iniciantes, tiros muito longos em all-out comprometem a técnica e aumentam o risco. A ciência (Gibala 2006, Burgomaster 2008) mostra que 20-30s de esforço máximo, com descanso total, geram adaptações cardiovasculares profundas sem sobrecarga.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="panel p-8 reveal">
+          <div class="mono text-xs text-[color:var(--volt)] mb-6">01</div>
+          <h3 class="text-xl font-bold mb-3 text-[color:var(--bone)]">All-out verdadeiro</h3>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed">Só é possível manter potência máxima por 20-30s. Por isso a progressão é conservadora e segura para iniciantes.</p>
+        </div>
+        <div class="panel p-8 reveal">
+          <div class="mono text-xs text-[color:var(--volt)] mb-6">02</div>
+          <h3 class="text-xl font-bold mb-3 text-[color:var(--bone)]">Descanso total</h3>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed">Parar completamente entre tiros permite ressíntese de fosfocreatina. O próximo tiro será 100% de novo.</p>
+        </div>
+        <div class="panel p-8 reveal">
+          <div class="mono text-xs text-[color:var(--volt)] mb-6">03</div>
+          <h3 class="text-xl font-bold mb-3 text-[color:var(--bone)]">Adaptação segura</h3>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed">Progressão lenta evita overtraining e lesões. O corpo se adapta sem quebrar.</p>
+        </div>
+      </div>
+
+      <div class="panel p-6 mt-6 reveal flex items-center gap-4">
+        <div class="w-12 h-12 rounded-sm bg-[color:var(--ink-3)] border border-[color:var(--line-strong)] flex items-center justify-center text-xl">⚠️</div>
+        <div>
+          <p class="text-sm font-bold text-[color:var(--bone)]">Importante para iniciantes</p>
+          <p class="text-xs text-[color:var(--ash)]">Se sentir tontura, náusea ou dor aguda, pare imediatamente. All-out é intenso, mas não deve doer. Escolha a modalidade (bike ou esteira) conforme sua preferência e segurança.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-10">
+    <div class="container mx-auto">
+      <div class="mb-16 reveal">
+        <div class="mono text-xs tracking-[0.3em] text-[color:var(--volt)] uppercase mb-4">03 · Evolução programada</div>
+        <h2 class="display text-4xl md:text-6xl uppercase">Progressão <span class="italic text-[color:var(--ember)]">conservadora.</span></h2>
+        <p class="text-[color:var(--ash)] mt-6 max-w-2xl">Cada fase aumenta o tempo de tiro all-out e ajusta o descanso. O volume total se mantém em 15 minutos.</p>
+      </div>
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="panel p-8 reveal">
+          <div class="flex items-start justify-between mb-6">
+            <div>
+              <div class="mono text-xs text-[color:var(--ash)] tracking-[0.2em] uppercase">Duração do tiro all-out</div>
+              <div class="text-2xl font-bold text-[color:var(--bone)] mt-1">Progressão por fase</div>
+            </div>
+            <span class="badge-tag"><span class="dot"></span>VARIÁVEL</span>
+          </div>
+          <div class="chart-container"><canvas id="intensityChart"></canvas></div>
+        </div>
+        <div class="panel p-8 reveal">
+          <div class="flex items-start justify-between mb-6">
+            <div>
+              <div class="mono text-xs text-[color:var(--ash)] tracking-[0.2em] uppercase">Ratio trabalho/descanso</div>
+              <div class="text-2xl font-bold text-[color:var(--bone)] mt-1">Evolução por fase</div>
+            </div>
+            <span class="badge-tag">PROGRESSIVO</span>
+          </div>
+          <div class="chart-container"><canvas id="ratioChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24">
+    <div class="container mx-auto px-6 md:px-10 mb-12 reveal">
+      <div class="mono text-xs tracking-[0.3em] text-[color:var(--volt)] uppercase mb-4">04 · Periodização</div>
+      <h2 class="display text-4xl md:text-6xl uppercase">Doze semanas. <span class="italic text-[color:var(--ember)]">Três fases.</span></h2>
+      <p class="text-[color:var(--ash)] mt-6 max-w-2xl">Role horizontalmente. A cada quatro semanas, o estímulo é recalibrado mantendo a segurança para iniciantes.</p>
+    </div>
+
+    <div class="timeline-track">
+      <div class="flex-shrink-0 w-6 md:w-20"></div>
+
+      <div class="timeline-card">
+        <div class="phase-number">01</div>
+        <div class="panel p-8 h-full">
+          <div class="mono text-xs text-[color:var(--volt)] tracking-[0.3em] uppercase mb-3">Semanas 01 a 04</div>
+          <h3 class="text-2xl font-bold mb-2 text-[color:var(--bone)]">Adaptação ao all-out</h3>
+          <p class="text-sm text-[color:var(--ash)] mb-6 leading-relaxed">Ensinar o corpo a recrutar fibras rápidas em esforço máximo curto. Descanso total entre tiros.</p>
+          <div class="divider-line mb-6"></div>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Tiro all-out</span><span class="text-[color:var(--bone)] font-bold mono">20s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Descanso total</span><span class="text-[color:var(--bone)] font-bold mono">60s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Séries</span><span class="text-[color:var(--bone)] font-bold">7</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Ratio</span><span class="text-[color:var(--bone)] font-bold">1:3</span></div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[color:var(--line)] text-xs text-[color:var(--ash)]">
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[color:var(--volt)]"></span> Descanso: pare completamente. Respire fundo.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-card">
+        <div class="phase-number">02</div>
+        <div class="panel p-8 h-full">
+          <div class="mono text-xs text-[color:var(--volt)] tracking-[0.3em] uppercase mb-3">Semanas 05 a 08</div>
+          <h3 class="text-2xl font-bold mb-2 text-[color:var(--bone)]">Consolidação da potência</h3>
+          <p class="text-sm text-[color:var(--ash)] mb-6 leading-relaxed">O corpo já tolera o all-out. Aumentamos o tempo de tiro mantendo o descanso total.</p>
+          <div class="divider-line mb-6"></div>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Tiro all-out</span><span class="text-[color:var(--bone)] font-bold mono">25s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Descanso total</span><span class="text-[color:var(--bone)] font-bold mono">75s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Séries</span><span class="text-[color:var(--bone)] font-bold">6</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Ratio</span><span class="text-[color:var(--bone)] font-bold">1:3</span></div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[color:var(--line)] text-xs text-[color:var(--ash)]">
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[color:var(--volt)]"></span> Mantenha a postura firme. Não trave a respiração.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-card">
+        <div class="phase-number">03</div>
+        <div class="panel p-8 h-full" style="border-color:var(--ember)">
+          <div class="mono text-xs text-[color:var(--ember)] tracking-[0.3em] uppercase mb-3">Semanas 09 a 12 · Pico</div>
+          <h3 class="text-2xl font-bold mb-2 text-[color:var(--bone)]">Performance máxima</h3>
+          <p class="text-sm text-[color:var(--ash)] mb-6 leading-relaxed">Último salto: 30s all-out com 90s de descanso. Taper na semana 12 para consolidar o ganho.</p>
+          <div class="divider-line mb-6" style="background:linear-gradient(90deg,transparent,var(--ember),transparent)"></div>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Tiro all-out</span><span class="text-[color:var(--bone)] font-bold mono">30s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Descanso total</span><span class="text-[color:var(--bone)] font-bold mono">90s</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Séries</span><span class="text-[color:var(--bone)] font-bold">5</span></div>
+            <div class="flex justify-between"><span class="text-[color:var(--ash)]">Ratio</span><span class="text-[color:var(--bone)] font-bold">1:3</span></div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[color:var(--line)] text-xs text-[color:var(--ash)]">
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[color:var(--ember)]"></span> Último esforço. Controle a técnica até o fim.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-shrink-0 w-6 md:w-20"></div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-10">
+    <div class="container mx-auto max-w-5xl">
+      <div class="mb-12 reveal">
+        <div class="mono text-xs tracking-[0.3em] text-[color:var(--volt)] uppercase mb-4">05 · Como medir a intensidade</div>
+        <h2 class="display text-4xl md:text-6xl uppercase">All-out <span class="italic text-[color:var(--ember)]">de verdade.</span></h2>
+      </div>
+
+      <button id="toggleGuideBtn" class="w-full panel p-6 md:p-8 flex items-center justify-between text-left reveal">
+        <div class="flex items-center gap-5">
+          <div class="w-14 h-14 rounded-sm bg-[color:var(--ink-3)] border border-[color:var(--line-strong)] flex items-center justify-center text-2xl">⚡</div>
+          <div>
+            <h3 class="text-lg md:text-xl font-bold text-[color:var(--bone)]">Escala PSE · Borg CR10 e dicas de execução</h3>
+            <p class="text-sm text-[color:var(--ash)] mt-1">Como saber se está fazendo all-out de verdade.</p>
+          </div>
+        </div>
+        <svg id="guideIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform duration-300 text-[color:var(--ember)]"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+      <div id="guideContent" class="accordion-content mt-3 reveal">
+        <div class="accordion-inner">
+          <div class="panel p-6 md:p-10">
+            <div class="grid md:grid-cols-2 gap-10">
+              <div>
+                <div class="mono text-xs text-[color:var(--volt)] tracking-[0.3em] uppercase mb-6">Borg CR10 · Subjetivo</div>
+                <div class="space-y-3">
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">0 a 2 · Leve</span><div class="text-xs text-[color:var(--ash)] mt-1">Conversa fluida. Sem fadiga.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">3 a 4 · Moderado</span><div class="text-xs text-[color:var(--ash)] mt-1">Fala com leve dificuldade.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--ember)]">5 a 6 · Pesado</span><div class="text-xs text-[color:var(--ash)] mt-1">Frases curtas possíveis.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--volt)]">7 a 8 · Muito pesado</span><div class="text-xs text-[color:var(--ash)] mt-1">Palavras soltas apenas.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--volt)]">9 a 10 · All-out</span><div class="text-xs text-[color:var(--ash)] mt-1">Incapaz de falar. Esforço máximo.</div></div>
+                </div>
+              </div>
+              <div>
+                <div class="mono text-xs text-[color:var(--volt)] tracking-[0.3em] uppercase mb-6">Dicas de execução</div>
+                <div class="space-y-3">
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">Postura</span><div class="text-xs text-[color:var(--ash)] mt-1">Costas retas, core ativado. Na bike: mãos leves no guidão. Na esteira: tronco ereto.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">Respiração</span><div class="text-xs text-[color:var(--ash)] mt-1">Não prenda o ar. Inspire pelo nariz, expire pela boca.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">Descanso</span><div class="text-xs text-[color:var(--ash)] mt-1">PARE completamente. Bike: pés no chão. Esteira: pare a esteira ou segure nas laterais.</div></div>
+                  <div class="guide-pill"><span class="font-bold text-[color:var(--bone)]">Segurança</span><div class="text-xs text-[color:var(--ash)] mt-1">Se sentir tontura ou dor, pare. All-out é intenso, não perigoso.</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-32 px-6 md:px-10 relative">
+    <div class="container mx-auto text-center reveal">
+      <div class="mono text-xs tracking-[0.3em] text-[color:var(--volt)] uppercase mb-6">06 · Execução</div>
+      <h2 class="display text-5xl md:text-8xl uppercase mb-8 leading-none">
+        O protocolo <span class="italic text-[color:var(--ember)]">espera</span>.
+      </h2>
+      <p class="text-lg text-[color:var(--ash)] max-w-xl mx-auto mb-12">Áudio imersivo. Timer visual. Instruções claras para cada fase. Você só precisa executar.</p>
+      <button id="goToTimerBtn2" class="btn-primary">
+        <span>Abrir player</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <footer class="py-16 px-6 md:px-10 border-t border-[color:var(--line)]">
+    <div class="container mx-auto">
+      <div class="grid md:grid-cols-3 gap-8 mb-12">
+        <div>
+          <div class="mono text-xs tracking-[0.3em] text-[color:var(--volt)] uppercase mb-4">Sobre o protocolo</div>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed">Sistema desenvolvido exclusivamente para alunos DMX. Periodização baseada em evidências científicas sobre sprint interval training para iniciantes.</p>
+        </div>
+        <div>
+          <div class="mono text-xs tracking-[0.3em] text-[color:var(--volt)] uppercase mb-4">Aluno</div>
+          <p class="text-sm text-[color:var(--bone)]">Mayco Castro</p>
+          <p class="text-sm text-[color:var(--ash)] mt-1">Ciclo de 12 semanas · Nível iniciante</p>
+        </div>
+        <div>
+          <div class="mono text-xs tracking-[0.3em] text-[color:var(--volt)] uppercase mb-4">Redes sociais</div>
+          <div class="flex flex-col gap-2">
+            <a href="https://www.instagram.com/diegomacielx/" target="_blank" class="social-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+              Instagram
+            </a>
+            <a href="https://www.tiktok.com/@diegomacielx" target="_blank" class="social-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005.8 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1.84-.1z"/></svg>
+              TikTok
+            </a>
+            <a href="https://www.youtube.com/@diegomacielx" target="_blank" class="social-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              YouTube
+            </a>
+            <a href="https://wa.me/+5592992746231" target="_blank" class="social-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="pt-8 border-t border-[color:var(--line)] flex flex-col md:flex-row justify-between items-center gap-4 text-xs mono tracking-[0.2em] text-[color:var(--ash)] uppercase">
+        <div>DMX performance lab · © <span id="currentYear"></span></div>
+        <div>Built with precision</div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ================= PLAYER PAGE ================= -->
+<div id="player-page" class="page flex-col min-h-screen">
+
+  <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[color:var(--ink)]/70 border-b border-[color:var(--line)]">
+    <div class="container mx-auto px-6 md:px-10 py-4 flex items-center justify-between">
+      <button id="backBtn" class="flex items-center gap-3 text-xs mono tracking-[0.2em] uppercase text-[color:var(--ash)] hover:text-[color:var(--bone)] transition">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Painel
+      </button>
+      <div class="flex items-center gap-3">
+        <div class="w-2 h-2 bg-[color:var(--volt)] rounded-full animate-pulse"></div>
+        <span class="mono text-xs tracking-[0.25em] text-[color:var(--bone)]">LIVE SESSION</span>
+      </div>
+      <div class="mono text-xs text-[color:var(--ash)]" id="liveTime">00:00</div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-6 md:px-10 pt-24 pb-12 max-w-6xl w-full">
+
+    <div class="grid md:grid-cols-2 gap-4 mb-6 max-w-2xl mx-auto">
+      <div>
+        <label class="mono text-[10px] text-[color:var(--volt)] tracking-[0.3em] uppercase mb-2 block">Semana</label>
+        <select id="weekSelect"></select>
+      </div>
+      <div>
+        <label class="mono text-[10px] text-[color:var(--volt)] tracking-[0.3em] uppercase mb-2 block">Dia da sessão</label>
+        <select id="weekDaySelect"></select>
+      </div>
+    </div>
+
+    <!-- Seletor de Modalidade -->
+    <div class="max-w-2xl mx-auto mb-6">
+      <label class="mono text-[10px] text-[color:var(--volt)] tracking-[0.3em] uppercase mb-2 block">Modalidade do dia</label>
+      <div class="modality-selector">
+        <button class="modality-option selected" data-mod="bike" onclick="selectModality('bike')">🚴 Bike</button>
+        <button class="modality-option" data-mod="esteira" onclick="selectModality('esteira')">🏃 Esteira</button>
+      </div>
+    </div>
+
+    <div id="progressBadge" class="flex justify-center mb-8">
+      <div class="rest-indicator" style="display:none" id="progressInner">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>
+        <span id="progressText"></span>
+      </div>
+    </div>
+
+    <div class="flex flex-col items-center" id="timerThemeWrap">
+
+      <div class="hidden md:grid grid-cols-3 gap-8 w-full max-w-4xl mb-12">
+        <div class="text-right">
+          <div class="mono text-[10px] text-[color:var(--ash)] tracking-[0.3em] uppercase mb-2">Status</div>
+          <div id="statusText" class="text-xl font-bold text-[color:var(--bone)]">Pronto</div>
+        </div>
+        <div class="text-center">
+          <div class="mono text-[10px] text-[color:var(--ash)] tracking-[0.3em] uppercase mb-2">Fase atual</div>
+          <div id="phaseName" class="text-xl font-bold text-[color:var(--volt)]">Selecione o treino</div>
+        </div>
+        <div class="text-left">
+          <div class="mono text-[10px] text-[color:var(--ash)] tracking-[0.3em] uppercase mb-2">Série</div>
+          <div id="setCounter" class="text-xl font-bold text-[color:var(--bone)] mono">—</div>
+        </div>
+      </div>
+
+      <div class="timer-ring-wrap my-8">
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2563eb"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="ringGradientRest" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#8a8680"/>
+              <stop offset="100%" stop-color="#5a524e"/>
+            </linearGradient>
+            <linearGradient id="ringGradientWarm" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f59e0b"/>
+              <stop offset="100%" stop-color="#fbbf24"/>
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="47" stroke="rgba(245,241,232,0.05)" stroke-width="1" fill="transparent"/>
+          <circle cx="50" cy="50" r="47" stroke="rgba(245,241,232,0.08)" stroke-width="0.5" fill="transparent" stroke-dasharray="1 4"/>
+          <circle id="progressRing" class="progress-ring__circle" stroke="url(#ringGradient)" stroke-width="2" stroke-linecap="round" cx="50" cy="50" r="47" fill="transparent" stroke-dasharray="295.31" stroke-dashoffset="295.31"/>
+        </svg>
+
+        <div id="pulseRing" class="pulse-ring" style="display:none"></div>
+
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-4">
+          <div class="timer-display" id="timeDisplay">15:00</div>
+          <div class="mono text-xs tracking-[0.3em] uppercase text-[color:var(--ash)] mt-4" id="targetLabel">
+            Alvo · <span id="targetZone" class="text-[color:var(--bone)]">Z5</span> · PSE <span id="targetPse" class="text-[color:var(--ember)]">9-10</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full max-w-3xl my-8">
+        <svg viewBox="0 0 600 80" class="w-full h-20">
+          <path id="ecgPath" class="ecg-line ecg-path" d="M0,40 L100,40 L110,40 L115,20 L120,60 L125,10 L130,70 L135,40 L200,40 L210,40 L215,20 L220,60 L225,10 L230,70 L235,40 L300,40 L310,40 L315,20 L320,60 L325,10 L330,70 L335,40 L400,40 L410,40 L415,20 L420,60 L425,10 L430,70 L435,40 L500,40 L510,40 L515,20 L520,60 L525,10 L530,70 L535,40 L600,40"/>
+        </svg>
+      </div>
+
+      <div class="md:hidden w-full max-w-sm mb-8">
+        <div class="grid grid-cols-3 gap-4 panel p-4">
+          <div>
+            <div class="mono text-[9px] text-[color:var(--ash)] tracking-[0.2em] uppercase">Status</div>
+            <div id="statusTextMobile" class="text-sm font-bold text-[color:var(--bone)] mt-1">Pronto</div>
+          </div>
+          <div class="text-center">
+            <div class="mono text-[9px] text-[color:var(--ash)] tracking-[0.2em] uppercase">Fase</div>
+            <div id="phaseNameMobile" class="text-sm font-bold text-[color:var(--volt)] mt-1">—</div>
+          </div>
+          <div class="text-right">
+            <div class="mono text-[9px] text-[color:var(--ash)] tracking-[0.2em] uppercase">Série</div>
+            <div id="setCounterMobile" class="text-sm font-bold text-[color:var(--bone)] mono mt-1">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full max-w-2xl panel p-6 md:p-8 text-center mb-10">
+        <div class="mono text-[10px] text-[color:var(--volt)] tracking-[0.3em] uppercase mb-3" id="directiveLabel">Diretriz</div>
+        <p id="instructionText" class="text-base md:text-lg text-[color:var(--bone)] leading-relaxed">Selecione uma semana e dia acima para iniciar.</p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-3">
+        <button id="btnStart" class="ctrl-btn primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Iniciar
+        </button>
+        <button id="btnPause" class="ctrl-btn" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+          Pausar
+        </button>
+        <button id="btnSkip" class="ctrl-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          Pular
+        </button>
+        <button id="btnReset" class="ctrl-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+          Reset
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  if (window.innerWidth < 768) return;
+  const dot = document.querySelector('.cursor-dot');
+  const ring = document.querySelector('.cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  window.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+  });
+  function animate() {
+    rx += (mx - rx) * 0.15;
+    ry += (my - ry) * 0.15;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animate);
+  }
+  animate();
+  document.addEventListener('mouseover', e => {
+    if (e.target.closest('button, a, select, .panel, .timeline-card')) ring.classList.add('hover');
+  });
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest('button, a, select, .panel, .timeline-card')) ring.classList.remove('hover');
+  });
+})();
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hide');
+    triggerReveal();
+  }, 2200);
+});
+
+function triggerReveal() {
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('in'), i * 40);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  els.forEach(el => obs.observe(el));
+}
+
+(() => {
+  const canvas = document.getElementById('heroCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  const count = window.innerWidth < 768 ? 30 : 70;
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.5,
+      c: Math.random() > 0.6 ? 'rgba(37,99,235,' : 'rgba(245,158,11,'
+    });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.c + '0.6)';
+      ctx.fill();
+    });
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = 'rgba(245,241,232,' + (1 - d/120) * 0.08 + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = +el.dataset.target;
+      let current = 0;
+      const step = target / 40;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = Math.round(current);
+      }, 30);
+      counterObs.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-number').forEach(el => counterObs.observe(el));
+
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.color = '#8a8680';
+const baseScales = {
+  y: { grid: { color: 'rgba(245,241,232,0.05)', drawBorder: false }, border: { display: false }, ticks: { font: { size: 10 }, padding: 10 } },
+  x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 10 } } }
+};
+
+const ctxInt = document.getElementById('intensityChart').getContext('2d');
+const grad = ctxInt.createLinearGradient(0, 0, 0, 280);
+grad.addColorStop(0, 'rgba(37,99,235,0.4)'); grad.addColorStop(1, 'rgba(37,99,235,0)');
+
+new Chart(ctxInt, {
+  type: 'line',
+  data: {
+    labels: ['Fase 1', 'Fase 2', 'Fase 3'],
+    datasets: [
+      {
+        label: 'Tiro all-out (s)',
+        data: [20, 25, 30],
+        borderColor: '#2563eb', backgroundColor: grad,
+        tension: 0.4, borderWidth: 2, fill: true,
+        pointBackgroundColor: '#050507', pointBorderColor: '#2563eb',
+        pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 7
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, padding: 20, font: { size: 10 } } } },
+    scales: { ...baseScales, y: { ...baseScales.y, max: 40, title: { display: true, text: 'Segundos' } } }
+  }
+});
+
+new Chart(document.getElementById('ratioChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Fase 1', 'Fase 2', 'Fase 3'],
+    datasets: [
+      { label: 'Trabalho', data: [20, 25, 30], backgroundColor: '#2563eb' },
+      { label: 'Descanso total', data: [60, 75, 90], backgroundColor: '#8a8680' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 6, padding: 20, font: { size: 10 } } } },
+    scales: { ...baseScales, y: { ...baseScales.y, max: 120, title: { display: true, text: 'Segundos' } } }
+  }
+});
+
+document.getElementById('toggleGuideBtn').addEventListener('click', () => {
+  const c = document.getElementById('guideContent');
+  const icon = document.getElementById('guideIcon');
+  c.classList.toggle('open');
+  icon.style.transform = c.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+});
+
+const pageMain = document.getElementById('main-page');
+const pagePlayer = document.getElementById('player-page');
+const pageTransition = document.querySelector('.page-transition');
+
+function transitionTo(target) {
+  pageTransition.classList.add('in');
+  setTimeout(() => {
+    [pageMain, pagePlayer].forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+    target.style.display = 'flex';
+    void target.offsetWidth;
+    target.classList.add('active');
+    pageTransition.classList.remove('in');
+    pageTransition.classList.add('out');
+    window.scrollTo(0, 0);
+    setTimeout(() => pageTransition.classList.remove('out'), 700);
+  }, 700);
+}
+
+document.getElementById('goToTimerBtn').onclick = () => transitionTo(pagePlayer);
+document.getElementById('goToTimerBtn2').onclick = () => transitionTo(pagePlayer);
+document.getElementById('backBtn').onclick = () => {
+  if (isRunning) btnPause.onclick();
+  transitionTo(pageMain);
+};
+
+document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+/* ============================================================
+   WORKOUT ENGINE — HIIT GENÉRICO (BIKE OU ESTEIRA)
+============================================================ */
+const weekSelect = document.getElementById('weekSelect');
+const weekDaySelect = document.getElementById('weekDaySelect');
+const progressRing = document.getElementById('progressRing');
+const timeDisplay = document.getElementById('timeDisplay');
+const phaseName = document.getElementById('phaseName');
+const phaseNameMobile = document.getElementById('phaseNameMobile');
+const statusText = document.getElementById('statusText');
+const statusTextMobile = document.getElementById('statusTextMobile');
+const setCounter = document.getElementById('setCounter');
+const setCounterMobile = document.getElementById('setCounterMobile');
+const instructionText = document.getElementById('instructionText');
+const targetZone = document.getElementById('targetZone');
+const targetPse = document.getElementById('targetPse');
+const directiveLabel = document.getElementById('directiveLabel');
+const btnStart = document.getElementById('btnStart');
+const btnPause = document.getElementById('btnPause');
+const btnSkip = document.getElementById('btnSkip');
+const btnReset = document.getElementById('btnReset');
+const timerThemeWrap = document.getElementById('timerThemeWrap');
+const pulseRing = document.getElementById('pulseRing');
+const ecgPath = document.getElementById('ecgPath');
+const progressInner = document.getElementById('progressInner');
+const progressTextEl = document.getElementById('progressText');
+
+let currentWorkoutPlan = [], totalSetsCount = 0;
+let phaseIndex = 0, setIndex = 0;
+let timeLeft = 0, phaseTotalSeconds = 0;
+let timerInterval = null, isRunning = false;
+let currentModality = 'bike'; // 'bike' ou 'esteira'
+const circlePerimeter = 2 * Math.PI * 47;
+progressRing.style.strokeDasharray = `${circlePerimeter} ${circlePerimeter}`;
+progressRing.style.strokeDashoffset = circlePerimeter;
+
+// Seletor de modalidade
+function selectModality(mod) {
+  currentModality = mod;
+  document.querySelectorAll('.modality-option').forEach(btn => {
+    btn.classList.toggle('selected', btn.dataset.mod === mod);
+  });
+  // Recarrega o treino para atualizar instruções
+  if (currentWorkoutPlan.length > 0) {
+    loadWorkout();
+  }
+}
+
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+function playTone(type) {
+  if (!audioCtx) initAudio();
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  if (type === 'countdown') {
+    osc.type = 'triangle'; osc.frequency.setValueAtTime(600, now);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.15, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+    osc.start(now); osc.stop(now + 0.15);
+  } else if (type === 'go') {
+    osc.type = 'sine'; osc.frequency.setValueAtTime(880, now);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.3, now + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+    osc.start(now); osc.stop(now + 0.8);
+  } else if (type === 'rest') {
+    osc.type = 'sine'; osc.frequency.setValueAtTime(220, now);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.2, now + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+    osc.start(now); osc.stop(now + 1.5);
+  } else if (type === 'finish') {
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440, now);
+    osc.frequency.setValueAtTime(660, now + 0.3);
+    osc.frequency.setValueAtTime(880, now + 0.6);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.3, now + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 2);
+    osc.start(now); osc.stop(now + 2);
+  }
+}
+
+function showToast(msg, icon = '✓') {
+  const t = document.getElementById('toastNotification');
+  document.getElementById('toastMessage').textContent = msg;
+  document.getElementById('toastIcon').textContent = icon;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function secToMin(s) {
+  const m = Math.floor(s/60).toString().padStart(2,'0');
+  const ss = (s%60).toString().padStart(2,'0');
+  return `${m}:${ss}`;
+}
+
+/* ============================================================
+   GERADOR DE TREINO HIIT
+   Matemática: 3min warmup + bloco HIIT + 2min cooldown = 15min (900s)
+   Descanso TOTAL = parar completamente
+============================================================ */
+function buildHIIT(workSec, restSec, sets, modality) {
+  const seq = [];
+  const isBike = modality === 'bike';
+  
+  // Warmup: 3min = 180s
+  seq.push({ type: 'warmup', name: 'AQUECIMENTO', duration: 180, set: 0,
+    instruction: isBike 
+      ? 'Giro progressivo. Aqueça bem as pernas. Inclua 2-3 acelerações curtas no final.'
+      : 'Caminhada progressiva. Vá aumentando o ritmo até entrar em trote leve.',
+    targetZone: 'Z1→Z3', targetPse: '3-5' });
+  
+  // Blocos HIIT
+  for (let i = 1; i <= sets; i++) {
+    seq.push({ type: 'work', name: 'ALL-OUT Z5', duration: workSec, set: i,
+      instruction: isBike
+        ? 'MÁXIMO TOTAL. Carga alta ou média. Pedale como se sua vida dependesse. Postura firme. Não prenda a respiração.'
+        : 'SPRINT MÁXIMO. Corra o mais rápido que conseguir. Postura ereta, braços bombeando. Dê o máximo.',
+      targetZone: 'Z5', targetPse: '9-10' });
+    if (i < sets) {
+      seq.push({ type: 'rest', name: 'DESCANSO TOTAL', duration: restSec, set: i,
+        instruction: isBike
+          ? 'PARE DE PEDALAR. Coloque os pés no chão ou fique imóvel no selim. Respire fundo pelo nariz, solte pela boca. Recuperação passiva total.'
+          : 'PARE A ESTEIRA. Segure nas laterais e fique parado. Respire fundo pelo nariz, solte pela boca. Recuperação passiva total.',
+        targetZone: 'Z1 (passivo)', targetPse: '1-2' });
+    }
+  }
+  
+  // Calcula cooldown para fechar em 900s (15min)
+  const elapsed = 180 + sets*workSec + (sets-1)*restSec;
+  const cooldown = Math.max(120, 900 - elapsed);
+  seq.push({ type: 'cooldown', name: 'DESAQUECIMENTO', duration: cooldown, set: sets,
+    instruction: isBike
+      ? 'Excelente, Mayco. Giro muito leve agora. Frequência voltando ao baseline. Respire fundo. Hidrate-se depois.'
+      : 'Excelente, Mayco. Caminhada bem leve agora. Frequência voltando ao baseline. Respire fundo. Hidrate-se depois.',
+    targetZone: 'Z1', targetPse: '1-2' });
+  
+  return { sequence: seq, sets, kind: 'hiit' };
+}
+
+/* ============================================================
+   BANCO DE DADOS — 12 SEMANAS × 3 DIAS = 36 TREINOS
+============================================================ */
+const db = {};
+
+for (let w = 1; w <= 12; w++) {
+  const phase = w <= 4 ? 1 : w <= 8 ? 2 : 3;
+  const weekInPhase = w - (phase - 1) * 4;
+  const isTaper = w === 12;
+  
+  let seg, qua, sex;
+  
+  if (phase === 1) {
+    // Fase 1: 20s all-out / 60s descanso = 7 séries
+    seg = buildHIIT(20, 60, 7, 'bike');
+    qua = buildHIIT(20, 60, 7, 'bike');
+    sex = buildHIIT(20, 60, 7, 'bike');
+  } else if (phase === 2) {
+    // Fase 2: 25s all-out / 75s descanso = 6 séries
+    seg = buildHIIT(25, 75, 6, 'bike');
+    qua = buildHIIT(25, 75, 6, 'bike');
+    sex = buildHIIT(25, 75, 6, 'bike');
+  } else {
+    // Fase 3: 30s all-out / 90s descanso = 5 séries
+    // Taper na semana 12: reduz para 4 séries
+    const sets = isTaper ? 4 : 5;
+    seg = buildHIIT(30, 90, sets, 'bike');
+    qua = buildHIIT(30, 90, sets, 'bike');
+    sex = buildHIIT(30, 90, sets, 'bike');
+  }
+  
+  db[`Semana ${w}`] = {
+    "Segunda · HIIT": seg,
+    "Quarta · HIIT": qua,
+    "Sexta · HIIT": sex
+  };
+}
+
+function initSelectors() {
+  weekSelect.innerHTML = '';
+  Object.keys(db).forEach(w => weekSelect.add(new Option(w, w)));
+  weekSelect.onchange = () => {
+    weekDaySelect.innerHTML = '';
+    Object.keys(db[weekSelect.value]).forEach(d => weekDaySelect.add(new Option(d, d)));
+    loadWorkout();
+  };
+  weekDaySelect.onchange = loadWorkout;
+  weekSelect.onchange();
+}
+
+function loadWorkout() {
+  const w = weekSelect.value;
+  const d = weekDaySelect.value;
+  const plan = db[w]?.[d];
+  if (!plan) return;
+  
+  // Reconstrói o treino com a modalidade selecionada
+  const rebuiltPlan = buildHIIT(
+    plan.sequence.find(s => s.type === 'work')?.duration || 20,
+    plan.sequence.find(s => s.type === 'rest')?.duration || 60,
+    plan.sets,
+    currentModality
+  );
+  
+  currentWorkoutPlan = rebuiltPlan.sequence;
+  totalSetsCount = rebuiltPlan.sets;
+  
+  // Calcula progressão em relação à semana anterior
+  const weekNum = parseInt(w.split(' ')[1]);
+  if (weekNum > 1) {
+    const prevWeek = `Semana ${weekNum - 1}`;
+    const prevPlan = db[prevWeek]?.[d];
+    if (prevPlan) {
+      const prevWork = prevPlan.sequence.find(s => s.type === 'work');
+      const currWork = plan.sequence.find(s => s.type === 'work');
+      if (prevWork && currWork) {
+        const diffSec = currWork.duration - prevWork.duration;
+        const diffSets = plan.sets - prevPlan.sets;
+        let progressMsg = '';
+        if (diffSec > 0) progressMsg = `Tiro +${diffSec}s em relação à semana passada`;
+        else if (diffSets > 0) progressMsg = `+${diffSets} série em relação à semana passada`;
+        else if (diffSec < 0) progressMsg = `Taper: tiro ${Math.abs(diffSec)}s mais curto (consolidação)`;
+        else if (diffSets < 0) progressMsg = `Taper: ${Math.abs(diffSets)} série a menos`;
+        
+        if (progressMsg) {
+          progressTextEl.textContent = progressMsg;
+          progressInner.style.display = 'inline-flex';
+        } else {
+          progressInner.style.display = 'none';
+        }
+      }
+    }
+  } else {
+    progressInner.style.display = 'none';
+  }
+  
+  resetTimerSystem();
+  showToast(`Sessão carregada · ${d}`, '◆');
+}
+
+function applyTheme(type) {
+  timerThemeWrap.classList.remove('theme-work','theme-rest','theme-warm','theme-done');
+  let status = 'Pronto', ringGrad = 'url(#ringGradient)';
+  if (type === 'work') {
+    timerThemeWrap.classList.add('theme-work');
+    status = 'All-out Z5';
+    ringGrad = 'url(#ringGradient)';
+    ecgPath.style.animationDuration = '0.7s';
+    pulseRing.style.display = 'block';
+  } else if (type === 'rest') {
+    timerThemeWrap.classList.add('theme-rest');
+    status = 'Descanso total · pare';
+    ringGrad = 'url(#ringGradientRest)';
+    ecgPath.style.animationDuration = '3s';
+    pulseRing.style.display = 'none';
+  } else if (type === 'warmup' || type === 'cooldown') {
+    timerThemeWrap.classList.add('theme-warm');
+    status = type === 'warmup' ? 'Aquecendo' : 'Resfriando';
+    ringGrad = 'url(#ringGradientWarm)';
+    ecgPath.style.animationDuration = '2s';
+    pulseRing.style.display = 'none';
+  } else if (type === 'done') {
+    timerThemeWrap.classList.add('theme-done');
+    status = 'Concluído';
+    ecgPath.style.animationDuration = '4s';
+    pulseRing.style.display = 'none';
+  }
+  progressRing.setAttribute('stroke', ringGrad);
+  statusText.textContent = status;
+  statusTextMobile.textContent = status;
+}
+
+function updateScreen() {
+  timeDisplay.textContent = secToMin(timeLeft);
+  document.getElementById('liveTime').textContent = secToMin(timeLeft);
+  if (currentWorkoutPlan.length > 0 && phaseIndex < currentWorkoutPlan.length) {
+    const p = currentWorkoutPlan[phaseIndex];
+    phaseName.textContent = p.name;
+    phaseNameMobile.textContent = p.name;
+    instructionText.textContent = p.instruction;
+    directiveLabel.textContent = p.type === 'rest' ? 'Descanso passivo' : 'Diretriz';
+    const setStr = p.set === 0 ? '—' : `${p.set}/${totalSetsCount}`;
+    setCounter.textContent = setStr;
+    setCounterMobile.textContent = setStr;
+    targetZone.textContent = p.targetZone || 'Z5';
+    targetPse.textContent = p.targetPse || '9-10';
+    applyTheme(p.type);
+    if (phaseTotalSeconds > 0) {
+      const pct = (phaseTotalSeconds - timeLeft) / phaseTotalSeconds;
+      progressRing.style.strokeDashoffset = circlePerimeter - (pct * circlePerimeter);
+    }
+  }
+}
+
+function finishWorkout() {
+  clearInterval(timerInterval);
+  isRunning = false;
+  phaseName.textContent = 'SESSÃO FINALIZADA';
+  phaseNameMobile.textContent = 'FINALIZADO';
+  timeDisplay.textContent = '00:00';
+  instructionText.textContent = 'Excelente trabalho, Mayco. Hidrate-se e recupere.';
+  setCounter.textContent = '✓'; setCounterMobile.textContent = '✓';
+  applyTheme('done');
+  progressRing.style.strokeDashoffset = 0;
+  btnStart.disabled = true; btnPause.disabled = true;
+  playTone('finish');
+  showToast('Sessão concluída com sucesso', '✓');
+}
+
+function handlePhaseTransition() {
+  phaseIndex++;
+  if (phaseIndex >= currentWorkoutPlan.length) { finishWorkout(); return; }
+  const next = currentWorkoutPlan[phaseIndex];
+  timeLeft = next.duration; phaseTotalSeconds = next.duration;
+  if (next.type === 'work') playTone('go');
+  else if (next.type === 'rest') playTone('rest');
+  updateScreen();
+}
+
+function runTimer() {
+  timeLeft--;
+  if (timeLeft <= 3 && timeLeft > 0) playTone('countdown');
+  updateScreen();
+  if (timeLeft <= 0) handlePhaseTransition();
+}
+
+function resetTimerSystem() {
+  clearInterval(timerInterval);
+  isRunning = false; phaseIndex = 0;
+  if (currentWorkoutPlan.length > 0) {
+    timeLeft = currentWorkoutPlan[0].duration;
+    phaseTotalSeconds = timeLeft;
+  }
+  btnStart.disabled = false; btnPause.disabled = true;
+  updateScreen();
+  progressRing.style.strokeDashoffset = circlePerimeter;
+}
+
+btnStart.onclick = () => {
+  if (isRunning || currentWorkoutPlan.length === 0) return;
+  initAudio();
+  isRunning = true;
+  btnStart.disabled = true; btnPause.disabled = false;
+  timerInterval = setInterval(runTimer, 1000);
+};
+btnPause.onclick = () => {
+  if (!isRunning) return;
+  clearInterval(timerInterval); isRunning = false;
+  btnStart.disabled = false; btnPause.disabled = true;
+  statusText.textContent = 'PAUSADO'; statusTextMobile.textContent = 'PAUSADO';
+};
+btnSkip.onclick = () => {
+  if (currentWorkoutPlan.length === 0) return;
+  handlePhaseTransition();
+};
+btnReset.onclick = resetTimerSystem;
+
+let selectorsInited = false;
+['goToTimerBtn','goToTimerBtn2'].forEach(id => {
+  document.getElementById(id).addEventListener('click', () => {
+    if (!selectorsInited) { initSelectors(); selectorsInited = true; }
+  });
+});
+</script>
+</body>
+</html>
