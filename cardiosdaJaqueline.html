@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocolo Cardio — Jaqueline Amaral</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0a0a;--ink-2:#141414;--ink-3:#1f1f1f;
+  --teal:#0d9488;--teal-deep:#0f766e;--teal-soft:#5eead4;
+  --amber:#f59e0b;--amber-soft:#fcd34d;
+  --rose:#e11d48;
+  --bone:#fafaf9;--ash:#a8a29e;
+  --line:rgba(250,250,249,0.1);--line-strong:rgba(250,250,249,0.2);
+}
+*{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html,body{background:var(--ink);color:var(--bone);font-family:'Inter',sans-serif;overflow-x:hidden;scroll-behavior:smooth}
+
+.panel{background:linear-gradient(135deg,rgba(31,31,31,.6) 0%,rgba(20,20,20,.4) 100%);border:1px solid var(--line);transition:border-color .3s;position:relative;overflow:hidden}
+.panel:hover{border-color:var(--line-strong)}
+
+.btn-primary{background:var(--teal);color:var(--bone);padding:18px 36px;border-radius:2px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:.85rem;transition:all .3s;border:1px solid var(--teal);display:inline-flex;align-items:center;gap:12px}
+.btn-primary:hover{background:var(--teal-deep);border-color:var(--teal-deep)}
+
+.page{display:none;opacity:0;transition:opacity .4s}
+.page.active{display:flex;opacity:1}
+
+.mono{font-family:'JetBrains Mono',monospace}
+
+.chart-container{position:relative;width:100%;height:260px}
+
+.timeline-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:40px 24px 60px;scrollbar-width:none}
+.timeline-track::-webkit-scrollbar{display:none}
+.timeline-card{flex:0 0 360px;scroll-snap-align:center;position:relative}
+@media(max-width:768px){.timeline-card{flex:0 0 280px}}
+
+.timer-ring-wrap{position:relative;width:min(85vmin,420px);height:min(85vmin,420px)}
+.timer-display{font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(4.5rem,13vmin,7rem);letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums;background:linear-gradient(180deg,var(--bone) 0%,var(--ash) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+.progress-ring__circle{transition:stroke-dashoffset 1s linear;transform:rotate(-90deg);transform-origin:50% 50%}
+
+.ctrl-btn{background:transparent;border:1px solid var(--line-strong);color:var(--bone);padding:14px 22px;border-radius:2px;font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;transition:all .2s;display:flex;align-items:center;gap:8px}
+.ctrl-btn:hover:not(:disabled){background:var(--bone);color:var(--ink);border-color:var(--bone)}
+.ctrl-btn.primary{background:var(--teal);border-color:var(--teal)}
+.ctrl-btn.primary:hover:not(:disabled){background:var(--teal-deep)}
+.ctrl-btn:disabled{opacity:.3;cursor:not-allowed}
+
+select{background:var(--ink-2);color:var(--bone);border:1px solid var(--line-strong);padding:16px 20px;border-radius:2px;width:100%;font-size:.9rem;font-weight:500;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;background-size:1.2em;transition:all .2s}
+select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,.15)}
+
+.equip-btn{flex:1;padding:16px 12px;border:1px solid var(--line-strong);border-radius:2px;text-align:center;font-size:.8rem;font-weight:600;transition:all .2s;background:var(--ink-2);color:var(--ash);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px}
+.equip-btn.selected{background:var(--teal);border-color:var(--teal);color:var(--bone)}
+.equip-btn:hover:not(.selected){border-color:var(--teal);color:var(--bone)}
+.equip-btn .icon{font-size:1.5rem}
+
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--ink-3);border:1px solid var(--line-strong);border-left:3px solid var(--teal);padding:1.25rem 1.5rem;border-radius:2px;z-index:200;display:flex;align-items:center;gap:1rem;transform:translateY(200%);opacity:0;transition:all .4s;max-width:380px}
+.toast.show{transform:translateY(0);opacity:1}
+
+.stat-number{font-weight:800;font-size:clamp(2.5rem,6vw,4rem);line-height:1;color:var(--bone);letter-spacing:-.03em}
+.stat-label{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ash);margin-top:6px}
+
+.info-box{background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.3);border-left:3px solid var(--teal);padding:16px 20px;border-radius:2px}
+.info-box .title{font-weight:700;color:var(--teal-soft);font-size:.85rem;margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase}
+.info-box .text{font-size:.875rem;color:var(--ash);line-height:1.6}
+
+.warn-box{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.3);border-left:3px solid var(--amber);padding:16px 20px;border-radius:2px;display:flex;gap:12px;align-items:flex-start}
+.warn-box .icon{color:var(--amber);flex-shrink:0;font-size:1.25rem}
+.warn-box .text{font-size:.875rem;color:var(--ash);line-height:1.6}
+.warn-box .text strong{color:var(--bone)}
+
+.divider-line{height:1px;background:linear-gradient(90deg,transparent,var(--line-strong),transparent)}
+
+.social-link{display:inline-flex;align-items:center;gap:8px;color:var(--ash);transition:color .2s;font-size:.85rem;padding:8px 14px;border:1px solid var(--line);border-radius:2px}
+.social-link:hover{color:var(--bone);border-color:var(--teal)}
+
+.phase-highlight{background:linear-gradient(135deg,rgba(13,148,136,.1) 0%,rgba(245,158,11,.05) 100%);border:1px solid rgba(13,148,136,.3)}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+.theme-work .timer-display{background:linear-gradient(180deg,#fff 0%,var(--teal) 100%);-webkit-background-clip:text;background-clip:text}
+.theme-rest .timer-display{background:linear-gradient(180deg,#fff 0%,var(--amber) 100%);-webkit-background-clip:text;background-clip:text}
+.theme-warm .timer-display{background:linear-gradient(180deg,#fff 0%,var(--ash) 100%);-webkit-background-clip:text;background-clip:text}
+.theme-done .timer-display{background:linear-gradient(180deg,#fff 0%,var(--teal-soft) 100%);-webkit-background-clip:text;background-clip:text}
+
+::selection{background:var(--teal);color:var(--bone)}
+</style>
+</head>
+<body>
+
+<div id="toastNotification" class="toast">
+  <span class="text-xl" id="toastIcon">✓</span>
+  <span class="font-medium text-sm" id="toastMessage">Ação realizada.</span>
+</div>
+
+<!-- ================= MAIN PAGE ================= -->
+<div id="main-page" class="page active flex-col">
+
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-[color:var(--ink)]/90 backdrop-blur border-b border-[color:var(--line)]">
+    <div class="container mx-auto px-6 md:px-10 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-2 h-2 bg-[color:var(--teal)] rounded-full"></div>
+        <span class="mono text-xs tracking-[0.25em] text-[color:var(--bone)]">DMX / PERFORMANCE LAB</span>
+      </div>
+      <div class="hidden md:flex items-center gap-8 text-xs tracking-[0.2em] uppercase text-[color:var(--ash)]">
+        <span>Protocolo · <span class="text-[color:var(--amber)]">VO₂MAX</span></span>
+        <span>3 sessões · <span class="text-[color:var(--bone)]">15 MIN</span></span>
+        <span>Ciclo · <span class="text-[color:var(--bone)]">24 SEM</span></span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="pt-32 pb-16 px-6 md:px-10">
+    <div class="container mx-auto max-w-5xl">
+      <div class="mb-8 reveal">
+        <span class="inline-block px-4 py-1.5 bg-[color:var(--teal)]/10 border border-[color:var(--teal)]/30 text-[color:var(--teal-soft)] text-xs font-semibold uppercase tracking-widest rounded-sm">
+          Protocolo adaptado · Sem impacto articular
+        </span>
+      </div>
+
+      <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 reveal" style="line-height:.95;letter-spacing:-.04em">
+        <span class="text-[color:var(--bone)]">Seu protocolo</span><br>
+        <span class="text-[color:var(--teal)]">personalizado</span>
+      </h1>
+      
+      <p class="text-lg md:text-xl text-[color:var(--ash)] max-w-2xl leading-relaxed mb-12 reveal" style="font-weight:400">
+        Vinte e quatro semanas pensadas especialmente para você, Jaqueline. Um treino curto (15 minutos), seguro para suas costas e joelhos, que vai melhorar sua respiração e disposição dia após dia.
+      </p>
+
+      <div class="panel p-6 md:p-8 max-w-3xl reveal">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="flex items-center gap-5">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[color:var(--teal)] to-[color:var(--teal-deep)] flex items-center justify-center font-black text-xl text-[color:var(--bone)]">JA</div>
+            <div>
+              <p class="mono text-[10px] tracking-[0.3em] text-[color:var(--ash)] uppercase">Aluna</p>
+              <p class="text-xl md:text-2xl font-bold text-[color:var(--bone)] mt-1">Jaqueline Amaral</p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-[color:var(--ink-3)] border border-[color:var(--line-strong)] text-xs text-[color:var(--bone)] rounded-sm">Iniciante</span>
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-[color:var(--ink-3)] border border-[color:var(--line-strong)] text-xs text-[color:var(--bone)] rounded-sm">3× / semana</span>
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-[color:var(--ink-3)] border border-[color:var(--line-strong)] text-xs text-[color:var(--bone)] rounded-sm">Sem impacto</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-12 reveal">
+        <button id="goToTimerBtn" class="btn-primary">
+          <span>Começar meu treino</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 px-6 md:px-10">
+    <div class="container mx-auto max-w-5xl">
+      <div class="info-box reveal mb-8">
+        <div class="title">Por que este protocolo foi feito assim</div>
+        <div class="text">
+          Jaqueline, este programa foi desenhado pensando em <strong class="text-[color:var(--bone)]">três prioridades</strong>: proteger suas costas, proteger seus joelhos e melhorar sua respiração sem causar dor. Por isso usamos equipamentos sem impacto (bike, escada ou elíptico), tiros curtos e muito tempo de recuperação. Cada pequena vitória aqui conta.
+        </div>
+      </div>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold mb-8 reveal" style="letter-spacing:-.03em">Seus três equipamentos</h2>
+      <p class="text-[color:var(--ash)] mb-10 max-w-2xl reveal">Você pode escolher um equipamento diferente a cada treino, conforme sua disposição e como seu corpo está se sentindo no dia.</p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="panel p-6 reveal">
+          <div class="text-4xl mb-4">🚴</div>
+          <h3 class="text-xl font-bold mb-2 text-[color:var(--bone)]">Bicicleta</h3>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed mb-4">Ótima opção para dias em que suas costas estão mais sensíveis. O selim sustenta o peso e você pedala sem esforço na lombar.</p>
+          <div class="space-y-2 text-xs">
+            <div class="flex items-center gap-2 text-[color:var(--teal-soft)]">
+              <span>✓</span><span>Zero impacto nos joelhos</span>
+            </div>
+            <div class="flex items-center gap-2 text-[color:var(--teal-soft)]">
+              <span>✓</span><span>Protege a lombar</span>
+            </div>
+            <div class="flex items-center gap-2 text-[color:var(--amber-soft)]">
+              <span>!</span><span>Ajuste bem o selim (nem alto nem baixo)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel p-6 reveal">
+          <div class="text-4xl mb-4">🪜</div>
+          <h3 class="text-xl font-bold mb-2 text-[color:var(--bone)]">Escada</h3>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed mb-4">Fortalece muito as pernas e glúteos. Suba um degrau por vez, sem pressa. Use o corrimão apenas para equilíbrio.</p>
+          <div class="space-y-2 text-xs">
+            <div class="flex items-center gap-2 text-[color:var(--teal-soft)]">
+              <span>✓</span><span>Fortalece pernas e glúteos</span>
+            </div>
+            <div class="flex items-center gap-2 text-[color:var(--amber-soft)]">
+              <span>!</span><span>Se o joelho reclamar, troque pelo elíptico</span>
+            </div>
+            <div class="flex items-center gap-2 text-[color:var(--amber-soft)]">
+              <span>!</span><span>Nunca suba dois degraus de uma vez</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel p-6 reveal">
+          <div class="text-4xl mb-4">🏃</div>
+          <h3 class="text-xl font-bold mb-2 text-[color:var(--bone)]">Elíptico</h3>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed mb-4">A opção mais segura de todas. Movimento suave, sem impacto nenhum, trabalha o corpo inteiro.</p>
+          <div class="space-y-2 text-xs">
+            <div class="flex items-center gap-2 text-[color:var(--teal-soft)]">
+              <span>✓</span><span>Zero impacto</span>
+            </div>
+            <div class="flex items-center gap-2 text-[color:var(--teal-soft)]">
+              <span>✓</span><span>Movimento natural</span>
+            </div>
+            <div class="flex items-center gap-2 text-[color:var(--teal-soft)]">
+              <span>✓</span><span>Ideal para dias de dor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 px-6 md:px-10 bg-[color:var(--ink-2)]">
+    <div class="container mx-auto max-w-5xl">
+      <h2 class="text-3xl md:text-4xl font-extrabold mb-4 reveal" style="letter-spacing:-.03em">Os números do seu protocolo</h2>
+      <p class="text-[color:var(--ash)] mb-12 max-w-2xl reveal">Tudo pensado para caber na sua rotina e trazer resultados sem exagerar.</p>
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-[color:var(--line)]">
+        <div class="panel p-8 bg-[color:var(--ink)] reveal">
+          <div class="stat-number" data-target="15">0</div>
+          <div class="stat-label">Minutos por treino</div>
+        </div>
+        <div class="panel p-8 bg-[color:var(--ink)] reveal">
+          <div class="stat-number" data-target="3">0</div>
+          <div class="stat-label">Vezes por semana</div>
+        </div>
+        <div class="panel p-8 bg-[color:var(--ink)] reveal">
+          <div class="stat-number" data-target="24">0</div>
+          <div class="stat-label">Semanas no total</div>
+        </div>
+        <div class="panel p-8 bg-[color:var(--ink)] reveal">
+          <div class="stat-number" data-target="3">0</div>
+          <div class="stat-label">Fases de evolução</div>
+        </div>
+      </div>
+
+      <div class="warn-box mt-10 reveal">
+        <div class="icon">💡</div>
+        <div class="text">
+          <strong>Por que só 15 minutos?</strong> Porque é o suficiente para seu corpo começar a mudar, sem causar fadiga excessiva ou dor. A ciência mostra que treinos curtos e bem feitos funcionam melhor do que treinos longos e mal executados, especialmente para quem está começando.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 px-6 md:px-10">
+    <div class="container mx-auto max-w-5xl">
+      <h2 class="text-3xl md:text-4xl font-extrabold mb-4 reveal" style="letter-spacing:-.03em">Como você vai evoluir</h2>
+      <p class="text-[color:var(--ash)] mb-10 max-w-2xl reveal">Três fases, uma por bimestre. Cada fase respeita o tempo do seu corpo.</p>
+
+      <div class="space-y-6">
+        <div class="panel phase-highlight p-6 md:p-8 reveal">
+          <div class="flex items-start gap-5">
+            <div class="flex-shrink-0 w-14 h-14 rounded-sm bg-[color:var(--teal)] flex items-center justify-center font-black text-xl text-[color:var(--bone)]">01</div>
+            <div class="flex-1">
+              <div class="mono text-xs text-[color:var(--teal-soft)] tracking-widest uppercase mb-2">Semanas 01 a 08 · Primeiro bimestre</div>
+              <h3 class="text-2xl font-bold mb-3 text-[color:var(--bone)]">Adaptação</h3>
+              <p class="text-sm text-[color:var(--ash)] mb-5 leading-relaxed">Nesta fase, o foco é ensinar seu corpo a fazer esforço curto e recuperar. Os tiros são de apenas 10 segundos, com 50 segundos de descanso. Você vai sentir que é tranquilo — e é para ser assim.</p>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Tiro</div>
+                  <div class="font-bold text-[color:var(--bone)] mono">10 segundos</div>
+                </div>
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Descanso</div>
+                  <div class="font-bold text-[color:var(--bone)] mono">50 segundos</div>
+                </div>
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Séries</div>
+                  <div class="font-bold text-[color:var(--bone)]">10 vezes</div>
+                </div>
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Sensação</div>
+                  <div class="font-bold text-[color:var(--bone)]">Confortável</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel p-6 md:p-8 reveal">
+          <div class="flex items-start gap-5">
+            <div class="flex-shrink-0 w-14 h-14 rounded-sm bg-[color:var(--ink-3)] border border-[color:var(--line-strong)] flex items-center justify-center font-black text-xl text-[color:var(--bone)]">02</div>
+            <div class="flex-1">
+              <div class="mono text-xs text-[color:var(--amber-soft)] tracking-widest uppercase mb-2">Semanas 09 a 16 · Segundo bimestre</div>
+              <h3 class="text-2xl font-bold mb-3 text-[color:var(--bone)]">Construindo confiança</h3>
+              <p class="text-sm text-[color:var(--ash)] mb-5 leading-relaxed">Seu corpo já entendeu o jogo. Agora aumentamos um pouquinho: tiros de 15 segundos, com 45 segundos de descanso. Você vai perceber que já aguenta mais do que imaginava.</p>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Tiro</div>
+                  <div class="font-bold text-[color:var(--bone)] mono">15 segundos</div>
+                </div>
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Descanso</div>
+                  <div class="font-bold text-[color:var(--bone)] mono">45 segundos</div>
+                </div>
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Séries</div>
+                  <div class="font-bold text-[color:var(--bone)]">10 vezes</div>
+                </div>
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Sensação</div>
+                  <div class="font-bold text-[color:var(--bone)]">Moderada</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel p-6 md:p-8 reveal">
+          <div class="flex items-start gap-5">
+            <div class="flex-shrink-0 w-14 h-14 rounded-sm bg-[color:var(--ink-3)] border border-[color:var(--amber)] flex items-center justify-center font-black text-xl text-[color:var(--amber)]">03</div>
+            <div class="flex-1">
+              <div class="mono text-xs text-[color:var(--amber-soft)] tracking-widest uppercase mb-2">Semanas 17 a 24 · Terceiro bimestre</div>
+              <h3 class="text-2xl font-bold mb-3 text-[color:var(--bone)]">Nova versão de você</h3>
+              <p class="text-sm text-[color:var(--ash)] mb-5 leading-relaxed">Aqui você já é outra pessoa. Tiros de 20 segundos com 40 de descanso. Sua respiração estará muito melhor, suas pernas mais fortes, suas dores reduzidas.</p>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Tiro</div>
+                  <div class="font-bold text-[color:var(--bone)] mono">20 segundos</div>
+                </div>
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Descanso</div>
+                  <div class="font-bold text-[color:var(--bone)] mono">40 segundos</div>
+                </div>
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Séries</div>
+                  <div class="font-bold text-[color:var(--bone)]">10 vezes</div>
+                </div>
+                <div>
+                  <div class="text-[color:var(--ash)] text-xs uppercase tracking-wider mb-1">Sensação</div>
+                  <div class="font-bold text-[color:var(--bone)]">Forte</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 px-6 md:px-10 bg-[color:var(--ink-2)]">
+    <div class="container mx-auto max-w-5xl">
+      <h2 class="text-3xl md:text-4xl font-extrabold mb-4 reveal" style="letter-spacing:-.03em">Sua evolução ao longo do tempo</h2>
+      <p class="text-[color:var(--ash)] mb-10 max-w-2xl reveal">Os gráficos mostram como o tempo de esforço aumenta gradualmente, sempre respeitando seu corpo.</p>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="panel p-6 reveal">
+          <div class="mb-4">
+            <div class="mono text-xs text-[color:var(--ash)] tracking-widest uppercase">Tempo de tiro (segundos)</div>
+            <div class="text-lg font-bold text-[color:var(--bone)] mt-1">Progressão suave</div>
+          </div>
+          <div class="chart-container"><canvas id="workChart"></canvas></div>
+        </div>
+        <div class="panel p-6 reveal">
+          <div class="mb-4">
+            <div class="mono text-xs text-[color:var(--ash)] tracking-widest uppercase">Tempo de descanso (segundos)</div>
+            <div class="text-lg font-bold text-[color:var(--bone)] mt-1">Diminui com o tempo</div>
+          </div>
+          <div class="chart-container"><canvas id="restChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 px-6 md:px-10">
+    <div class="container mx-auto max-w-5xl">
+      <h2 class="text-3xl md:text-4xl font-extrabold mb-4 reveal" style="letter-spacing:-.03em">Antes de começar, leia com calma</h2>
+      <p class="text-[color:var(--ash)] mb-10 max-w-2xl reveal">Estas orientações foram pensadas para suas necessidades específicas.</p>
+
+      <div class="space-y-4">
+        <div class="info-box reveal">
+          <div class="title">Para suas costas</div>
+          <div class="text">
+            Na <strong class="text-[color:var(--bone)]">bike</strong>, mantenha a coluna ereta — não se curve para frente. Se o guidão estiver muito baixo, levante-o. No <strong class="text-[color:var(--bone)]">elíptico</strong>, mantenha o peito aberto. Na <strong class="text-[color:var(--bone)]">escada</strong>, olhe para frente, não para os pés.
+          </div>
+        </div>
+
+        <div class="info-box reveal">
+          <div class="title">Para seus joelhos</div>
+          <div class="text">
+            Nenhuma das três modalidades gera impacto, o que é ótimo. Na escada, <strong class="text-[color:var(--bone)]">suba sempre um degrau por vez</strong> — subir dois degraus de uma vez coloca muita carga no joelho. Se sentir qualquer pontada, troque pelo elíptico nesse dia.
+          </div>
+        </div>
+
+        <div class="info-box reveal">
+          <div class="title">Sobre a intensidade</div>
+          <div class="text">
+            Nos tiros, você deve sentir o coração acelerar e a respiração ficar ofegante, mas <strong class="text-[color:var(--bone)]">não a ponto de se sentir mal</strong>. Você deve conseguir falar uma palavra ou duas. Se passar disso, diminua. Nos descansos, respire fundo e devagar — isso ajuda a recuperar.
+          </div>
+        </div>
+
+        <div class="warn-box reveal">
+          <div class="icon">⚠️</div>
+          <div class="text">
+            <strong>Quando parar imediatamente:</strong> se sentir dor aguda nas costas ou joelhos, tontura, falta de ar intensa ou qualquer sensação de mal-estar. Nesses casos, pare o treino, hidrate-se e descanse. Nunca force além do que seu corpo permite.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-10 bg-[color:var(--ink-2)]">
+    <div class="container mx-auto max-w-3xl text-center">
+      <h2 class="text-4xl md:text-5xl font-extrabold mb-6 reveal" style="letter-spacing:-.03em">
+        Cada treino é uma <span class="text-[color:var(--teal)]">vitória</span>.
+      </h2>
+      <p class="text-lg text-[color:var(--ash)] mb-10 reveal leading-relaxed">
+        Não importa se foi perfeito ou não. O importante é que você apareceu para si mesma. Abra o player, escolha seu equipamento do dia e vamos juntos.
+      </p>
+      <button id="goToTimerBtn2" class="btn-primary reveal">
+        <span>Abrir o player de treino</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <footer class="py-12 px-6 md:px-10 border-t border-[color:var(--line)]">
+    <div class="container mx-auto">
+      <div class="grid md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <div class="mono text-xs tracking-widest text-[color:var(--teal)] uppercase mb-3">Sobre o protocolo</div>
+          <p class="text-sm text-[color:var(--ash)] leading-relaxed">Sistema desenvolvido exclusivamente para alunas DMX. Periodização baseada em evidências sobre treinamento para pessoas acima de 50 anos.</p>
+        </div>
+        <div>
+          <div class="mono text-xs tracking-widest text-[color:var(--teal)] uppercase mb-3">Aluna</div>
+          <p class="text-sm text-[color:var(--bone)]">Jaqueline Amaral</p>
+          <p class="text-sm text-[color:var(--ash)] mt-1">Ciclo de 24 semanas · Nível iniciante</p>
+        </div>
+        <div>
+          <div class="mono text-xs tracking-widest text-[color:var(--teal)] uppercase mb-3">Redes sociais</div>
+          <div class="flex flex-col gap-2">
+            <a href="https://www.instagram.com/diegomacielx/" target="_blank" class="social-link">Instagram</a>
+            <a href="https://www.tiktok.com/@diegomacielx" target="_blank" class="social-link">TikTok</a>
+            <a href="https://www.youtube.com/@diegomacielx" target="_blank" class="social-link">YouTube</a>
+            <a href="https://wa.me/+5592992746231" target="_blank" class="social-link">WhatsApp</a>
+          </div>
+        </div>
+      </div>
+      <div class="pt-6 border-t border-[color:var(--line)] flex flex-col md:flex-row justify-between items-center gap-3 text-xs mono tracking-widest text-[color:var(--ash)] uppercase">
+        <div>DMX performance lab · © <span id="currentYear"></span></div>
+        <div>Built with precision</div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ================= PLAYER PAGE ================= -->
+<div id="player-page" class="page flex-col min-h-screen">
+
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-[color:var(--ink)]/90 backdrop-blur border-b border-[color:var(--line)]">
+    <div class="container mx-auto px-6 md:px-10 py-4 flex items-center justify-between">
+      <button id="backBtn" class="flex items-center gap-2 text-xs mono tracking-widest uppercase text-[color:var(--ash)] hover:text-[color:var(--bone)] transition">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Voltar
+      </button>
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 bg-[color:var(--teal)] rounded-full"></div>
+        <span class="mono text-xs tracking-widest text-[color:var(--bone)]">TREINO ATIVO</span>
+      </div>
+      <div class="mono text-xs text-[color:var(--ash)]" id="liveTime">00:00</div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-6 md:px-10 pt-28 pb-12 max-w-5xl w-full">
+
+    <!-- Seleção de Semana e Dia -->
+    <div class="grid md:grid-cols-2 gap-4 mb-6 max-w-2xl mx-auto">
+      <div>
+        <label class="mono text-[10px] text-[color:var(--teal)] tracking-widest uppercase mb-2 block">Semana</label>
+        <select id="weekSelect"></select>
+      </div>
+      <div>
+        <label class="mono text-[10px] text-[color:var(--teal)] tracking-widest uppercase mb-2 block">Dia</label>
+        <select id="weekDaySelect"></select>
+      </div>
+    </div>
+
+    <!-- Seleção de Equipamento -->
+    <div class="mb-8 max-w-2xl mx-auto">
+      <label class="mono text-[10px] text-[color:var(--teal)] tracking-widest uppercase mb-3 block text-center">Com qual equipamento você vai treinar hoje?</label>
+      <div class="grid grid-cols-3 gap-3">
+        <button class="equip-btn selected" data-equip="bike">
+          <span class="icon">🚴</span>
+          <span>Bicicleta</span>
+        </button>
+        <button class="equip-btn" data-equip="stair">
+          <span class="icon">🪜</span>
+          <span>Escada</span>
+        </button>
+        <button class="equip-btn" data-equip="elliptical">
+          <span class="icon">🏃</span>
+          <span>Elíptico</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Timer Principal -->
+    <div class="flex flex-col items-center" id="timerThemeWrap">
+
+      <div class="grid grid-cols-3 gap-4 w-full max-w-3xl mb-8">
+        <div class="text-center md:text-right">
+          <div class="mono text-[10px] text-[color:var(--ash)] tracking-widest uppercase mb-1">Status</div>
+          <div id="statusText" class="text-base md:text-lg font-bold text-[color:var(--bone)]">Pronto</div>
+        </div>
+        <div class="text-center">
+          <div class="mono text-[10px] text-[color:var(--ash)] tracking-widest uppercase mb-1">Fase</div>
+          <div id="phaseName" class="text-base md:text-lg font-bold text-[color:var(--teal)]">Escolha o equipamento</div>
+        </div>
+        <div class="text-center md:text-left">
+          <div class="mono text-[10px] text-[color:var(--ash)] tracking-widest uppercase mb-1">Série</div>
+          <div id="setCounter" class="text-base md:text-lg font-bold text-[color:var(--bone)] mono">—</div>
+        </div>
+      </div>
+
+      <div class="timer-ring-wrap my-4">
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0d9488"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
+            </linearGradient>
+            <linearGradient id="ringGradientRest" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f59e0b"/>
+              <stop offset="100%" stop-color="#fcd34d"/>
+            </linearGradient>
+            <linearGradient id="ringGradientWarm" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a8a29e"/>
+              <stop offset="100%" stop-color="#d6d3d1"/>
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="47" stroke="rgba(250,250,249,0.08)" stroke-width="1.5" fill="transparent"/>
+          <circle id="progressRing" class="progress-ring__circle" stroke="url(#ringGradient)" stroke-width="2.5" stroke-linecap="round" cx="50" cy="50" r="47" fill="transparent" stroke-dasharray="295.31" stroke-dashoffset="295.31"/>
+        </svg>
+
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-4">
+          <div class="timer-display" id="timeDisplay">15:00</div>
+          <div class="mono text-xs tracking-widest uppercase text-[color:var(--ash)] mt-3">
+            Esforço · <span id="targetPse" class="text-[color:var(--bone)]">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full max-w-2xl panel p-5 md:p-6 text-center my-8">
+        <div class="mono text-[10px] text-[color:var(--teal)] tracking-widest uppercase mb-2" id="directiveLabel">Orientação</div>
+        <p id="instructionText" class="text-sm md:text-base text-[color:var(--bone)] leading-relaxed">Escolha seu equipamento do dia e clique em "Iniciar" para começar.</p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-3">
+        <button id="btnStart" class="ctrl-btn primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Iniciar
+        </button>
+        <button id="btnPause" class="ctrl-btn" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+          Pausar
+        </button>
+        <button id="btnSkip" class="ctrl-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          Pular fase
+        </button>
+        <button id="btnReset" class="ctrl-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+          Recomeçar
+        </button>
+      </div>
+
+      <div class="info-box mt-10 max-w-2xl w-full">
+        <div class="title">💡 Dica para hoje</div>
+        <div class="text" id="dailyTip">
+          Antes de começar, ajuste bem seu equipamento. Na bike, o selim deve estar na altura do quadril. No elíptico, mantenha o peito aberto. Na escada, use o corrimão só para equilíbrio.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+window.addEventListener('load', () => {
+  setTimeout(triggerReveal, 200);
+});
+
+function triggerReveal() {
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('in'), i * 60);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  els.forEach(el => obs.observe(el));
+}
+
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = +el.dataset.target;
+      let current = 0;
+      const step = target / 40;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = Math.round(current);
+      }, 30);
+      counterObs.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-number').forEach(el => counterObs.observe(el));
+
+// Charts
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.color = '#a8a29e';
+const baseScales = {
+  y: { grid: { color: 'rgba(250,250,249,0.05)', drawBorder: false }, border: { display: false }, ticks: { font: { size: 10 }, padding: 10 } },
+  x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 10 } } }
+};
+
+const ctxWork = document.getElementById('workChart').getContext('2d');
+const gradWork = ctxWork.createLinearGradient(0, 0, 0, 260);
+gradWork.addColorStop(0, 'rgba(13,148,136,0.4)'); gradWork.addColorStop(1, 'rgba(13,148,136,0)');
+
+new Chart(ctxWork, {
+  type: 'line',
+  data: {
+    labels: ['Fase 1', 'Fase 2', 'Fase 3'],
+    datasets: [{
+      label: 'Tiro',
+      data: [10, 15, 20],
+      borderColor: '#0d9488', backgroundColor: gradWork,
+      tension: 0.4, borderWidth: 2, fill: true,
+      pointBackgroundColor: '#0a0a0a', pointBorderColor: '#0d9488',
+      pointBorderWidth: 2, pointRadius: 5
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { ...baseScales, y: { ...baseScales.y, max: 25, title: { display: true, text: 'Segundos' } } }
+  }
+});
+
+new Chart(document.getElementById('restChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Fase 1', 'Fase 2', 'Fase 3'],
+    datasets: [{
+      label: 'Descanso',
+      data: [50, 45, 40],
+      backgroundColor: '#f59e0b',
+      borderRadius: 2, barThickness: 50
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { ...baseScales, y: { ...baseScales.y, max: 60, title: { display: true, text: 'Segundos' } } }
+  }
+});
+
+// Page transitions
+const pageMain = document.getElementById('main-page');
+const pagePlayer = document.getElementById('player-page');
+
+function transitionTo(target) {
+  [pageMain, pagePlayer].forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+  target.style.display = 'flex';
+  void target.offsetWidth;
+  target.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+document.getElementById('goToTimerBtn').onclick = () => transitionTo(pagePlayer);
+document.getElementById('goToTimerBtn2').onclick = () => transitionTo(pagePlayer);
+document.getElementById('backBtn').onclick = () => {
+  if (isRunning) btnPause.onclick();
+  transitionTo(pageMain);
+};
+
+document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+/* ============================================================
+   WORKOUT ENGINE
+============================================================ */
+const weekSelect = document.getElementById('weekSelect');
+const weekDaySelect = document.getElementById('weekDaySelect');
+const progressRing = document.getElementById('progressRing');
+const timeDisplay = document.getElementById('timeDisplay');
+const phaseName = document.getElementById('phaseName');
+const statusText = document.getElementById('statusText');
+const setCounter = document.getElementById('setCounter');
+const instructionText = document.getElementById('instructionText');
+const targetPse = document.getElementById('targetPse');
+const directiveLabel = document.getElementById('directiveLabel');
+const dailyTip = document.getElementById('dailyTip');
+const btnStart = document.getElementById('btnStart');
+const btnPause = document.getElementById('btnPause');
+const btnSkip = document.getElementById('btnSkip');
+const btnReset = document.getElementById('btnReset');
+const timerThemeWrap = document.getElementById('timerThemeWrap');
+
+let currentWorkoutPlan = [], totalSetsCount = 0, currentEquip = 'bike';
+let phaseIndex = 0;
+let timeLeft = 0, phaseTotalSeconds = 0;
+let timerInterval = null, isRunning = false;
+const circlePerimeter = 2 * Math.PI * 47;
+progressRing.style.strokeDasharray = `${circlePerimeter} ${circlePerimeter}`;
+progressRing.style.strokeDashoffset = circlePerimeter;
+
+// Audio simples
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+function playTone(type) {
+  if (!audioCtx) initAudio();
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  
+  if (type === 'countdown') {
+    osc.type = 'sine'; osc.frequency.setValueAtTime(500, now);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.1, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+    osc.start(now); osc.stop(now + 0.2);
+  } else if (type === 'go') {
+    osc.type = 'sine'; osc.frequency.setValueAtTime(700, now);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.2, now + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+    osc.start(now); osc.stop(now + 0.6);
+  } else if (type === 'rest') {
+    osc.type = 'sine'; osc.frequency.setValueAtTime(300, now);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.15, now + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
+    osc.start(now); osc.stop(now + 1);
+  } else if (type === 'finish') {
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440, now);
+    osc.frequency.setValueAtTime(554, now + 0.25);
+    osc.frequency.setValueAtTime(660, now + 0.5);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.2, now + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+    osc.start(now); osc.stop(now + 1.5);
+  }
+}
+
+function showToast(msg, icon = '✓') {
+  const t = document.getElementById('toastNotification');
+  document.getElementById('toastMessage').textContent = msg;
+  document.getElementById('toastIcon').textContent = icon;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function secToMin(s) {
+  const m = Math.floor(s/60).toString().padStart(2,'0');
+  const ss = (s%60).toString().padStart(2,'0');
+  return `${m}:${ss}`;
+}
+
+// Instruções específicas por equipamento
+const equipInstructions = {
+  bike: {
+    warmup: 'Comece pedalando bem leve. Ajuste o selim: ele deve estar na altura do seu quadril quando você está em pé ao lado da bike. Mantenha a coluna reta, sem se curvar. Pedale devagar, sentindo o corpo aquecer.',
+    work: 'Aumente um pouco a carga e pedale mais rápido. Mantenha a coluna reta e os ombros relaxados. Você deve sentir o coração acelerar, mas ainda consegue falar uma palavra ou duas. Não force além do confortável.',
+    rest: 'Tire a carga e pedale bem devagar, quase parando. Respire fundo pelo nariz e solte pela boca devagar. Relaxe os ombros. Se precisar, coloque os pés no chão.',
+    cooldown: 'Pedale bem leve agora. Sinta seu coração acalmar aos poucos. Respire fundo. Você fez um ótimo trabalho, Jaqueline.'
+  },
+  stair: {
+    warmup: 'Comece subindo bem devagar, um degrau por vez. Use o corrimão apenas para equilíbrio, não para puxar o corpo. Mantenha o peito aberto e olhe para frente.',
+    work: 'Suba um pouco mais rápido, mas sempre um degrau por vez. Mantenha o peito aberto, coluna reta. Você vai sentir o coração acelerar e as pernas trabalharem. Se o joelho reclamar, diminua o ritmo.',
+    rest: 'Desça ou ande bem devagar no lugar. Respire fundo pelo nariz e solte pela boca devagar. Relaxe os ombros. Se precisar, apoie no corrimão.',
+    cooldown: 'Continue subindo bem devagar agora, ou desça com calma. Sinta seu coração acalmar aos poucos. Respire fundo. Ótimo trabalho, Jaqueline.'
+  },
+  elliptical: {
+    warmup: 'Comece com movimento suave e devagar. Mantenha o peito aberto, coluna reta. Os braços acompanham o movimento naturalmente. Sinta o corpo aquecer aos poucos.',
+    work: 'Aumente um pouco a velocidade. Mantenha o peito aberto, coluna reta, ombros relaxados. Você deve sentir o coração acelerar, mas ainda consegue falar uma palavra ou duas.',
+    rest: 'Diminua bastante a velocidade. Respire fundo pelo nariz e solte pela boca devagar. Relaxe os ombros. Continue o movimento suave.',
+    cooldown: 'Volte para um movimento bem leve e devagar. Sinta seu coração acalmar aos poucos. Respire fundo. Você fez um ótimo trabalho, Jaqueline.'
+  }
+};
+
+const dailyTips = {
+  bike: '💡 Dica: Ajuste bem o selim antes de começar. Ele deve estar na altura do seu quadril. Se sentir dor nas costas, levante um pouco o guidão.',
+  stair: '💡 Dica: Suba sempre um degrau por vez. Nunca suba dois degraus de uma vez, isso machuca o joelho. Use o corrimão só para equilíbrio.',
+  elliptical: '💡 Dica: Mantenha o peito aberto e a coluna reta durante todo o movimento. Os braços devem acompanhar naturalmente, sem tensão nos ombros.'
+};
+
+function buildWorkout(workSec, restSec, sets) {
+  const seq = [];
+  seq.push({ type: 'warmup', name: 'AQUECIMENTO', duration: 180, set: 0,
+    targetPse: '2-3 (leve)' });
+  
+  for (let i = 1; i <= sets; i++) {
+    seq.push({ type: 'work', name: 'TIRO', duration: workSec, set: i,
+      targetPse: '5-6 (moderado)' });
+    if (i < sets) {
+      seq.push({ type: 'rest', name: 'RECUPERAÇÃO', duration: restSec, set: i,
+        targetPse: '2-3 (leve)' });
+    }
+  }
+  
+  const elapsed = 180 + sets*workSec + (sets-1)*restSec;
+  const cooldown = Math.max(90, 900 - elapsed);
+  seq.push({ type: 'cooldown', name: 'VOLTA À CALMA', duration: cooldown, set: sets,
+    targetPse: '1-2 (muito leve)' });
+  
+  return { sequence: seq, sets };
+}
+
+// DB: 24 semanas × 3 dias
+const db = {};
+for (let w = 1; w <= 24; w++) {
+  const phase = w <= 8 ? 1 : w <= 16 ? 2 : 3;
+  let plan;
+  
+  if (phase === 1) plan = buildWorkout(10, 50, 10);
+  else if (phase === 2) plan = buildWorkout(15, 45, 10);
+  else plan = buildWorkout(20, 40, 10);
+  
+  db[`Semana ${w}`] = {
+    "Sessão 1": plan,
+    "Sessão 2": plan,
+    "Sessão 3": plan
+  };
+}
+
+function initSelectors() {
+  weekSelect.innerHTML = '';
+  Object.keys(db).forEach(w => weekSelect.add(new Option(w, w)));
+  weekSelect.onchange = () => {
+    weekDaySelect.innerHTML = '';
+    Object.keys(db[weekSelect.value]).forEach(d => weekDaySelect.add(new Option(d, d)));
+    loadWorkout();
+  };
+  weekDaySelect.onchange = loadWorkout;
+  weekSelect.onchange();
+}
+
+function loadWorkout() {
+  const w = weekSelect.value;
+  const d = weekDaySelect.value;
+  const plan = db[w]?.[d];
+  if (!plan) return;
+  currentWorkoutPlan = plan.sequence;
+  totalSetsCount = plan.sets;
+  resetTimerSystem();
+  showToast('Treino carregado', '✓');
+}
+
+function applyTheme(type) {
+  timerThemeWrap.classList.remove('theme-work','theme-rest','theme-warm','theme-done');
+  let status = 'Pronto', ringGrad = 'url(#ringGradient)';
+  if (type === 'work') {
+    timerThemeWrap.classList.add('theme-work');
+    status = 'Esforço';
+    ringGrad = 'url(#ringGradient)';
+  } else if (type === 'rest') {
+    timerThemeWrap.classList.add('theme-rest');
+    status = 'Recuperação';
+    ringGrad = 'url(#ringGradientRest)';
+  } else if (type === 'warmup' || type === 'cooldown') {
+    timerThemeWrap.classList.add('theme-warm');
+    status = type === 'warmup' ? 'Aquecendo' : 'Finalizando';
+    ringGrad = 'url(#ringGradientWarm)';
+  } else if (type === 'done') {
+    timerThemeWrap.classList.add('theme-done');
+    status = 'Concluído';
+  }
+  progressRing.setAttribute('stroke', ringGrad);
+  statusText.textContent = status;
+}
+
+function updateInstruction() {
+  if (currentWorkoutPlan.length === 0 || phaseIndex >= currentWorkoutPlan.length) return;
+  const p = currentWorkoutPlan[phaseIndex];
+  const instr = equipInstructions[currentEquip][p.type];
+  instructionText.textContent = instr;
+  targetPse.textContent = p.targetPse;
+  dailyTip.textContent = dailyTips[currentEquip];
+}
+
+function updateScreen() {
+  timeDisplay.textContent = secToMin(timeLeft);
+  document.getElementById('liveTime').textContent = secToMin(timeLeft);
+  if (currentWorkoutPlan.length > 0 && phaseIndex < currentWorkoutPlan.length) {
+    const p = currentWorkoutPlan[phaseIndex];
+    phaseName.textContent = p.name;
+    const setStr = p.set === 0 ? '—' : `${p.set}/${totalSetsCount}`;
+    setCounter.textContent = setStr;
+    applyTheme(p.type);
+    updateInstruction();
+    if (phaseTotalSeconds > 0) {
+      const pct = (phaseTotalSeconds - timeLeft) / phaseTotalSeconds;
+      progressRing.style.strokeDashoffset = circlePerimeter - (pct * circlePerimeter);
+    }
+  }
+}
+
+function finishWorkout() {
+  clearInterval(timerInterval);
+  isRunning = false;
+  phaseName.textContent = 'CONCLUÍDO';
+  timeDisplay.textContent = '00:00';
+  instructionText.textContent = 'Parabéns, Jaqueline! Você completou mais um treino. Beba água, alongue-se com calma e sinta orgulho de si mesma. Cada treino é uma vitória.';
+  setCounter.textContent = '✓';
+  applyTheme('done');
+  progressRing.style.strokeDashoffset = 0;
+  btnStart.disabled = true; btnPause.disabled = true;
+  playTone('finish');
+  showToast('Treino concluído com sucesso!', '✓');
+}
+
+function handlePhaseTransition() {
+  phaseIndex++;
+  if (phaseIndex >= currentWorkoutPlan.length) { finishWorkout(); return; }
+  const next = currentWorkoutPlan[phaseIndex];
+  timeLeft = next.duration; phaseTotalSeconds = next.duration;
+  if (next.type === 'work') playTone('go');
+  else if (next.type === 'rest') playTone('rest');
+  updateScreen();
+}
+
+function runTimer() {
+  timeLeft--;
+  if (timeLeft <= 3 && timeLeft > 0) playTone('countdown');
+  updateScreen();
+  if (timeLeft <= 0) handlePhaseTransition();
+}
+
+function resetTimerSystem() {
+  clearInterval(timerInterval);
+  isRunning = false; phaseIndex = 0;
+  if (currentWorkoutPlan.length > 0) {
+    timeLeft = currentWorkoutPlan[0].duration;
+    phaseTotalSeconds = timeLeft;
+  }
+  btnStart.disabled = false; btnPause.disabled = true;
+  updateScreen();
+  progressRing.style.strokeDashoffset = circlePerimeter;
+}
+
+btnStart.onclick = () => {
+  if (isRunning || currentWorkoutPlan.length === 0) return;
+  initAudio();
+  isRunning = true;
+  btnStart.disabled = true; btnPause.disabled = false;
+  timerInterval = setInterval(runTimer, 1000);
+};
+btnPause.onclick = () => {
+  if (!isRunning) return;
+  clearInterval(timerInterval); isRunning = false;
+  btnStart.disabled = false; btnPause.disabled = true;
+  statusText.textContent = 'PAUSADO';
+};
+btnSkip.onclick = () => {
+  if (currentWorkoutPlan.length === 0) return;
+  handlePhaseTransition();
+};
+btnReset.onclick = resetTimerSystem;
+
+// Equipamento selector
+document.querySelectorAll('.equip-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.equip-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    currentEquip = btn.dataset.equip;
+    if (currentWorkoutPlan.length > 0) updateInstruction();
+    showToast(`Equipamento: ${btn.textContent.trim()}`, '✓');
+  });
+});
+
+let selectorsInited = false;
+['goToTimerBtn','goToTimerBtn2'].forEach(id => {
+  document.getElementById(id).addEventListener('click', () => {
+    if (!selectorsInited) { initSelectors(); selectorsInited = true; }
+  });
+});
+</script>
+</body>
+</html>
